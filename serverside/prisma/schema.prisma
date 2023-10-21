@@ -1,0 +1,104 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(cuid())
+  nome     String
+  senha    String
+  email    String @unique
+  telefone String
+
+  funcionario Funcionario?
+}
+
+model Funcionario {
+  id               String   @id @default(cuid())
+  modulo_default   String
+  acesso_admin     String
+  ativo            String
+  data_cad_alt     DateTime
+  usuario_cad_alt  String
+  cargo_id         String
+  usuario_id       String   @unique
+  empresa_id       String
+  imagem_perfil_id String
+
+  imagem  Imagem  @relation(fields: [imagem_perfil_id], references: [id])
+  user    User    @relation(fields: [usuario_id], references: [id])
+  empresa Empresa @relation(fields: [empresa_id], references: [id])
+
+}
+
+model Empresa {
+  id              String        @id @default(cuid())
+  nome            String
+  razao_s         String
+  logo            String
+  data_alt        DateTime
+  usuario_cad_alt String
+  Funcionario     Funcionario[]
+}
+
+model Imagem {
+  id      String @id @default(cuid())
+  caminho String
+  nome    String
+  url     String
+
+  Funcionario     Funcionario[]
+}
+
+model Cargos {
+  cargo_id   String @id @default(cuid())
+  nome_cargo String
+  permissoes String
+}
+
+model Modulos {
+  id    String  @id @default(cuid())
+  nome  String
+  menus String
+  Menus Menus[]
+}
+
+model Menus {
+  id         String @id @default(cuid())
+  nome       String
+  itens_id   String
+  modulos_id String
+
+  modulos Modulos @relation(fields: [modulos_id], references: [id])
+  itens   Itens[]
+}
+
+model Itens {
+  id            String @id @default(cuid())
+  nome          String
+  relatorios_id String
+  menus_id      String
+
+  menus      Menus        @relation(fields: [menus_id], references: [id])
+  relatorios relatorios[]
+}
+
+model relatorios {
+  id        String @id @default(cuid())
+  itens_id  String
+  nome      String
+  relatorio String
+
+  itens Itens @relation(fields: [itens_id], references: [id])
+}
