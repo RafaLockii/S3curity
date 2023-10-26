@@ -6,17 +6,16 @@ import logo from '../../../public/images/logo.png';
 
 export default function CarouselComponent(){
     return(
-        <div className={styles.container}>
-            <Carousel className={styles.Carousel}>
-                <div>
-                    <Image src={logo} alt =''/>
-                </div>               
-                <div>
-                    <Image src={logo} alt =''/>
-                </div>               
-                <div>
-                    <Image src={logo} alt =''/>
-                </div>               
+        <div>
+            <Carousel >
+               
+                    <Image src={logo} alt ='' className={styles.card}/>
+                             
+               
+                    <Image src={logo} alt =''  className={styles.card}/>
+                
+                    <Image src={logo} alt =''  className={styles.card}/>
+                             
             </Carousel>
         </div>
     );

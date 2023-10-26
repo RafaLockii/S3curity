@@ -1,7 +1,7 @@
 /* styles.module.css (ou outro nome de arquivo CSS) */
 
 .formContainer {
-    width: 300px;
+    width: 400px;
     margin: 0 auto;
     padding: 20px;
     border-radius: 5px;
@@ -18,13 +18,14 @@
   width: 100%;
   padding: 8px;
   margin-bottom: 10px;
+  margin-top: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
 }
       
 .button {
   width: 100%;
-  padding: 10px;
+  padding: 1rem;
   background-color: #fff;
   color: #000000;
   border: none;
@@ -52,4 +53,26 @@
   margin: 0 auto;
   text-align: center;
   padding-bottom: 1rem;
+}
+
+.p{
+  text-align: center;
+  padding-bottom: 1rem;
+  color: #000000;
+  margin-bottom: 1rem;
+}
+
+.rowContainer{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.closeButton{
+  color: #000000;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }

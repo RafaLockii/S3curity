@@ -1,1 +1,18 @@
+.containerImg{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
 
+.card{
+    width: 200px; /* Largura da caixa do carousel */
+    height: 150px; /* Altura da caixa do carousel */
+    border: 1px solid #ccc; /* Borda da caixa */
+    border-radius: 5px; /* Borda arredondada */
+    overflow: hidden;
+    padding-bottom: 3rem;
+
+}
