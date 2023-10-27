@@ -1,6 +1,6 @@
 import styles from './styles.module.css';
 import { Sidebar, Menu, MenuItem, SidebarProps, SubMenu} from 'react-pro-sidebar';
-import { HouseSimple, Buildings, User, ListDashes, ArrowDown } from 'phosphor-react';
+import { HouseSimple, Buildings, User, ListDashes, ArrowDown, ChartLineUp } from 'phosphor-react';
 import {useRouter} from 'next/router'
 
 export default function SidebarMenu(props: SidebarProps) {
@@ -40,15 +40,17 @@ export default function SidebarMenu(props: SidebarProps) {
                   <MenuItem icon={<HouseSimple/>} onClick={()=> handleMenuClick('home')}>
                     Home
                   </MenuItem>
+
                   <MenuItem icon={<Buildings/>} onClick={() => handleMenuClick('enterprises')}>Empresas</MenuItem>
+
                   <MenuItem icon={<User/>} onClick={() => handleMenuClick('users')}>Usuários</MenuItem>
+
                   <SubMenu title="Menu" icon={<ListDashes/>} label='Menu'>
-                        <MenuItem>Item</MenuItem>                    
+                        <SubMenu title='Itens' label='Itens' icon={<ListDashes/>}>
+                        <MenuItem icon={<ChartLineUp/>} onClick={()=> handleMenuClick('reports')}>Relátorio</MenuItem>
+                        </SubMenu>                    
                   </SubMenu>
-                  <SubMenu title="item" icon={<ListDashes/>} label='Itens'>
-                        <MenuItem>Item</MenuItem>                    
-                  </SubMenu>
-                  <MenuItem icon={<ListDashes/>} onClick={()=> handleMenuClick('reports')}>Relátorio</MenuItem>
+                  
                 
               </Menu>
               </Sidebar>

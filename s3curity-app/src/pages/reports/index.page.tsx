@@ -1,10 +1,14 @@
 import SidebarMenu from "@/components/SideBarMenu"
+import styles from './styles.module.css';
+import { Header } from "@/components/header";
 
 export default function Reports(){
     return(
-        <>
-        <SidebarMenu/>
-        <h1>Reports</h1>
-        </>
+        <div className={styles.pageContainer}>
+            <SidebarMenu/>
+            <div className={styles.header}>
+                <Header/>
+            </div>
+        </div>
     )
 }
