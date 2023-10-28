@@ -12,6 +12,7 @@ const registerFormShceme = z.object({
   email: z.string().email(),
   telefone: z.string(),
   modulo: z.string(),
+  img_url: z.string(),
   ativo: z.boolean(),
   admin: z.boolean(),
 });
@@ -84,7 +85,13 @@ export default function CreateUserForm() {
           placeholder="Modulo Default"
         />
         <div className={styles.inputWithContents}>
-          <div className={styles.input}>Imagem</div>
+        <input
+          type="text"
+          id="img_url"
+          placeholder="Imagem Url"
+          {...register("img_url")}
+          className={styles.input}
+        />
           <CloudArrowUp />
         </div>
         <div className={styles.inputWithContents}>
