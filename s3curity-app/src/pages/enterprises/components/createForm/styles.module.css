@@ -72,4 +72,16 @@
     justify-content: space-between;
     height: 100vh;
   }
+
+  .formAnnotation{
+    color: rgb(220, 32, 32);
+    background-color: rgb(243, 170, 170);
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    padding: 0.5rem;
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px 2px rgba(0,0,0,0.1);
+  }
   

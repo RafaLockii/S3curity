@@ -9,8 +9,7 @@ export default function CarouselComponent(){
         <div>
             <Carousel >
                
-                    <Image src={logo} alt ='' className={styles.card}/>
-                             
+                    <Image src={logo} alt ='' className={styles.card}/>                             
                
                     <Image src={logo} alt =''  className={styles.card}/>
                 
