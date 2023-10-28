@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+generator erd {
+  provider = "prisma-erd-generator"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("MYSQL_DATABASE_URL")
+}
+
+model User {
+  id       Int      @id @default(autoincrement())
+  nome     String
+  senha    String
+  email    String @unique
+  telefone String
+  funcionario Funcionario?
+}
+
+model Funcionario {
+  id               Int      @id @default(autoincrement())
+  modulo_default   String
+  acesso_admin     Boolean
+  ativo            Boolean
+  cadastro_alterado DateTime
+  usuario_cad_alt  String
+  cargo_id         Int
+  usuario_id       Int      @unique
+  empresa_id       Int
+  imagem_perfil_id Int
+
+  imagem     Imagem   @relation(fields: [imagem_perfil_id], references: [id])
+  user       User     @relation(fields: [usuario_id], references: [id])
+  empresa    Empresa  @relation(fields: [empresa_id], references: [id])
+  cargo      Cargos?  @relation(fields: [cargo_id], references: [cargo_id])
+}
+
+model Empresa {
+  id              Int      @id @default(autoincrement())
+  nome            String   @unique
+  razao_s         String?
+  logo            String?
+  data_alt        DateTime?
+  imagem_fundo    String?
+  usuario_criacao String
+  data_criacao    DateTime
+  usuario_cad_alt String?
+  funcionarios Funcionario[]
+}
+
+model Imagem {
+  id      Int      @id @default(autoincrement())
+  caminho String?
+  nome    String?
+  url     String
+  funcionarios Funcionario[]
+}
+
+model Cargos {
+  cargo_id   Int      @id @default(autoincrement())
+  nome_cargo String
+  permissoes String
+  funcionarios Funcionario[]
+}
+
+model Modulos {
+  id    Int      @id @default(autoincrement())
+  nome  String
+  menus String
+  Menus Menus[]
+}
+
+model Menus {
+  id         Int      @id @default(autoincrement())
+  nome       String
+  itens_id   Int
+  modulos_id Int
+
+  modulos Modulos @relation(fields: [modulos_id], references: [id])
+  itens   Itens[]
+}
+
+model Itens {
+  id            Int      @id @default(autoincrement())
+  nome          String
+  relatorios_id Int
+  menus_id      Int
+
+  menus      Menus        @relation(fields: [menus_id], references: [id])
+  relatorios relatorios[]
+}
+
+model relatorios {
+  id        Int      @id @default(autoincrement())
+  itens_id  Int
+  nome      String
+  relatorio String
+
+  itens Itens @relation(fields: [itens_id], references: [id])
+}
