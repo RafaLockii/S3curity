@@ -5,6 +5,7 @@ import styles from './styles.module.css';
 import UpdateForm from "./components/updateForm";
 import { useState } from "react";
 import { ArrowLeft } from "phosphor-react";
+import TableComponent from "./components/usersTable";
 
 
 export default function Users(){
@@ -15,6 +16,17 @@ export default function Users(){
         setShowCreateUserForm(show);}
     const handleShowUpdateForm = (show: boolean) => {
         setShowUpdateForm(show);}
+    
+    const userData = [
+        {
+        nome: 'João',
+        empresa: 'Empresa',
+        operacional: true,
+        estrategico: false,
+        gerencial: true,
+        ativo: true,
+        },
+    ]
 
 
     return(
@@ -22,7 +34,8 @@ export default function Users(){
             <SidebarMenu/>
             <div className={styles.createUserFormContainer}>
                 {!showCreateUserForm && !showUpdateForm && (
-                    <div className={styles.formHeader}>
+                <>
+                <div className={styles.formHeader}>
                     Usuários
                     <div className={styles.headerButtonContainer}>
                         <button className={styles.headerButton}>
@@ -33,6 +46,9 @@ export default function Users(){
                         </button>
                     </div>
                 </div>
+                <TableComponent data={userData}/>
+                </>
+
                 )}
                 {showCreateUserForm && (
                 <>
