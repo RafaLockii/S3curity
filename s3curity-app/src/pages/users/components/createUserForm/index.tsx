@@ -45,7 +45,7 @@ export default function CreateUserForm() {
   const router = useRouter();
 
   async function handleRegister(data: RegisterFormData) {
-    console.log(data);
+    await console.log(data);
   }
 
   // Função de manipulação para o evento onChange do Select
@@ -53,9 +53,12 @@ export default function CreateUserForm() {
     setValue("modulo", selectedOption.value); // Atualiza o valor no registro
   };
 
+  async function handleSaveButtonRouter(){
+    await router.push('/users')
+  }
   return (
     <div>
-      <form onSubmit={handleSubmit(handleRegister)} className={styles.form}>
+      <form onSubmit={() => {handleSubmit(handleRegister); handleSaveButtonRouter}} className={styles.form}>
         <div className={styles.inputWithContents}>
             <input
             className={styles.input}
