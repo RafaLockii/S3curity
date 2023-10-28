@@ -8,8 +8,8 @@
 }
 
 .card{
-    width: 200px; /* Largura da caixa do carousel */
-    height: 150px; /* Altura da caixa do carousel */
+    width: 75vw; /* Largura da caixa do carousel */
+    height: 30vh; /* Altura da caixa do carousel */
     border: 1px solid #ccc; /* Borda da caixa */
     border-radius: 5px; /* Borda arredondada */
     overflow: hidden;

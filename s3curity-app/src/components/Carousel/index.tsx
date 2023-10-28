@@ -7,7 +7,7 @@ import logo from '../../../public/images/logo.png';
 export default function CarouselComponent(){
     return(
         <div>
-            <Carousel >
+            <Carousel swipeable={true} emulateTouch>
                
                     <Image src={logo} alt ='' className={styles.card}/>                             
                
