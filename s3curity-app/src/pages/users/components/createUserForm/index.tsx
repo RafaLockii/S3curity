@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
 import styles from "./styles.module.css";
 import Image from "next/image";
 import { ArrowLeft, CloudArrowUp } from "phosphor-react";
@@ -7,12 +8,18 @@ import Select from "react-select";
 import { useRouter } from "next/router";
 
 const registerFormShceme = z.object({
-  nome: z.string(),
-  senha: z.string(),
-  email: z.string().email(),
-  telefone: z.string(),
+  nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
+  senha: z.string().min(8, {message: 'A senha precisa ter ao menos 8 caracteres'}),
+  email: z.string().email( {message: 'E-mail inválido'}),
+  telefone: z.string().refine((value) => {
+    return /^\d+$/.test(value) && value.length >= 8;
+  }, { message: 'Telefone inválido' }),
   modulo: z.string(),
-  img_url: z.string(),
+  img_url: z.string().refine((value) => {
+    // Verifica se a img_url é uma URL válida (formato básico)
+    const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
+    return urlPattern.test(value);
+  }, { message: 'URL da imagem inválida' }),
   ativo: z.boolean(),
   admin: z.boolean(),
 });
@@ -24,8 +31,10 @@ export default function CreateUserForm() {
     register,
     handleSubmit,
     formState: { errors, isSubmitting },
-    setValue, // Adicione a função setValue
-  } = useForm<RegisterFormData>();
+    setValue,
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerFormShceme),
+  });
 
   const options = [
     { value: "operacional", label: "Operacional" },
@@ -51,32 +60,61 @@ export default function CreateUserForm() {
         <ArrowLeft className={styles.arrowLeft} />
       </div>
       <form onSubmit={handleSubmit(handleRegister)} className={styles.form}>
-        <input
-          className={styles.input}
-          placeholder="Nome"
-          {...register("nome")}
-        ></input>
-        <input
-          type="password"
-          id="senha"
-          placeholder="Senha"
-          {...register("senha")}
-          className={styles.input}
-        />
-        <input
-          type="email"
-          id="email"
-          placeholder="E-mail"
-          {...register("email")}
-          className={styles.input}
-        />
-        <input
-          type="text"
-          id="telefone"
-          placeholder="Telefone"
-          {...register("telefone")}
-          className={styles.input}
-        />
+        <div className={styles.inputWithContents}>
+            <input
+            className={styles.input}
+            placeholder="Nome"
+            {...register("nome")}
+            ></input>
+            {errors.nome &&(
+                <div className={styles.formAnnotation}>
+                {errors.nome ? errors.nome.message : ''}
+            </div>
+            )}
+        </div>
+        <div className={styles.inputWithContents}>
+            <input
+            type="password"
+            id="senha"
+            placeholder="Senha"
+            {...register("senha")}
+            className={styles.input}
+            />
+            {errors.senha &&(
+                <div className={styles.formAnnotation}>
+                {errors.senha ? errors.senha.message : ''}
+            </div>
+            )}
+        </div>
+        <div className={styles.inputWithContents}>
+            <input
+            type="email"
+            id="email"
+            placeholder="E-mail"
+            {...register("email")}
+            className={styles.input}
+            />
+            {errors.email &&(
+                <div className={styles.formAnnotation}>
+                {errors.email ? errors.email.message : ''}
+            </div>
+            )}
+        </div>
+        <div className={styles.inputWithContents}>
+
+            <input
+            type="text"
+            id="telefone"
+            placeholder="Telefone"
+            {...register("telefone")}
+            className={styles.input}
+            />
+            {errors.telefone &&(
+                <div className={styles.formAnnotation}>
+                {errors.telefone ? errors.telefone.message : ''}
+            </div>
+            )}
+        </div>
         <Select
           options={options}
           className={styles.input}
@@ -85,14 +123,19 @@ export default function CreateUserForm() {
           placeholder="Modulo Default"
         />
         <div className={styles.inputWithContents}>
-        <input
-          type="text"
-          id="img_url"
-          placeholder="Imagem Url"
-          {...register("img_url")}
-          className={styles.input}
-        />
+            <input
+            type="text"
+            id="img_url"
+            placeholder="Imagem Url"
+            {...register("img_url")}
+            className={styles.input}
+            />
           <CloudArrowUp />
+          {errors.img_url &&(
+                <div className={styles.formAnnotation}>
+                {errors.img_url ? errors.img_url.message : ''}
+            </div>
+            )}
         </div>
         <div className={styles.inputWithContents}>
           <div className={styles.input}>Ativo</div>
@@ -112,14 +155,13 @@ export default function CreateUserForm() {
             className={styles.checkbox}
           />
         </div>
-      </form>
-      <button
+        <button
         className={styles.createUserButton}
-        type="submit"
-        onClick={handleSubmit(handleRegister)}
-      >
+        type="submit">
         Salvar
       </button>
+      </form>
+      
     </div>
   );
 }
