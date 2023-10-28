@@ -5,7 +5,7 @@ import styles from './styles.module.css';
 import UpdateForm from "./components/updateForm";
 import { useState } from "react";
 import { ArrowLeft } from "phosphor-react";
-import TableComponent from "./components/usersTable";
+import TableComponent from "./components/table";
 
 
 export default function Users(){

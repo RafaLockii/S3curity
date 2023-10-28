@@ -23,6 +23,7 @@ export default function FormLogin(){
 
     async function handleRegister(data: RegisterFormData){
         await console.log(data);
+        await router.push('/home');
     }
 
     async function handleForgotpasswordClick(){

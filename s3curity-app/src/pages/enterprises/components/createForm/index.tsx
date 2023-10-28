@@ -39,10 +39,7 @@ export default function CreateForm() {
 
   return (
     <div>
-      <div className={styles.formHeader}>
-        <p>Cadastro/Edição</p>
-        <ArrowLeft className={styles.arrowLeft} />
-      </div>
+      
       <form onSubmit={handleSubmit(handleRegister)} className={styles.form}>
         <div className={styles.inputWithContents}>
           <input

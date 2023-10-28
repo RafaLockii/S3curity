@@ -96,7 +96,8 @@
   }
 
   .arrowLeft{
-    margin-left: auto;
+  cursor: pointer;
+  margin-left: auto;
   }
 
   .text{
