@@ -1,6 +1,6 @@
 import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
-import CreateUserForm from "./createUserForm";
+import CreateUserForm from "./components/createUserForm";
 import styles from './styles.module.css';
 
 
