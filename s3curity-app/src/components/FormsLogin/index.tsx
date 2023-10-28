@@ -4,10 +4,11 @@ import styles from './styles.module.css';
 import Image from 'next/image';
 import logo from '../../../public/images/logo.png';
 import { useRouter } from "next/router";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const registerFormShceme = z.object({
-    email: z.string(),
-    senha: z.string()
+    email: z.string().email({message: 'E-mail inválido'}),
+    senha: z.string().min(8, {message: 'A senha precisa ter ao menos 8 caracteres'}),
 })
 
 
@@ -17,7 +18,9 @@ export default function FormLogin(){
         register,
         handleSubmit, 
         formState:{ errors, isSubmitting}
-    } = useForm<RegisterFormData>();
+    } = useForm<RegisterFormData>({
+        resolver: zodResolver(registerFormShceme),
+    });
 
     const router = useRouter();
 
@@ -44,6 +47,8 @@ export default function FormLogin(){
                 <button className={styles.button} type="submit">
                     Entrar
                 </button>
+                {errors.email && <div className={styles.formAnnotation}>{errors.email.message}</div>}
+                {errors.senha && <div className={styles.formAnnotation}>{errors.senha.message}</div>}
             </form>
         </div>
     )
