@@ -2,6 +2,7 @@ import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
 import CreateUserForm from "./components/createUserForm";
 import styles from './styles.module.css';
+import UpdateForm from "./components/updateForm";
 
 
 export default function Users(){
@@ -9,7 +10,8 @@ export default function Users(){
         <div className={styles.pageContainer}>
             <SidebarMenu/>
             <div className={styles.createUserFormContainer}>
-                <CreateUserForm/>
+                {/* <CreateUserForm/> */}
+                <UpdateForm/>
             </div>
             <div className={styles.header}>
                 <Header/>
