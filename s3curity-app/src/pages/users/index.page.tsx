@@ -10,8 +10,8 @@ export default function Users(){
         <div className={styles.pageContainer}>
             <SidebarMenu/>
             <div className={styles.createUserFormContainer}>
-                <CreateUserForm/>
-                {/* <UpdateForm/> */}
+                {/* <CreateUserForm/> */}
+                <UpdateForm/>
             </div>
             <div className={styles.header}>
                 <Header/>
