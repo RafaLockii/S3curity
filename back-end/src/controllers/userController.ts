@@ -73,84 +73,108 @@ export const createUser = async (req: Request, res: Response) => {
     }
 };
 
-// export const editUser = async (req: Request, res: Response) => {
-//     try {
-//         const userId = parseInt(req.params.id);
-//         const {
-//             nome,
-//             senha,
-//             email,
-//             telefone,
-//             modulo_default,
-//             acesso_admin,
-//             cargo_id,
-//             empresa_id,
-//             imagem_perfil_url,
-//         } = req.body;
+export const editUser = async (req: Request, res: Response) => {
+    try {
+        const userId = parseInt(req.params.id);
+        const {
+            nome,
+            senha,
+            email,
+            telefone,
+            modulo_default,
+            acesso_admin,
+            cargo_id,
+            empresa_id,
+            imagem_perfil_url,
+        } = req.body;
 
-//         // Verifique se o usuário que você deseja editar existe
-//         const existingUser = await prisma.user.findUnique({
-//             where: {
-//                 id: userId,
-//             },
-//             include: {
-//                 funcionario: true,
-//             },
-//         });
+        const existingUser = await prisma.user.findUnique({
+            where: {
+                id: userId,
+            },
+            include: {
+                funcionario: true,
+            },
+        });
 
-//         if (!existingUser) {
-//             return res.status(404).json({ message: 'Usuário não encontrado.' });
-//         }
+        if (!existingUser) {
+            return res.status(404).json({ message: 'Usuário não encontrado.' });
+        }
 
-//         // Atualize as informações do usuário no banco de dados
-//         const updatedUser = await prisma.user.update({
-//             where: {
-//                 id: userId,
-//             },
-//             data: {
-//                 nome,
-//                 senha,
-//                 email,
-//                 telefone,
-//             },
-//         });
+        // Atualize as informações do usuário no banco de dados
+        const updatedUser = await prisma.user.update({
+            where: {
+                id: userId,
+            },
+            data: {
+                nome,
+                senha,
+                email,
+                telefone,
+            },
+        });
 
-//         // Atualize as informações do funcionário (caso exista)
-//         if (existingUser.funcionario) {
-//             const updatedFuncionario = await prisma.funcionario.update({
-//                 where: {
-//                     id: existingUser.funcionario.id,
-//                 },
-//                 data: {
-//                     modulo_default,
-//                     acesso_admin,
-//                     cargo: { connect: { cargo_id: cargo_id } },
-//                 },
-//             });
-//         }
+        const existingEmpresa = await prisma.empresa.findUnique({
+            where: {
+                id: empresa_id,
+            },
+        });
 
-//         // Atualize a imagem de perfil se uma nova URL for fornecida
-//         if (imagem_perfil_url) {
-//             if (existingUser.funcionario?.imagem_perfil_url) {
-//                 const updatedImagem = await prisma.imagem.update({
-//                     where: {
-//                         id: existingUser.funcionario.imagem_perfil_url.id,
-//                     },
-//                     data: {
-//                         url: imagem_perfil_url,
-//                     },
-//                 });
-//             }
-//         }
+        if (!existingEmpresa) {
+            return res.status(404).json({ message: 'Empresa não encontrado.' });
+        }
 
-//         res.status(200).json(updatedUser);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ message: 'Erro ao editar o usuário.' });
-//     } finally {
-//         await prisma.$disconnect();
-//     }
-// };
+        if (existingUser.funcionario) {
+            const updatedFuncionario = await prisma.funcionario.update({
+                where: {
+                    id: existingUser.funcionario.id,
+                },
+                data: {
+                    modulo_default,
+                    acesso_admin,
+                    empresa: {connect: {id: empresa_id}},
+                    cargo: { connect: { cargo_id: cargo_id } },
+                },
+            });
+        }
+
+        if (imagem_perfil_url) {
+            if (existingUser.funcionario?.imagem_perfil_id) {
+                const updatedImagem = await prisma.imagem.update({
+                    where: {
+                        id: existingUser.funcionario.imagem_perfil_id,
+                    },
+                    data: {
+                        url: imagem_perfil_url,
+                    },
+                });
+            }
+            else{
+                const createdImagem = await prisma.imagem.create({
+                    data: {
+                        url: imagem_perfil_url,
+                    },
+                });
+
+                const atualizarImagem = await prisma.funcionario.update({
+                    where:{
+                        id: existingUser.funcionario?.id,
+                    },
+                    data:{
+                        imagem_perfil_id: createdImagem.id
+                    }
+                })
+            }
+        }
+
+        res.status(200).json(updatedUser);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao editar o usuário.' });
+    } finally {
+        await prisma.$disconnect();
+    }
+};
 
 export const getUser = async (req: Request, res: Response) => {
     const userId = parseInt(req.params.id);
@@ -201,7 +225,6 @@ export const listUsers = async (req: Request, res: Response) => {
     }
 };
 
-// deletar também da imagem
 export const deleteUser = async (req: Request, res: Response) => {
     const userId = parseInt(req.params.id);
 
@@ -229,6 +252,10 @@ export const deleteUser = async (req: Request, res: Response) => {
 
         await prisma.funcionario.delete({
             where: { id: editingUser.funcionario.id },
+        });
+
+        await prisma.imagem.delete({
+            where: { id: editingUser.funcionario.imagem_perfil_id },
         });
 
         // if (editingUser.funcionario.empresa) {
