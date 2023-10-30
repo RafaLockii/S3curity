@@ -155,9 +155,9 @@ export default function CreateUserForm() {
           />
         </div>
         <button className={styles.createUserButton} onClick={(e) => {
-  e.preventDefault(); // Impede o comportamento padrão do botão
-  handleSubmit(handleRegister)(); // Chame a função de envio do formulário
-}}>
+          e.preventDefault(); // Impede o comportamento padrão do botão
+          handleSubmit(handleRegister)(); // Chame a função de envio do formulário
+        }}>
             Salvar
         </button>
         
