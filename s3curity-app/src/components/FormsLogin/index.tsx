@@ -11,9 +11,12 @@ const registerFormShceme = z.object({
     senha: z.string().min(8, {message: 'A senha precisa ter ao menos 8 caracteres'}),
 })
 
+interface FormLoginProps{
+    empresa: string;
+}
 
 type RegisterFormData = z.infer<typeof registerFormShceme>
-export default function FormLogin(){
+export default function FormLogin( {empresa}: FormLoginProps){
     const { 
         register,
         handleSubmit, 
@@ -26,7 +29,7 @@ export default function FormLogin(){
 
     async function handleRegister(data: RegisterFormData){
         await console.log(data);
-        await router.push('/home');
+        await router.push(`/home/${empresa}`);
     }
 
     async function handleForgotpasswordClick(){

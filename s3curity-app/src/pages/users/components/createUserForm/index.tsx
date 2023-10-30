@@ -58,7 +58,7 @@ export default function CreateUserForm() {
   }
   return (
     <div>
-      <form onSubmit={() => {handleSubmit(handleRegister); handleSaveButtonRouter}} className={styles.form}>
+      <form onSubmit={() => {handleSubmit(handleRegister)}} className={styles.form}>
         <div className={styles.inputWithContents}>
             <input
             className={styles.input}
