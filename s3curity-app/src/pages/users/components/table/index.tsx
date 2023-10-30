@@ -9,7 +9,21 @@ interface TableData {
   ativo: boolean;
 }
 
-export default function TableComponent({ data }: { data: TableData[] }) {
+export default function TableComponent({ data }: { data: TableData[] | { datas: TableData[] } }) {
+  let dataArray: TableData[];
+
+  // Verifique se data é um objeto com uma propriedade "datas"
+  if ('datas' in data) {
+    dataArray = data.datas;
+  } else {
+    dataArray = data as TableData[];
+  }
+
+  if (!Array.isArray(dataArray)) {
+    // Verifique se data não é uma matriz e, se não for, retorne uma mensagem de erro ou um componente alternativo.
+    return <div>Os dados não são uma matriz válida.</div>;
+  }
+
   return (
     <div className={styles.tableContainer}>
       <table className={styles.table}>
@@ -25,7 +39,7 @@ export default function TableComponent({ data }: { data: TableData[] }) {
           </tr>
         </thead>
         <tbody>
-          {data.map((item, index) => (
+          {dataArray.map((item, index) => (
             <tr key={index}>
               <td>{item.nome}</td>
               <td>{item.empresa}</td>
@@ -42,7 +56,7 @@ export default function TableComponent({ data }: { data: TableData[] }) {
                 <input type="checkbox" checked={item.ativo} disabled />
               </td>
               <td>
-                {/* Depois podemos suar um router para a pag de edição passando os dados daq como parametro */}
+                {/* Depois podemos usar um router para a página de edição passando os dados como parâmetro */}
                 <button className={styles.button}>Editar</button>
               </td>
             </tr>

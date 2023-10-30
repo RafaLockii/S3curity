@@ -6,6 +6,8 @@ import Image from "next/image";
 import { ArrowLeft, CloudArrowUp } from "phosphor-react";
 import Select from "react-select";
 import { useRouter } from "next/router";
+import { api } from "@/lib/axios";
+
 
 const registerFormShceme = z.object({
   nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
@@ -24,9 +26,14 @@ const registerFormShceme = z.object({
   admin: z.boolean(),
 });
 
+interface CreateUserformProps {
+  empresa: string;
+}
+
 type RegisterFormData = z.infer<typeof registerFormShceme>;
 
-export default function CreateUserForm() {
+export default function CreateUserForm(empresa: CreateUserformProps) {
+
   const {
     register,
     handleSubmit,
@@ -45,7 +52,20 @@ export default function CreateUserForm() {
   const router = useRouter();
 
   async function handleRegister(data: RegisterFormData) {
-    await console.log(data);
+    try{
+      await api.post('/users', {
+        nome: data.nome,
+        senha: data.senha,
+        email: data.email,
+        telefone: data.telefone,
+        modulo_default: data.modulo,
+        imgagem_perfil_url: data.img_url,
+        ativo: data.ativo,
+        acesso_admin: data.admin,
+      });
+    }catch(e){
+      console.log(e)
+    }
   }
 
   // Função de manipulação para o evento onChange do Select

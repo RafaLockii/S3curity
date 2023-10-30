@@ -3,33 +3,56 @@ import { Header } from "@/components/header";
 import CreateUserForm from "../components/createUserForm";
 import styles from './styles.module.css';
 import UpdateForm from "../components/updateForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft } from "phosphor-react";
 import TableComponent from "../components/table";
 import  useRouter from "next/router";
-
+import { api } from "@/lib/axios";
 
 export default function Users(){
     const [showCreateUserForm, setShowCreateUserForm] = useState(false);
     const [showUpdateForm, setShowUpdateForm] = useState(false);
+    const [userData, setUserData] = useState([]);
 
     const handleShowCreateUserForm = (show: boolean) => {
         setShowCreateUserForm(show);}
     const handleShowUpdateForm = (show: boolean) => {
         setShowUpdateForm(show);}
 
-        
+    // const userData = [
+    //     {
+    //         nome: 'João',
+    //         empresa: 'Empresa 1',
+    //         operacional: true,
+    //         estrategico: false,
+    //         gerencial: true,
+    //         ativo: true,
+    //     },
+    //     {
+    //         nome: 'Maria',
+    //         empresa: 'Empresa 2',
+    //         operacional: true,
+    //         estrategico: false,
+    //         gerencial: true,
+    //         ativo: true,
+    //     },
+    // ]
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await api.get('/users/getUser');
+                setUserData(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        }
     
-    const userData = [
-        {
-        nome: 'João',
-        empresa: 'Empresa',
-        operacional: true,
-        estrategico: false,
-        gerencial: true,
-        ativo: true,
-        },
-    ]
+        fetchData();
+    }, []);
+
+    console.log(userData);
+
+    //Resgatando data da URL
     const {query} = useRouter;
     const empresa = typeof query.empresa == 'string' ? query.empresa : "";
 
@@ -51,6 +74,7 @@ export default function Users(){
                         </button>
                     </div>
                 </div>
+
                 <TableComponent data={userData}/>
                 </>
 
@@ -61,7 +85,9 @@ export default function Users(){
                         <p>Cadastro/Edição</p>
                         <ArrowLeft className={styles.arrowLeft} onClick={ () =>handleShowCreateUserForm(false)} />
                     </div>
-                    <CreateUserForm/>
+
+                    {/* Aqui eu estou passando a epresa da url para o forms */}
+                    <CreateUserForm empresa={empresa}/>
                 </>)
                 }
                 {/* <UpdateForm/> */}
