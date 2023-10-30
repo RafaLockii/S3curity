@@ -2,11 +2,16 @@ import SidebarMenu from "@/components/SideBarMenu";
 import styles from './styles.module.css';
 import { Header } from "@/components/header";
 import CarouselComponent from "@/components/Carousel";
+import userRouter from 'next/router';
+
 export default function Home() {
+    
+const{query} = userRouter;
+const empresa = typeof query.empresa == 'string' ? query.empresa : "";
 
     return (
        <div className={styles.pageContainer}>
-            <SidebarMenu/>
+            <SidebarMenu empresa={empresa}/>
             <div className={styles.header}>
                 <Header/>
             </div>

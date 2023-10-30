@@ -3,13 +3,18 @@ import { Sidebar, Menu, MenuItem, SidebarProps, SubMenu} from 'react-pro-sidebar
 import { HouseSimple, Buildings, User, ListDashes, ArrowDown, ChartLineUp } from 'phosphor-react';
 import {useRouter} from 'next/router'
 
-export default function SidebarMenu(props: SidebarProps) {
+interface SidebarInfoProps{
+  empresa: string;
+}
+
+export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
 
     const router = useRouter();
     async function handleMenuClick (route: String) {
         router.push('/'+route);
     }
 
+    const {empresa} = props;
   return (
     <div className={styles.container}>
       <div>
@@ -41,8 +46,9 @@ export default function SidebarMenu(props: SidebarProps) {
                     Home
                   </MenuItem>
 
+                  {empresa == 'S3curity' && (
                   <MenuItem icon={<Buildings/>} onClick={() => handleMenuClick('enterprises')}>Empresas</MenuItem>
-
+                  )}
                   <MenuItem icon={<User/>} onClick={() => handleMenuClick('users')}>Usuários</MenuItem>
 
                   <SubMenu title="Menu" icon={<ListDashes/>} label='Menu'>
