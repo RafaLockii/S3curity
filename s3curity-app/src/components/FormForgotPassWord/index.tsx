@@ -20,13 +20,14 @@ export default function FormForgotPassWord(){
     } = useForm<RegisterFormData>();
 
     const router = useRouter();
+    const {back} = router;
 
     async function handleRegister(data: RegisterFormData){
         await console.log(data);
     }
 
     async function handleCloseButtonClick(){
-        await router.push('/login');
+        await back();
     }
     
 

@@ -53,12 +53,12 @@ export default function CreateUserForm() {
     setValue("modulo", selectedOption.value); // Atualiza o valor no registro
   };
 
-  async function handleSaveButtonRouter(){
-    await router.push('/users')
-  }
+  // async function handleSaveButtonRouter(){
+  //   await router.push('/users')
+  // }
   return (
     <div>
-      <form onSubmit={() => {handleSubmit(handleRegister)}} className={styles.form}>
+      <form  className={styles.form}>
         <div className={styles.inputWithContents}>
             <input
             className={styles.input}
@@ -154,11 +154,13 @@ export default function CreateUserForm() {
             className={styles.checkbox}
           />
         </div>
-        <button
-        className={styles.createUserButton}
-        type="submit">
-        Salvar
-      </button>
+        <button className={styles.createUserButton} onClick={(e) => {
+  e.preventDefault(); // Impede o comportamento padrão do botão
+  handleSubmit(handleRegister)(); // Chame a função de envio do formulário
+}}>
+            Salvar
+        </button>
+        
       </form>
       
     </div>

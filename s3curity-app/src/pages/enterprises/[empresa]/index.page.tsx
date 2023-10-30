@@ -1,10 +1,11 @@
 import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
 import styles from './styles.module.css';
-import CreateForm from "./components/createForm";
+import CreateForm from "../components/createForm";
 import { useState } from "react";
 import { ArrowLeft } from "phosphor-react";
-import TableComponent from "./components/table";
+import TableComponent from "../components/table";
+import useRouter from "next/router";
 
 export default function Enterprise(){
 
@@ -24,10 +25,14 @@ export default function Enterprise(){
         ativo: true,
     }]
 
+    const {query} = useRouter;
+    const empresa = typeof query.empresa == 'string' ? query.empresa : "";
+
+
 
     return(
         <div className={styles.pageContainer}>
-            <SidebarMenu/>
+            <SidebarMenu empresa={empresa}/>
             <div className={styles.createFormContainer}>
                 {!showCreateForm && !showUpdateForm && (
                     <>

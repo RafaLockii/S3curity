@@ -11,7 +11,7 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
 
     const router = useRouter();
     async function handleMenuClick (route: String) {
-        router.push('/'+route);
+        router.push('/'+route + '/' + props.empresa);
     }
 
     const {empresa} = props;

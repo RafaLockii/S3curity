@@ -1,11 +1,12 @@
 import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
-import CreateUserForm from "./components/createUserForm";
+import CreateUserForm from "../components/createUserForm";
 import styles from './styles.module.css';
-import UpdateForm from "./components/updateForm";
+import UpdateForm from "../components/updateForm";
 import { useState } from "react";
 import { ArrowLeft } from "phosphor-react";
-import TableComponent from "./components/table";
+import TableComponent from "../components/table";
+import  useRouter from "next/router";
 
 
 export default function Users(){
@@ -16,6 +17,8 @@ export default function Users(){
         setShowCreateUserForm(show);}
     const handleShowUpdateForm = (show: boolean) => {
         setShowUpdateForm(show);}
+
+        
     
     const userData = [
         {
@@ -27,11 +30,13 @@ export default function Users(){
         ativo: true,
         },
     ]
+    const {query} = useRouter;
+    const empresa = typeof query.empresa == 'string' ? query.empresa : "";
 
 
     return(
         <div className={styles.pageContainer}>
-            <SidebarMenu/>
+            <SidebarMenu empresa={empresa}/>
             <div className={styles.createUserFormContainer}>
                 {!showCreateUserForm && !showUpdateForm && (
                 <>
