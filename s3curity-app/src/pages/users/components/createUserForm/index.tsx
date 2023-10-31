@@ -7,8 +7,9 @@ import { ArrowLeft, CloudArrowUp } from "phosphor-react";
 import Select from "react-select";
 import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
+import { useEffect, useState } from "react";
 
-
+//Validação do formulário
 const registerFormShceme = z.object({
   nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
   senha: z.string().min(8, {message: 'A senha precisa ter ao menos 8 caracteres'}),
@@ -16,7 +17,7 @@ const registerFormShceme = z.object({
   telefone: z.string().refine((value) => {
     return /^\d+$/.test(value) && value.length >= 8;
   }, { message: 'Telefone inválido' }),
-  modulo: z.string(),
+  modulo: z.number(),
   img_url: z.string().refine((value) => {
     // Verifica se a img_url é uma URL válida (formato básico)
     const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
@@ -26,14 +27,29 @@ const registerFormShceme = z.object({
   admin: z.boolean(),
 });
 
+//Propriedades recebidas da rota
 interface CreateUserformProps {
   empresa: string;
+}
+
+//Interface de dados da empresa
+interface EmpresaData {
+  id: number;
+  nome: string;
+  cnpj: string;
+  logo: string;
+  data_alt: any;
+  data_criacao: string;
+  imagem_fundo: string;
+  usuario_criacao: string;
+  usuario_cad_alt: any;
 }
 
 type RegisterFormData = z.infer<typeof registerFormShceme>;
 
 export default function CreateUserForm(empresa: CreateUserformProps) {
 
+    // Propriedades do zod
   const {
     register,
     handleSubmit,
@@ -43,25 +59,64 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
     resolver: zodResolver(registerFormShceme),
   });
 
+  const [empresas, setEmpresas] = useState<EmpresaData[]>([]);
+  const [empresaId, setEmpresaId] = useState<number>();
+
+  async function getEmpresaData() {
+    try{
+      const response = await api.get('/empresas');
+      return response.data;
+    } catch(e){
+      console.error('Erro ao buscar empresas:', e);
+      return [];
+    }
+  }
+
+  const {query} = useRouter();
+  const empresaParams = query.empresa;
+  console.log("EMPRESA PARAMS: "+empresaParams);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await getEmpresaData();
+      setEmpresas(response);
+    }
+    fetchData();
+    empresas.map((empresa) => {
+      if(empresa.nome === empresaParams){
+        setEmpresaId(empresa.id);
+      }
+    })
+  }, []);
+  
+  console.log("ID DA EMPRESA"+empresaId);
+
+  //Opções do select
   const options = [
-    { value: "operacional", label: "Operacional" },
-    { value: "gerencial", label: "Gerencial" },
-    { value: "estratégico", label: "Estratégico" },
+    { value: 1, label: "Operacional" },
+    { value: 2, label: "Gerencial" },
+    { value: 3, label: "Estratégico" },
   ];
 
   const router = useRouter();
 
   async function handleRegister(data: RegisterFormData) {
     try{
-      await api.post('/users', {
+      await api.post('user/create', {
         nome: data.nome,
         senha: data.senha,
         email: data.email,
         telefone: data.telefone,
-        modulo_default: data.modulo,
-        imgagem_perfil_url: data.img_url,
-        ativo: data.ativo,
+        //Valores estáticos que precisam ser mudados
+        data_criacao: "2023-10-27T12:00:00",
+        usuario_criacao: "Criador",
+        modulo_default: "default",
+        //Fim dos valores estáticos
         acesso_admin: data.admin,
+        cargo_id: data.modulo,
+        empresa_id: empresaId,
+        imagem_perfil_url: data.img_url,
+        // FALTA IMPLEMENTAR NO BACKEND A OPPÇÃO DE CRIAR COMO ATIVO OU INATIVO ativo: data.ativo,
       });
     }catch(e){
       console.log(e)
