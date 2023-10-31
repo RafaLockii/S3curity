@@ -23,6 +23,19 @@ interface UserData {
     }
   }
 
+  interface EmpresaData {
+    id: number;
+    nome: string;
+    cnpj: string;
+    logo: string;
+    data_alt: any;
+    data_criacao: string;
+    imagem_fundo: string;
+    usuario_criacao: string;
+    usuario_cad_alt: any;
+  }
+  
+
 export default function editUsers(){
     
     const [userData, setUserData] = useState<UserData>();
@@ -66,9 +79,7 @@ export default function editUsers(){
         fetchData();
     }, []);
 
-    console.log(userData);
-
-    
+    console.log(userData);  
 
 
     return(

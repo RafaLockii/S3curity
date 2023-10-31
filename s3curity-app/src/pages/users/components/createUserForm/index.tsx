@@ -30,6 +30,7 @@ const registerFormShceme = z.object({
 //Propriedades recebidas da rota
 interface CreateUserformProps {
   empresa: string;
+  empresaid: number;
 }
 
 //Interface de dados da empresa
@@ -59,38 +60,9 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
     resolver: zodResolver(registerFormShceme),
   });
 
-  const [empresas, setEmpresas] = useState<EmpresaData[]>([]);
-  const [empresaId, setEmpresaId] = useState<number>();
+  console.log("Id da Empresa: " + empresa.empresaid)
 
-  async function getEmpresaData() {
-    try{
-      const response = await api.get('/empresas');
-      return response.data;
-    } catch(e){
-      console.error('Erro ao buscar empresas:', e);
-      return [];
-    }
-  }
-
-  const {query} = useRouter();
-  const empresaParams = query.empresa;
-  console.log("EMPRESA PARAMS: "+empresaParams);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await getEmpresaData();
-      setEmpresas(response);
-    }
-    fetchData();
-    empresas.map((empresa) => {
-      if(empresa.nome === empresaParams){
-        setEmpresaId(empresa.id);
-      }
-    })
-  }, []);
   
-  console.log("ID DA EMPRESA"+empresaId);
-
   //Opções do select
   const options = [
     { value: 1, label: "Operacional" },
@@ -98,7 +70,7 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
     { value: 3, label: "Estratégico" },
   ];
 
-  const router = useRouter();
+  const {back} = useRouter();
 
   async function handleRegister(data: RegisterFormData) {
     try{
@@ -114,10 +86,11 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
         //Fim dos valores estáticos
         acesso_admin: data.admin,
         cargo_id: data.modulo,
-        empresa_id: empresaId,
+        empresa_id: empresa.empresaid,
         imagem_perfil_url: data.img_url,
         // FALTA IMPLEMENTAR NO BACKEND A OPPÇÃO DE CRIAR COMO ATIVO OU INATIVO ativo: data.ativo,
       });
+      await back();
     }catch(e){
       console.log(e)
     }
@@ -128,9 +101,7 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
     setValue("modulo", selectedOption.value); // Atualiza o valor no registro
   };
 
-  // async function handleSaveButtonRouter(){
-  //   await router.push('/users')
-  // }
+
   return (
     <div>
       <form  className={styles.form}>

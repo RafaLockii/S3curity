@@ -9,26 +9,53 @@ import TableComponent from "../components/table";
 import  useRouter from "next/router";
 import { api } from "@/lib/axios";
 
+//Interface de dados da empresa
+interface EmpresaData {
+    id: number;
+    nome: string;
+    cnpj: string;
+    logo: string;
+    data_alt: any;
+    data_criacao: string;
+    imagem_fundo: string;
+    usuario_criacao: string;
+    usuario_cad_alt: any;
+  }
+  
+
 export default function Users(){
     
     const [showCreateUserForm, setShowCreateUserForm] = useState(false);
     const [showUpdateForm, setShowUpdateForm] = useState(false);
     const [userData, setUserData] = useState([]);
+    const [empresas, setEmpresas] = useState<EmpresaData[]>([]);
+    const [empresaid, setEmpresaId] = useState<number>();
 
     const handleShowCreateUserForm = (show: boolean) => {
         setShowCreateUserForm(show);}
     const handleShowUpdateForm = (show: boolean) => {
         setShowUpdateForm(show);}
 
-        //Resgatando data da URL
+    //Resgatando data da URL
     const {query} = useRouter;
-    const empresa = typeof query.empresa == 'string' ? query.empresa : "";
+    const empresaParams = typeof query.empresa == 'string' ? query.empresa : "";
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await api.get('/users/all');
                 setUserData(response.data);
+
+                const response2 = await api.get('/empresas');
+                setEmpresas(response2.data);
+
+                empresas.map((empresa) =>{
+                    if(empresa.nome === empresaParams){
+                        console.log("Id da empresa"+empresa.id)
+                        setEmpresaId(empresa.id);
+                    }
+                })
+
             } catch (error) {
                 console.error(error);
             }
@@ -36,15 +63,12 @@ export default function Users(){
     
         fetchData();
     }, []);
-
-    //console.log(userData);
-
     
 
-
+    console.log("Id da empresa"+empresaid)
     return(
         <div className={styles.pageContainer}>
-            <SidebarMenu empresa={empresa}/>
+            <SidebarMenu empresa={empresaParams}/>
             <div className={styles.createUserFormContainer}>
                 {!showCreateUserForm && !showUpdateForm && (
                 <>
@@ -60,7 +84,7 @@ export default function Users(){
                     </div>
                 </div>
 
-                <TableComponent data={userData} empresa={empresa}/>
+                <TableComponent data={userData} empresa={empresaParams}/>
                 </>
 
                 )}
@@ -72,7 +96,10 @@ export default function Users(){
                     </div>
 
                     {/* Aqui eu estou passando a epresa da url para o forms */}
-                    <CreateUserForm empresa={empresa}/>
+                    {empresaid && <CreateUserForm empresa={empresaParams} empresaid={empresaid}/>}
+                    {empresaid == undefined && (
+                        <div>Carregando...</div>
+                    )}
                 </>)
                 }
                 {/* <UpdateForm/> */}

@@ -5,7 +5,7 @@ import { ArrowLeft, CloudArrowUp } from "phosphor-react";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 interface updateFormProps {
   id: number;
@@ -21,6 +21,19 @@ interface updateFormProps {
     cargo: { nome_cargo: string; permissoes: string };
     empresa: { nome: string };
   }
+}
+
+//Interface de dados da empresa
+interface EmpresaData {
+  id: number;
+  nome: string;
+  cnpj: string;
+  logo: string;
+  data_alt: any;
+  data_criacao: string;
+  imagem_fundo: string;
+  usuario_criacao: string;
+  usuario_cad_alt: any;
 }
 
 const registerFormShceme = z.object({
@@ -51,8 +64,10 @@ export default function UpdateForm(props: updateFormProps) {
 
   const {back} = useRouter();
 
-    console.log("ID DO UPDATE: "+props.id)
 
+    
+
+  //Bloco que popula na api
   async function handleRegister(data: RegisterFormData) {
     await api.put(`user/edit/${props.id}`, {
       "nome": data.nome,
@@ -66,6 +81,7 @@ export default function UpdateForm(props: updateFormProps) {
 
     back();
   }
+  //fim do bloco
 
   //Função utilizada para já deixar os dados do usuário preenchidos no formulário
   useEffect(() => {
