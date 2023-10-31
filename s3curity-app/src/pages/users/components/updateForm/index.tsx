@@ -7,6 +7,14 @@ import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import Select from "react-select";
 import { useRouter } from "next/router";
 
+interface updateFormProps {
+  nome: string;
+  senha: string;
+  email: string;
+  telefone: string;
+  img_url: string;
+}
+
 const registerFormShceme = z.object({
   nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
   senha: z.string().min(8, {message: 'A senha precisa ter ao menos 8 caracteres'}),
@@ -23,7 +31,7 @@ const registerFormShceme = z.object({
 
 type RegisterFormData = z.infer<typeof registerFormShceme>;
 
-export default function UpdateForm() {
+export default function UpdateForm(props: updateFormProps) {
   const {
     register,
     handleSubmit,

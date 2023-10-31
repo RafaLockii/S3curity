@@ -10,6 +10,7 @@ import  useRouter from "next/router";
 import { api } from "@/lib/axios";
 
 export default function Users(){
+    
     const [showCreateUserForm, setShowCreateUserForm] = useState(false);
     const [showUpdateForm, setShowUpdateForm] = useState(false);
     const [userData, setUserData] = useState([]);
@@ -19,28 +20,14 @@ export default function Users(){
     const handleShowUpdateForm = (show: boolean) => {
         setShowUpdateForm(show);}
 
-    // const userData = [
-    //     {
-    //         nome: 'João',
-    //         empresa: 'Empresa 1',
-    //         operacional: true,
-    //         estrategico: false,
-    //         gerencial: true,
-    //         ativo: true,
-    //     },
-    //     {
-    //         nome: 'Maria',
-    //         empresa: 'Empresa 2',
-    //         operacional: true,
-    //         estrategico: false,
-    //         gerencial: true,
-    //         ativo: true,
-    //     },
-    // ]
+        //Resgatando data da URL
+    const {query} = useRouter;
+    const empresa = typeof query.empresa == 'string' ? query.empresa : "";
+
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await api.get('/users/getUser');
+                const response = await api.get('/users/all');
                 setUserData(response.data);
             } catch (error) {
                 console.error(error);
@@ -50,11 +37,9 @@ export default function Users(){
         fetchData();
     }, []);
 
-    console.log(userData);
+    //console.log(userData);
 
-    //Resgatando data da URL
-    const {query} = useRouter;
-    const empresa = typeof query.empresa == 'string' ? query.empresa : "";
+    
 
 
     return(

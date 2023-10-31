@@ -1,17 +1,24 @@
 import styles from './styles.module.css';
 
 interface TableData {
+  id: number;
   nome: string;
-  empresa: string;
-  operacional: boolean;
-  estrategico: boolean;
-  gerencial: boolean;
+  email: string;
+  telefone: string;
+  acesso_admin: boolean;
   ativo: boolean;
+  funcionario: {
+    acesso_admin: boolean;
+    ativo: boolean;
+    imagem: { url: string };
+    cargo: { nome_cargo: string; permissoes: string };
+    empresa: { nome: string };
+  }
 }
 
 export default function TableComponent({ data }: { data: TableData[] | { datas: TableData[] } }) {
   let dataArray: TableData[];
-
+  console.log(data);
   // Verifique se data é um objeto com uma propriedade "datas"
   if ('datas' in data) {
     dataArray = data.datas;
@@ -42,18 +49,18 @@ export default function TableComponent({ data }: { data: TableData[] | { datas: 
           {dataArray.map((item, index) => (
             <tr key={index}>
               <td>{item.nome}</td>
-              <td>{item.empresa}</td>
+              <td>{item.funcionario.empresa.nome}</td>
               <td>
-                <input type="checkbox" checked={item.operacional} disabled />
+                <input type="checkbox" checked={item.funcionario.cargo.nome_cargo == "Operacional"} disabled />
               </td>
               <td>
-                <input type="checkbox" checked={item.estrategico} disabled />
+                <input type="checkbox" checked={item.funcionario.cargo.nome_cargo == "Estratégico"} disabled />
               </td>
               <td>
-                <input type="checkbox" checked={item.gerencial} disabled />
+                <input type="checkbox" checked={item.funcionario.cargo.nome_cargo == "Gerencial"} disabled />
               </td>
               <td>
-                <input type="checkbox" checked={item.ativo} disabled />
+                <input type="checkbox" checked={item.funcionario.ativo} disabled />
               </td>
               <td>
                 {/* Depois podemos usar um router para a página de edição passando os dados como parâmetro */}
