@@ -60,7 +60,7 @@ export default function Users(){
                     </div>
                 </div>
 
-                <TableComponent data={userData}/>
+                <TableComponent data={userData} empresa={empresa}/>
                 </>
 
                 )}

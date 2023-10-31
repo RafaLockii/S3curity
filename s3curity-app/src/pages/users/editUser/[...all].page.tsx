@@ -30,12 +30,32 @@ export default function editUsers(){
 
         //Resgatando data da URL
     const {query, back} = useRouter;
-    const id = query.id;
+
+    let data: string[] = [];
+
+    if (typeof query.all === 'string') {
+        // Se query.all for uma string, converta-a em um array
+        data.push(query.all);
+      } else if (Array.isArray(query.all)) {
+        // Se query.all for um array, use-o diretamente
+        data = query.all;
+      }
+      
+      if (data.length > 0) {
+        // A variável data contém pelo menos um valor
+        const id = data[0];
+        const empresa = data[1] || '';
+        console.log("id recebido: " + id);
+        console.log("empresa recebida: " + empresa);
+      } else {
+        // A variável data está vazia
+        console.log('Nenhum parâmetro encontrado na URL');
+      }
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await api.get(`user/${id}`);
+                const response = await api.get(`user/${data[0]}`);
                 setUserData(response.data);
                 console.log(response.data);
             } catch (error) {
@@ -53,7 +73,7 @@ export default function editUsers(){
 
     return(
         <div className={styles.pageContainer}>
-            <SidebarMenu empresa={""}/>
+            <SidebarMenu empresa={data[1]}/>
             {userData ? ( // Verifique se userData está definido
                 <div className={styles.createUserFormContainer}>
                     {/* <div className={styles.formHeader}>

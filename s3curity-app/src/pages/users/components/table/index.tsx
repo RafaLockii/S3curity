@@ -17,7 +17,12 @@ interface TableData {
   }
 }
 
-export default function TableComponent({ data }: { data: TableData[] | { datas: TableData[] } }) {
+interface TableComponentProps {
+  data: TableData[] | { datas: TableData[] };
+  empresa: string;
+}
+
+export default function TableComponent({ data, empresa }: TableComponentProps) {
   let dataArray: TableData[];
   console.log(data);
   // Verifique se data é um objeto com uma propriedade "datas"
@@ -70,7 +75,7 @@ export default function TableComponent({ data }: { data: TableData[] | { datas: 
               </td>
               <td>
                 {/* Depois podemos usar um router para a página de edição passando os dados como parâmetro */}
-                <button className={styles.button} onClick={() => { router.push(`editUser/${item.id}`)}}>Editar</button>
+                <button className={styles.button} onClick={() => { router.push(`editUser/${item.id}/${empresa}`)}}>Editar</button>
               </td>
             </tr>
           ))}
