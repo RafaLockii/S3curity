@@ -76,15 +76,6 @@ export default function editUsers(){
             <SidebarMenu empresa={data[1]}/>
             {userData ? ( // Verifique se userData está definido
                 <div className={styles.createUserFormContainer}>
-                    {/* <div className={styles.formHeader}>
-                        Usuário
-                        <div className={styles.headerButtonContainer}>
-                            <button className={styles.headerButton}>
-                                Copiar
-                            </button>
-                        </div>
-                    </div> */}
-
                     <div className={styles.formHeader}>
                         <p>Edição</p>
                         <ArrowLeft className={styles.arrowLeft} onClick={() => back()} />

@@ -1,11 +1,10 @@
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import styles from "./styles.module.css";
-import Image from "next/image";
 import { ArrowLeft, CloudArrowUp } from "phosphor-react";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
-import Select from "react-select";
 import { useRouter } from "next/router";
+import { api } from "@/lib/axios";
 
 interface updateFormProps {
   id: number;
@@ -30,8 +29,8 @@ const registerFormShceme = z.object({
   telefone: z.string().refine((value) => {
     return /^\d+$/.test(value) && value.length >= 8;
   }, { message: 'Telefone inválido' }),
-  img_url: z.string().min(1, {message: 'Preencha o campo'}).refine((value) => {
-    // Verifica se a img_url é uma URL válida (formato básico)
+  imagem_perfil_url: z.string().min(1, {message: 'Preencha o campo'}).refine((value) => {
+    // Verifica se a imagem_perfil_url é uma URL válida (formato básico)
     const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
     return urlPattern.test(value);
   }, { message: 'URL da imagem inválida' }),
@@ -49,10 +48,21 @@ export default function UpdateForm(props: updateFormProps) {
     resolver: zodResolver(registerFormShceme),
   });
 
+  const {back} = useRouter();
+
+    console.log("ID DO UPDATE: "+props.id)
 
   async function handleRegister(data: RegisterFormData) {
-    console.log(data);
+    await api.put(`user/edit/${props.id}`, {
+      "nome": data.nome,
+      "email": data.email,
+      "telefone": data.telefone,
+      "imagem_perfil_url": data.imagem_perfil_url,
+      "cargo_id": 1,
+      "empresa_id": 1,
+    });
   }
+
 
   return (
     <div>
@@ -115,15 +125,15 @@ export default function UpdateForm(props: updateFormProps) {
         <div className={styles.inputWithContents}>
           <input
             type="text"
-            id="img_url"
+            id="imagem_perfil_url"
             placeholder={props.funcionario.imagem.url}
-            {...register("img_url")}
+            {...register("imagem_perfil_url")}
             className={styles.input}
           />
             <CloudArrowUp />
-            {errors.img_url &&(
+            {errors.imagem_perfil_url &&(
                 <div className={styles.formAnnotation}>
-                    {errors.img_url.message}
+                    {errors.imagem_perfil_url.message}
                 </div>
             )}
         </div>
