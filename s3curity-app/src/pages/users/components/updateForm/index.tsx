@@ -5,6 +5,7 @@ import { ArrowLeft, CloudArrowUp } from "phosphor-react";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
+import { useEffect } from "react";
 
 interface updateFormProps {
   id: number;
@@ -58,11 +59,21 @@ export default function UpdateForm(props: updateFormProps) {
       "email": data.email,
       "telefone": data.telefone,
       "imagem_perfil_url": data.imagem_perfil_url,
+      // cargo id e empresasão obrigatorios(  PRECISA IMPLPEMENTAR MANEIRA DE PEGAR ELES )
       "cargo_id": 1,
       "empresa_id": 1,
     });
+
+    back();
   }
 
+  //Função utilizada para já deixar os dados do usuário preenchidos no formulário
+  useEffect(() => {
+    setValue('nome', props.nome);
+    setValue('email', props.email);
+    setValue('telefone', props.telefone);
+    setValue('imagem_perfil_url', props.funcionario.imagem.url);
+  }, [props]); 
 
   return (
     <div>
