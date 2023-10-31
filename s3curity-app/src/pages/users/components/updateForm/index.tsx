@@ -8,16 +8,24 @@ import Select from "react-select";
 import { useRouter } from "next/router";
 
 interface updateFormProps {
+  id: number;
   nome: string;
-  senha: string;
   email: string;
   telefone: string;
-  img_url: string;
+  acesso_admin: boolean;
+  ativo: boolean;
+  funcionario: {
+    acesso_admin: boolean;
+    ativo: boolean;
+    imagem: { url: string };
+    cargo: { nome_cargo: string; permissoes: string };
+    empresa: { nome: string };
+  }
 }
 
 const registerFormShceme = z.object({
   nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
-  senha: z.string().min(8, {message: 'A senha precisa ter ao menos 8 caracteres'}),
+  // senha: z.string().min(8, {message: 'A senha precisa ter ao menos 8 caracteres'}),
   email: z.string().email({message: 'Formato de e-mail invalido'}),
   telefone: z.string().refine((value) => {
     return /^\d+$/.test(value) && value.length >= 8;
@@ -41,7 +49,6 @@ export default function UpdateForm(props: updateFormProps) {
     resolver: zodResolver(registerFormShceme),
   });
 
-  const router = useRouter();
 
   async function handleRegister(data: RegisterFormData) {
     console.log(data);
@@ -49,16 +56,12 @@ export default function UpdateForm(props: updateFormProps) {
 
   return (
     <div>
-      <div className={styles.formHeader}>
-        <p>Edição</p>
-        <ArrowLeft className={styles.arrowLeft} />
-      </div>
 
       <form onSubmit={handleSubmit(handleRegister)} className={styles.form}>
         <div className={styles.inputWithContents}>
             <input
             className={styles.input}
-            placeholder="Nome"
+            placeholder={props.nome}
             {...register("nome")}
             ></input>
             {errors.nome &&(
@@ -67,7 +70,7 @@ export default function UpdateForm(props: updateFormProps) {
                 </div>
             )}
         </div>
-        <div className={styles.inputWithContents}>
+        {/* <div className={styles.inputWithContents}>
             <input
             type="senha"
             id="senha"
@@ -80,12 +83,12 @@ export default function UpdateForm(props: updateFormProps) {
                     {errors.senha.message}
                 </div>
             )}
-        </div>
+        </div> */}
         <div className={styles.inputWithContents}>
             <input
             type="email"
             id="email"
-            placeholder="email"
+            placeholder={props.email}
             {...register("email")}
             className={styles.input}
             />
@@ -99,7 +102,7 @@ export default function UpdateForm(props: updateFormProps) {
             <input
             type="number"
             id="telefone"
-            placeholder="Telefone"
+            placeholder={props.telefone}
             {...register("telefone")}
             className={styles.input}
             />
@@ -113,7 +116,7 @@ export default function UpdateForm(props: updateFormProps) {
           <input
             type="text"
             id="img_url"
-            placeholder="Imagem de fundo"
+            placeholder={props.funcionario.imagem.url}
             {...register("img_url")}
             className={styles.input}
           />

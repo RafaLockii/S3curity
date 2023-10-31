@@ -1,4 +1,5 @@
 import styles from './styles.module.css';
+import  useRouter  from 'next/router';
 
 interface TableData {
   id: number;
@@ -29,6 +30,11 @@ export default function TableComponent({ data }: { data: TableData[] | { datas: 
   if (!Array.isArray(dataArray)) {
     // Verifique se data não é uma matriz e, se não for, retorne uma mensagem de erro ou um componente alternativo.
     return <div>Os dados não são uma matriz válida.</div>;
+  }
+
+  const router = useRouter;
+  function handleEditUser() {
+    router.push('/user/editUser');
   }
 
   return (
@@ -64,7 +70,7 @@ export default function TableComponent({ data }: { data: TableData[] | { datas: 
               </td>
               <td>
                 {/* Depois podemos usar um router para a página de edição passando os dados como parâmetro */}
-                <button className={styles.button}>Editar</button>
+                <button className={styles.button} onClick={() => { router.push(`editUser/${item.id}`)}}>Editar</button>
               </td>
             </tr>
           ))}
