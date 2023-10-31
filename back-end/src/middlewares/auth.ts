@@ -2,10 +2,11 @@ import { PrismaClient } from '@prisma/client';
 import jwt from 'jsonwebtoken';
 import { randomBytes } from 'crypto';
 const prisma = new PrismaClient();
+import { Request, Response } from 'express';
 
 const chaveSecreta = randomBytes(256).toString('hex');
 
-export const autenticarToken = (req, res, next) => {
+export const autenticarToken = (req:any, res:any, next:any) => {
     const token = req.headers['authorization'];
 
     if (!token) {
@@ -13,20 +14,20 @@ export const autenticarToken = (req, res, next) => {
         return res.status(401).json({ mensagem: 'Token não fornecido.' });
     }
 
-    jwt.verify(token, chaveSecreta, (erro, dadosDecodificados) => {
+    jwt.verify(token, chaveSecreta, (erro:any, dadosDecodificados:any) => {
         if (erro) {
             console.log('Token inválido:', erro);
             return res.status(403).json({ mensagem: 'Token inválido.' });
         }
 
-        console.log('Dados do usuário decodificados:', dadosDecodificados);
+        //console.log('Dados do usuário decodificados:', dadosDecodificados);
 
         req.usuario = dadosDecodificados;
         next();
     });
 };
 
-export const login = async (req, res) => {
+export const login = async (req: Request, res: Response) => {
     const { nome, senha } = req.body;
 
     const user = await prisma.user.findFirst({

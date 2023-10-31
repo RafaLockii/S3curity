@@ -1,9 +1,10 @@
 import express from 'express';
 import * as EmpresaController from '../controllers/empresaController';
+import { autenticarToken } from '../middlewares/auth';
 
 const empresaRouter = express.Router();
 
-empresaRouter.get('/empresas', EmpresaController.listEmpresas);
+empresaRouter.get('/empresas', autenticarToken, EmpresaController.listEmpresas);
 empresaRouter.get('/empresa/:id', EmpresaController.getEmpresa);
 empresaRouter.post('/empresa/create', EmpresaController.createEmpresa);
 empresaRouter.put('/empresa/edit/:id', EmpresaController.editEmpresa);
