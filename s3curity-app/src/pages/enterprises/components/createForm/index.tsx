@@ -4,6 +4,7 @@ import styles from "./styles.module.css";
 import { ArrowLeft, CloudArrowUp } from "phosphor-react";
 import { useRouter } from "next/router";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
+import { api } from "@/lib/axios";
 
 const registerFormShceme = z.object({
   nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
@@ -31,16 +32,31 @@ export default function CreateForm() {
     resolver: zodResolver(registerFormShceme),
   });
 
-  const router = useRouter();
+  const {back} = useRouter();
 
   async function handleRegister(data: RegisterFormData) {
-    console.log(data);
+    try{
+      await api.post('empresa/create',{
+        id: Math.floor(Math.random() * (100 - 1) + 1),
+        nome: data.nome,
+        razao_s: data.razao_social,
+        logo: data.logo,
+        data_alt: null,
+        imagem_fundo: data.background_img,
+        usuario_criacao: data.usuario_criacao,
+        data_criacao: "2023-10-28T00:00:00.000Z",
+        usuario_cad_alt: null,
+      })
+      await back();
+    }catch(e){
+      console.log(e)
+    }
   }
 
   return (
     <div>
       
-      <form onSubmit={handleSubmit(handleRegister)} className={styles.form}>
+      <form className={styles.form}>
         <div className={styles.inputWithContents}>
           <input
             className={styles.input}
@@ -133,6 +149,10 @@ export default function CreateForm() {
         <button
         className={styles.createUserButton}
         type="submit"
+        onClick={(e)=>{
+          e.preventDefault();
+          handleSubmit(handleRegister)();
+        }}
       >
         Salvar
       </button>

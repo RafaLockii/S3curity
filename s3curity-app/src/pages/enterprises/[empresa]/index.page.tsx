@@ -2,15 +2,19 @@ import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
 import styles from './styles.module.css';
 import CreateForm from "../components/createForm";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ArrowLeft } from "phosphor-react";
 import TableComponent from "../components/table";
 import useRouter from "next/router";
+import { api } from "@/lib/axios";
 
 export default function Enterprise(){
 
     const[showCreateForm, setShowCreateForm] = useState(false);
     const[showUpdateForm, setShowUpdateForm] = useState(false);
+    const[empresaData, setEmpresaData] = useState([]);
+    const {query} = useRouter;
+    const empresa = typeof query.empresa == 'string' ? query.empresa : "";
 
     const handleShowCreateForm = (show: boolean) => {
         setShowCreateForm(show);}
@@ -25,8 +29,20 @@ export default function Enterprise(){
         ativo: true,
     }]
 
-    const {query} = useRouter;
-    const empresa = typeof query.empresa == 'string' ? query.empresa : "";
+   useEffect(() =>{
+    const fetchData = async () =>{
+        try{
+            const response = await api.get('empresas')
+            setEmpresaData(response.data);
+        } catch(e){
+            console.error(e)
+        }
+    }
+
+    fetchData();
+   }, [])
+
+
 
 
 
@@ -47,7 +63,7 @@ export default function Enterprise(){
                             </button>
                         </div>
                     </div>
-                    <TableComponent data={data}/>
+                    <TableComponent data={empresaData} empresa={empresa}/>
                     </>
                 ) }
                 {showCreateForm && (

@@ -33,19 +33,6 @@ interface CreateUserformProps {
   empresaid: number;
 }
 
-//Interface de dados da empresa
-interface EmpresaData {
-  id: number;
-  nome: string;
-  cnpj: string;
-  logo: string;
-  data_alt: any;
-  data_criacao: string;
-  imagem_fundo: string;
-  usuario_criacao: string;
-  usuario_cad_alt: any;
-}
-
 type RegisterFormData = z.infer<typeof registerFormShceme>;
 
 export default function CreateUserForm(empresa: CreateUserformProps) {

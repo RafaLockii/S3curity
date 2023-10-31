@@ -43,10 +43,10 @@ export default function Users(){
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await api.get('/users/all');
+                const response = await api.get('users/all');
                 setUserData(response.data);
 
-                const response2 = await api.get('/empresas');
+                const response2 = await api.get('empresas');
                 setEmpresas(response2.data);
 
                 empresas.map((empresa) =>{
