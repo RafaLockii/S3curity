@@ -62,6 +62,8 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
     resolver: zodResolver(registerFormShceme),
   });
 
+ const showEmpresaSelect = empresa.empresa === 's3curity';
+
   console.log("Id da Empresa: " + empresa.empresaid)
 
   
@@ -79,9 +81,16 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
   }));
 
   console.log(empresaOptions)
+  console.log("EMPRESA DO PARAMETRO"+ empresa.empresaid)
 
   const {back} = useRouter();
 
+  useEffect(() => {
+    if (!showEmpresaSelect) {
+      setValue('empresa_id', empresa.empresaid);
+    }
+  }, [showEmpresaSelect, empresa.empresaid]);
+  
   async function handleRegister(data: RegisterFormData) {
     console.log("entrou aq")
     try{
@@ -180,13 +189,15 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
           onChange={handleSelectChange}
           placeholder="Modulo Default"
         />
-        <Select
+        {showEmpresaSelect && (
+          <Select
           options={empresaOptions}
           className={styles.input}
           // Adicione o evento onChange
           onChange={handleSelectChangeEmpresa}
           placeholder="Empresa do usuário"
         />
+        )}
         <div className={styles.inputWithContents}>
             <input
             type="text"
