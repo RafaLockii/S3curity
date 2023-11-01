@@ -2,6 +2,7 @@ import styles from './styles.module.css';
 import { Sidebar, Menu, MenuItem, SidebarProps, SubMenu} from 'react-pro-sidebar';
 import { HouseSimple, Buildings, User, ListDashes, ArrowDown, ChartLineUp } from 'phosphor-react';
 import {useRouter} from 'next/router'
+import { useUserContext } from '@/context/UserContext';
 
 interface SidebarInfoProps{
   empresa: string;
@@ -13,8 +14,9 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
     async function handleMenuClick (route: String) {
         router.push('/'+route + '/' + props.empresa);
     }
-
     const {empresa} = props;
+    const {user} = useUserContext();
+
   return (
     <div className={styles.container}>
       <div>
@@ -34,10 +36,10 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                         <div className={styles.userImage}></div>
                         <div className={styles.userInfo}>
                             <div className={styles.userName}>
-                                Nome
+                                {user?.nome}
                             </div>
                             <p className={styles.userEmail}>
-                                email@email.com
+                                {user?.email}
                             </p>
                         </div>
                         <ArrowDown className={styles.arrowDown}/>

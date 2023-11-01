@@ -5,6 +5,7 @@ import { ArrowLeft, CloudArrowUp } from "phosphor-react";
 import { useRouter } from "next/router";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { api } from "@/lib/axios";
+import { useUserContext } from "@/context/UserContext";
 
 const registerFormShceme = z.object({
   nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s0-9]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
@@ -32,6 +33,8 @@ export default function CreateForm() {
     resolver: zodResolver(registerFormShceme),
   });
 
+  const{user} = useUserContext();
+
   const {back} = useRouter();
 
   async function handleRegister(data: RegisterFormData) {
@@ -43,7 +46,7 @@ export default function CreateForm() {
         logo: data.logo,
         // data_alt: null,
         imagem_fundo: data.background_img,
-        usuario_criacao: "usuário criador",
+        usuario_criacao: user?.email || "Não definido",
         // data_criacao: "2023-10-28T00:00:00.000Z",
         // usuario_cad_alt: null,
       })

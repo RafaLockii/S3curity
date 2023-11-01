@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
+import { useUserContext } from "@/context/UserContext";
 
 //Interface de dados da empresa
 interface EmpresaData {
@@ -43,6 +44,7 @@ export default function UpdateForm(props: EmpresaData) {
   });
 
   const {back} = useRouter();
+ const {user} = useUserContext();
 
 
     
@@ -54,7 +56,7 @@ export default function UpdateForm(props: EmpresaData) {
       "razao_s": data.razao_s,
       "logo": data.logo,
       "imagem_fundo": data.imagem_fundo,
-      "usuario_cad_alt": "usuario_cad_alt",
+      "usuario_cad_alt": user?.email || "Não definido",
       //"ativo": true,
     });
 

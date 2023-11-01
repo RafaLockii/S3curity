@@ -3,6 +3,8 @@ import { createContext, useContext, ReactNode, Dispatch, SetStateAction, useStat
 type User = {
   id: number;
   token: string;
+  email: string;
+  nome: string;
 };
 
 type UserContextType = {
@@ -28,6 +30,8 @@ export const UserProvider = ({ children }: UserProviderProps) => {
   const [user, setUser] = useState<User | null>({
     id: 0,
     token: '',
+    email: '',
+    nome: '',
   });
 
   return (

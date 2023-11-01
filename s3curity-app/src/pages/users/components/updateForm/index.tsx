@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
+import { useUserContext } from "@/context/UserContext";
 
 interface updateFormProps {
   id: number;
@@ -64,6 +65,8 @@ export default function UpdateForm(props: updateFormProps) {
 
   const {back} = useRouter();
 
+  //Pegando dados do usuário logado
+  const{user} = useUserContext();
 
     
 

@@ -8,6 +8,7 @@ import Select from "react-select";
 import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
+import { useUserContext } from "@/context/UserContext";
 
 //Validação do formulário
 const registerFormShceme = z.object({
@@ -63,6 +64,8 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
   });
 
  const showEmpresaSelect = empresa.empresa === 's3curity';
+ //pega informação do usuário logado
+ const {user} = useUserContext();
 
   console.log("Id da Empresa: " + empresa.empresaid)
 
@@ -100,7 +103,7 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
         email: data.email,
         telefone: data.telefone,
         //Valores estáticos que precisam ser mudados
-        usuario_criacao: "Criador",
+        usuario_criacao: user?.email || "Não idnetificado",
         modulo_default: "default",
         //Fim dos valores estáticos
         acesso_admin: data.admin,

@@ -45,7 +45,12 @@ export default function FormLogin({ empresa }: FormLoginProps) {
 
             if (response.status === 200) {
                 console.log(response.data);
-                setUser(response.data);
+                setUser({
+                    id: response.data.id,
+                    token: response.data.token,
+                    email: response.data.email,
+                    nome: response.data.nome,
+                });
                 await router.push(`/home/${empresa}`);
             } else if (response.status === 404) {
                 setErrorMessage("Credenciais inválidas");
