@@ -1,11 +1,14 @@
-import type { AppProps } from 'next/app'
+import type { AppProps } from 'next/app';
+import { UserProvider } from '@/context/UserContext';
 
-import '../styles/globals.css'
-//import { Carousel } from '@/components/Carousel';
+import '../styles/globals.css';
 
-export default function App({ Component, pageProps }: AppProps) {
-  return(
-    <>
+function MyApp({ Component, pageProps }: AppProps) {
+  return (
+    <UserProvider>
       <Component {...pageProps} />
-    </>
-    )}
+    </UserProvider>
+  );
+}
+
+export default MyApp;

@@ -3,11 +3,15 @@ import styles from './styles.module.css';
 import { Header } from "@/components/header";
 import CarouselComponent from "@/components/Carousel";
 import userRouter from 'next/router';
+import { useUserContext } from "@/context/UserContext";
 
 export default function Home() {
     
 const{query} = userRouter;
 const empresa = typeof query.empresa == 'string' ? query.empresa : "";
+const {user} = useUserContext();
+console.log("ID: "+user?.id);
+console.log("Token: "+user?.token);
 
     return (
        <div className={styles.pageContainer}>
