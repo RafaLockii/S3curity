@@ -8,39 +8,22 @@ import  useRouter from "next/router";
 import { api } from "@/lib/axios";
 
 
-interface UserData {
+  interface EmpresaData {
     id: number;
     nome: string;
-    email: string;
-    telefone: string;
-    acesso_admin: boolean;
-    ativo: boolean;
-    funcionario: {
-      acesso_admin: boolean;
-      ativo: boolean;
-      imagem: { url: string };
-      cargo: { nome_cargo: string; permissoes: string };
-      empresa: { nome: string };
-    }
+    razao_s: string;
+    logo: string;
+    data_alt: any;
+    data_criacao: string;
+    imagem_fundo: string;
+    usuario_criacao: string;
+    usuario_cad_alt: any;
   }
 
-//   interface EmpresaData {
-//     id: number;
-//     nome: string;
-//     cnpj: string;
-//     logo: string;
-//     data_alt: any;
-//     data_criacao: string;
-//     imagem_fundo: string;
-//     usuario_criacao: string;
-//     usuario_cad_alt: any;
-//   }
-
-  
 
 export default function editUsers(){
     
-    const [userData, setUserData] = useState<UserData>();
+    const [empresaData, setempresaData] = useState<EmpresaData>();
 
 
         //Resgatando data da URL
@@ -70,8 +53,8 @@ export default function editUsers(){
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await api.get(`user/${data[0]}`);
-                setUserData(response.data);
+                const response = await api.get(`empresa/${data[0]}`);
+                setempresaData(response.data);
                 console.log(response.data);
             } catch (error) {
                 console.error(error);
@@ -81,29 +64,32 @@ export default function editUsers(){
         fetchData();
     }, []);
 
-    console.log(userData);  
+    console.log(empresaData);  
+    console.log("razao_s DA EMPRESA: "+empresaData?.razao_s)
 
 
     return(
         <div className={styles.pageContainer}>
             <SidebarMenu empresa={data[1]}/>
-            {userData ? ( // Verifique se userData está definido
+            {empresaData ? ( // Verifique se empresaData está definido
                 <div className={styles.createUserFormContainer}>
                     <div className={styles.formHeader}>
                         <p>Edição</p>
                         <ArrowLeft className={styles.arrowLeft} onClick={() => back()} />
                     </div>
 
-                    {/* Renderize o UpdateForm somente se userData estiver definido */}
-                    {userData && (
+                    {/* Renderize o UpdateForm somente se empresaData estiver definido */}
+                    {empresaData && (
                         <UpdateForm
-                            acesso_admin={userData.acesso_admin}
-                            ativo={userData.ativo}
-                            email={userData.email}
-                            id={userData.id}
-                            nome={userData.nome}
-                            funcionario={userData.funcionario}
-                            telefone={userData.telefone}
+                            id={empresaData.id}
+                            nome={empresaData.nome}
+                            razao_s={empresaData.razao_s}
+                            logo={empresaData.logo}
+                            data_alt={empresaData.data_alt}
+                            data_criacao={empresaData.data_criacao}
+                            imagem_fundo={empresaData.imagem_fundo}
+                            usuario_criacao={empresaData.usuario_criacao}
+                            usuario_cad_alt={empresaData.usuario_cad_alt}
                         />
                     )}
                 </div>

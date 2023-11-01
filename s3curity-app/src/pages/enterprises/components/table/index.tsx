@@ -72,7 +72,7 @@ export default function TableComponent({ data, empresa }: TableComponentProps) {
               <td>
                 {/* Depois podemos suar um router para a pag de edição passando os dados daq como parametro */}
                 <button className={styles.button} onClick={()=>{
-                  router.push(`editEnterprise/${item.id}/${empresa}`)
+                  router.push(`editEmpresa/${item.id}/${empresa}`)
                 }}>Editar</button>
               </td>
             </tr>

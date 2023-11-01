@@ -77,6 +77,7 @@ export default function UpdateForm(props: updateFormProps) {
       // cargo id e empresasão obrigatorios(  PRECISA IMPLPEMENTAR MANEIRA DE PEGAR ELES )
       "cargo_id": 1,
       "empresa_id": 1,
+      //"ativo": true,
     });
 
     back();

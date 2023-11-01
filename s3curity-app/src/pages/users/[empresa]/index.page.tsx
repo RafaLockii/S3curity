@@ -33,8 +33,6 @@ export default function Users(){
 
     const handleShowCreateUserForm = (show: boolean) => {
         setShowCreateUserForm(show);}
-    const handleShowUpdateForm = (show: boolean) => {
-        setShowUpdateForm(show);}
 
     //Resgatando data da URL
     const {query} = useRouter;
@@ -45,27 +43,25 @@ export default function Users(){
             try {
                 const response = await api.get('users/all');
                 setUserData(response.data);
-
+    
                 const response2 = await api.get('empresas');
                 setEmpresas(response2.data);
-
-                empresas.map((empresa) =>{
-                    if(empresa.nome === empresaParams){
-                        console.log("Id da empresa"+empresa.id)
-                        setEmpresaId(empresa.id);
-                    }
-                })
-
+    
+                // Encontrar a empresa correspondente e definir o ID
+                const foundEmpresa = response2.data.find((empresa: { nome: string; }) => empresa.nome === empresaParams);
+                if (foundEmpresa) {
+                    setEmpresaId(foundEmpresa.id);
+                }
             } catch (error) {
                 console.error(error);
             }
-        }
+        };
     
         fetchData();
-    }, []);
+    }, [empresaParams]);
     
 
-    console.log("Id da empresa"+empresaid)
+    console.log("Id da empresa: "+empresaid)
     return(
         <div className={styles.pageContainer}>
             <SidebarMenu empresa={empresaParams}/>

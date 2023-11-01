@@ -5,6 +5,7 @@ import Image from 'next/image';
 import logo from '../../../public/images/logo.png';
 import { useRouter } from "next/router";
 import { X } from 'phosphor-react'
+import { useState } from "react";
 
 const registerFormShceme = z.object({
     email: z.string(),
@@ -12,6 +13,8 @@ const registerFormShceme = z.object({
 
 
 type RegisterFormData = z.infer<typeof registerFormShceme>
+
+// const[showKey, setShowKey] = useState();
 export default function FormForgotPassWord(){
     const { 
         register,
@@ -22,6 +25,9 @@ export default function FormForgotPassWord(){
     const router = useRouter();
     const {back} = router;
 
+    // async funtion handleSendEmail(email: string){
+
+    // }
     async function handleRegister(data: RegisterFormData){
         await console.log(data);
     }
@@ -40,6 +46,9 @@ export default function FormForgotPassWord(){
             </div>
             <form onSubmit={handleSubmit(handleRegister)}>
 
+            
+                    <input className={styles.input} placeholder='Digite o token de acesso'></input>
+                
                 <p className={styles.text}> Digite o endereço de email<br/> Enviaremos a você um link para redefinir sua <br/> senha.</p>
                 <input className={styles.input} placeholder="Email" {...register('email')} ></input>
                 <button className={styles.button} type="submit">

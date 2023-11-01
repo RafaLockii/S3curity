@@ -67,7 +67,9 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
         email: data.email,
         telefone: data.telefone,
         //Valores estáticos que precisam ser mudados
+        //Pode tirar
         data_criacao: "2023-10-27T12:00:00",
+        //Pode tirar
         usuario_criacao: "Criador",
         modulo_default: "default",
         //Fim dos valores estáticos
