@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../services/prisma';
+const speakeasy = require('speakeasy');
 
 export const createUser = async (req: Request, res: Response) => {
     try {
@@ -8,7 +9,6 @@ export const createUser = async (req: Request, res: Response) => {
             senha,
             email,
             telefone,
-            data_criacao,
             usuario_criacao,
             modulo_default,
             acesso_admin,
@@ -43,16 +43,22 @@ export const createUser = async (req: Request, res: Response) => {
             },
         });
 
+        const secret = speakeasy.generateSecret({ length: 6 });
+        const code = secret.base32;
+
+        const currentDatetime = new Date();
+
         const user = await prisma.user.create({
             data: {
                 nome,
                 senha,
                 email,
                 telefone,
+                token: code,
                 funcionario: {
                     create: {
                         ativo: true,
-                        cadastro_alterado: new Date(data_criacao),
+                        cadastro_alterado: currentDatetime,
                         usuario_cad_alt: usuario_criacao,
                         modulo_default,
                         acesso_admin,
@@ -83,6 +89,7 @@ export const editUser = async (req: Request, res: Response) => {
             telefone,
             modulo_default,
             acesso_admin,
+            ativo,
             cargo_id,
             empresa_id,
             imagem_perfil_url,
@@ -114,28 +121,31 @@ export const editUser = async (req: Request, res: Response) => {
             },
         });
 
-        const existingEmpresa = await prisma.empresa.findUnique({
-            where: {
-                id: empresa_id,
-            },
-        });
-
-        if (!existingEmpresa) {
-            return res.status(404).json({ message: 'Empresa não encontrado.' });
-        }
-
-        if (existingUser.funcionario) {
-            const updatedFuncionario = await prisma.funcionario.update({
+        if(empresa_id && cargo_id){
+            const existingEmpresa = await prisma.empresa.findUnique({
                 where: {
-                    id: existingUser.funcionario.id,
-                },
-                data: {
-                    modulo_default,
-                    acesso_admin,
-                    empresa: {connect: {id: empresa_id}},
-                    cargo: { connect: { cargo_id: cargo_id } },
+                    id: empresa_id,
                 },
             });
+    
+            if (!existingEmpresa) {
+                return res.status(404).json({ message: 'Empresa não encontrado.' });
+            }
+    
+            if (existingUser.funcionario) {
+                const updatedFuncionario = await prisma.funcionario.update({
+                    where: {
+                        id: existingUser.funcionario.id,
+                    },
+                    data: {
+                        modulo_default,
+                        ativo: ativo,
+                        acesso_admin,
+                        empresa: {connect: {id: empresa_id}},
+                        cargo: { connect: { cargo_id: cargo_id } },
+                    },
+                });
+            }
         }
 
         if (imagem_perfil_url) {
@@ -197,7 +207,19 @@ export const getUser = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Usuário não encontrado.' });
         }
 
-        res.status(200).json(user);
+        const formattedUser = {
+            ...user,
+            funcionario: {
+                ...user.funcionario,
+                cadastro_alterado: user.funcionario?.cadastro_alterado?.toLocaleString() || null,
+                empresa: {
+                    ...user.funcionario?.empresa,
+                    data_criacao: user.funcionario?.empresa?.data_criacao?.toLocaleString() || null,
+                },
+            },
+        };
+
+        res.status(200).json(formattedUser);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erro ao buscar as informações do usuário.' });
@@ -205,20 +227,77 @@ export const getUser = async (req: Request, res: Response) => {
 };
 
 export const listUsers = async (req: Request, res: Response) => {
+    const empresaNome = req.params.empresa;
+
     try {
-        const users = await prisma.user.findMany({
-            include: {
-                funcionario: {
-                    include: {
-                        imagem: true,
-                        cargo: true,
-                        empresa: true,
+        if (empresaNome === "sec3rity") { 
+            const users = await prisma.user.findMany({
+                include: {
+                    funcionario: {
+                        include: {
+                            imagem: true,
+                            cargo: true,
+                            empresa: true,
+                        },
                     },
                 },
-            },
-        });
+            });
 
-        res.status(200).json(users);
+            const formattedUsers = users.map((user) => ({
+                ...user,
+                funcionario: {
+                    ...user.funcionario,
+                    cadastro_alterado: user.funcionario?.cadastro_alterado?.toLocaleString() || null,
+                    empresa: {
+                        ...user.funcionario?.empresa,
+                        data_criacao: user.funcionario?.empresa?.data_criacao?.toLocaleString() || null,
+                    },
+                },
+            }));
+
+            res.status(200).json(formattedUsers);
+        } else {
+            const empresa = await prisma.empresa.findUnique({
+                where: {
+                    nome: empresaNome,
+                },
+            });
+
+            if (!empresa) {
+                return res.status(404).json({ message: 'Empresa não encontrada.' });
+            }
+
+            const users = await prisma.user.findMany({
+                where: {
+                    funcionario: {
+                        empresa_id: empresa.id,
+                    },
+                },
+                include: {
+                    funcionario: {
+                        include: {
+                            imagem: true,
+                            cargo: true,
+                            empresa: true,
+                        },
+                    },
+                },
+            });
+
+            const formattedUsers = users.map((user) => ({
+                ...user,
+                funcionario: {
+                    ...user.funcionario,
+                    cadastro_alterado: user.funcionario?.cadastro_alterado?.toLocaleString() || null,
+                    empresa: {
+                        ...user.funcionario?.empresa,
+                        data_criacao: user.funcionario?.empresa?.data_criacao?.toLocaleString() || null,
+                    },
+                },
+            }));
+
+            res.status(200).json(formattedUsers);
+        }
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erro ao listar os usuários.' });
@@ -249,14 +328,18 @@ export const deleteUser = async (req: Request, res: Response) => {
         if (!editingUser.funcionario) {
             return res.status(500).json({ message: 'Usuário não possui informações de funcionário.' });
         }
+        
+        if(editingUser.funcionario.id){
+            await prisma.funcionario.delete({
+                where: { id: editingUser.funcionario.id },
+            });
+        }
 
-        await prisma.funcionario.delete({
-            where: { id: editingUser.funcionario.id },
-        });
-
-        await prisma.imagem.delete({
-            where: { id: editingUser.funcionario.imagem_perfil_id },
-        });
+        if(editingUser.funcionario.imagem_perfil_id){
+            await prisma.imagem.delete({
+                where: { id: editingUser.funcionario.imagem_perfil_id },
+            });
+        }
 
         // if (editingUser.funcionario.empresa) {
         //     await prisma.empresa.delete({

@@ -4,7 +4,7 @@ import { autenticarToken } from '../middlewares/auth';
 
 const empresaRouter = express.Router();
 
-empresaRouter.get('/empresas', autenticarToken, EmpresaController.listEmpresas);
+empresaRouter.get('/empresas', EmpresaController.listEmpresas);
 empresaRouter.get('/empresa/:id', EmpresaController.getEmpresa);
 empresaRouter.post('/empresa/create', EmpresaController.createEmpresa);
 empresaRouter.put('/empresa/edit/:id', EmpresaController.editEmpresa);

@@ -20,24 +20,35 @@ model User {
   senha    String
   email    String @unique
   telefone String
+  token    String
+  verified Boolean @default(false)
   funcionario Funcionario?
+  twoFactorAuth TwoFactorAuth?
+}
+
+model TwoFactorAuth {
+  id         Int     @id @default(autoincrement())
+  userId     Int     @unique
+  user       User    @relation(fields: [userId], references: [id])
+  secretKey  String
+  isVerified Boolean @default(false)
 }
 
 model Funcionario {
   id               Int      @id @default(autoincrement())
   modulo_default   String
   acesso_admin     Boolean
-  ativo            Boolean
+  ativo            Boolean  @default(true)
   cadastro_alterado DateTime
   usuario_cad_alt  String
-  cargo_id         Int
+  cargo_id         Int?
   usuario_id       Int      @unique
-  empresa_id       Int
-  imagem_perfil_id Int
+  empresa_id       Int?
+  imagem_perfil_id Int?
 
-  imagem     Imagem   @relation(fields: [imagem_perfil_id], references: [id])
+  imagem     Imagem?   @relation(fields: [imagem_perfil_id], references: [id])
   user       User     @relation(fields: [usuario_id], references: [id])
-  empresa    Empresa  @relation(fields: [empresa_id], references: [id])
+  empresa    Empresa?  @relation(fields: [empresa_id], references: [id])
   cargo      Cargos?  @relation(fields: [cargo_id], references: [cargo_id])
 }
 

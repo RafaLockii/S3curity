@@ -1,0 +1,1 @@
+# fazer a implementação => Integração do sistema de e-mail para confirmação de cadastro.

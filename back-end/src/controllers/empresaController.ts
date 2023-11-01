@@ -8,7 +8,6 @@ export const createEmpresa = async (req: Request, res: Response) => {
             razao_s,
             logo,
             imagem_fundo,
-            data_criacao,
             usuario_criacao,
         } = req.body;
 
@@ -22,13 +21,15 @@ export const createEmpresa = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'A empresa já existe.' });
         }
 
+        const currentDatetime = new Date();
+
         const empresa = await prisma.empresa.create({
             data: {
                 nome,
                 razao_s,
                 logo,
                 imagem_fundo,
-                data_criacao,
+                data_criacao: currentDatetime, 
                 usuario_criacao,
             },
         });
@@ -44,7 +45,7 @@ export const createEmpresa = async (req: Request, res: Response) => {
 
 export const editEmpresa = async (req: Request, res: Response) => {
     const empresaId = parseInt(req.params.id);
-    const { nome, razao_s, logo, imagem_fundo, data_alt, usuario_cad_alt } = req.body;
+    const { nome, razao_s, logo, imagem_fundo, usuario_cad_alt } = req.body;
 
     try {
         const existingEmpresa = await prisma.empresa.findUnique({
@@ -55,6 +56,8 @@ export const editEmpresa = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Empresa não encontrada.' });
         }
 
+        const currentDatetime = new Date();
+
         const updatedEmpresa = await prisma.empresa.update({
             where: { id: empresaId },
             data: {
@@ -62,7 +65,7 @@ export const editEmpresa = async (req: Request, res: Response) => {
                 razao_s,
                 logo,
                 imagem_fundo,
-                data_alt: new Date(data_alt),
+                data_alt: currentDatetime,
                 usuario_cad_alt,
             },
         });
@@ -100,7 +103,13 @@ export const deleteEmpresa = async (req: Request, res: Response) => {
 export const listEmpresas = async (req: Request, res: Response) => {
     try {
         const empresas = await prisma.empresa.findMany();
-        res.status(200).json(empresas);
+
+        const formattedEmpresas = empresas.map((empresa) => ({
+            ...empresa,
+            data_criacao: empresa.data_criacao.toLocaleString(),
+        }));
+
+        res.status(200).json(formattedEmpresas);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erro ao listar as empresas.' });
@@ -112,14 +121,19 @@ export const getEmpresa = async (req: Request, res: Response) => {
 
     try {
         const empresa = await prisma.empresa.findUnique({
-        where: { id: empresaId },
+            where: { id: empresaId },
         });
 
         if (!empresa) {
-        return res.status(404).json({ message: 'Empresa não encontrada.' });
+            return res.status(404).json({ message: 'Empresa não encontrada.' });
         }
 
-        res.status(200).json(empresa);
+        const formattedEmpresa = {
+            ...empresa,
+            data_criacao: empresa.data_criacao.toLocaleString(),
+        };
+
+        res.status(200).json(formattedEmpresa);
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erro ao buscar as informações da empresa.' });
