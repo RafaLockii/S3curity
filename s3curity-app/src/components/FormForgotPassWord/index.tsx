@@ -6,9 +6,14 @@ import logo from '../../../public/images/logo.png';
 import { useRouter } from "next/router";
 import { X } from 'phosphor-react'
 import { useState } from "react";
+import {api} from "@/lib/axios";
+import { resolve } from "path";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const registerFormShceme = z.object({
-    email: z.string(),
+    email: z.string().email({message: 'Formato de e-mail invalido'}),
+    token: z.string().min(6, {message: 'O token precisa ter pelo menos 6 caracteres'}),
+    newPassword: z.string().min(8, {message: 'A senha precisa ter pelo menos 8 caracteres'}),
 })
 
 
@@ -16,20 +21,41 @@ type RegisterFormData = z.infer<typeof registerFormShceme>
 
 // const[showKey, setShowKey] = useState();
 export default function FormForgotPassWord(){
-    const { 
+    const {
         register,
-        handleSubmit, 
-        formState:{ errors, isSubmitting}
-    } = useForm<RegisterFormData>();
+        handleSubmit,
+        formState: { errors, isSubmitting }
+    } = useForm<RegisterFormData>({
+        resolver: zodResolver(registerFormShceme),
+    });
 
     const router = useRouter();
     const {back} = router;
+    const[showEmailButton, setShowEmailButton] = useState(true);
+    const[message, setMessage] = useState('');
 
     // async funtion handleSendEmail(email: string){
 
     // }
-    async function handleRegister(data: RegisterFormData){
-        await console.log(data);
+    async function handleEmailRegister(data: RegisterFormData){
+        const response = await api.post('activate-2fa', {
+            email: data.email,
+        });
+        if(response.status === 200){
+            setShowEmailButton(false);
+            setMessage('Email enviado com sucesso');
+        }
+    }
+    async function handleResetPassword(data: RegisterFormData){
+        const response = await api.post('verify-2fa', {
+            email: data.email,
+            code: data.token,
+            newPassword: data.newPassword,
+        });
+        if(response.status === 200){
+            setMessage('Senha Redefinida com sucesso');
+            await back();
+        }
     }
 
     async function handleCloseButtonClick(){
@@ -44,16 +70,33 @@ export default function FormForgotPassWord(){
                 <p>Redefinir senha</p>
                 <button className={styles.closeButton} onClick={handleCloseButtonClick}>X</button>
             </div>
-            <form onSubmit={handleSubmit(handleRegister)}>
-
-            
-                    <input className={styles.input} placeholder='Digite o token de acesso'></input>
-                
-                <p className={styles.text}> Digite o endereço de email<br/> Enviaremos a você um link para redefinir sua <br/> senha.</p>
-                <input className={styles.input} placeholder="Email" {...register('email')} ></input>
-                <button className={styles.button} type="submit">
-                    Enviar e-mail para redefinição de senha
-                </button>
+            <form onSubmit={handleSubmit(showEmailButton ? handleEmailRegister : handleResetPassword)}>
+                {showEmailButton && (
+                    <>
+                    <p className={styles.text}>
+                        Digite o endereço de email
+                        <br />
+                        Enviaremos a você um link para redefinir sua <br /> senha.
+                    </p>
+                    <input className={styles.input} placeholder="Email" {...register('email')} />
+                    <button className={styles.button} type="submit">
+                        Enviar e-mail para redefinição de senha
+                    </button>
+                    </>
+                )}
+                {!showEmailButton && (
+                    <>
+                    <input className={styles.input} placeholder="Token" {...register('token')} />
+                    <input className={styles.input} placeholder="Nova Senha" {...register('newPassword')} />
+                    <button className={styles.button} type="submit">
+                        Redefinir Senha
+                    </button>
+                    {errors.token && <div className={styles.formAnnotation}>{errors.token.message}</div>}
+                    {errors.newPassword && <div className={styles.formAnnotation}>{errors.newPassword.message}</div>}
+                    </>
+                )}
+                {errors.email && <div className={styles.formAnnotation}>{errors.email.message}</div>}
+                {message && <div className={styles.formAnnotationSuccess}>{message}</div>}
             </form>
         </div>
     )
