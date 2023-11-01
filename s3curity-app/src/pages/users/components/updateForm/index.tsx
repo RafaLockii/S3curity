@@ -75,8 +75,8 @@ export default function UpdateForm(props: updateFormProps) {
       "telefone": data.telefone,
       "imagem_perfil_url": data.imagem_perfil_url,
       // cargo id e empresasão obrigatorios(  PRECISA IMPLPEMENTAR MANEIRA DE PEGAR ELES )
-      "cargo_id": 1,
-      "empresa_id": 1,
+      // "cargo_id": 1,
+      // "empresa_id": 1,
       //"ativo": true,
     });
 

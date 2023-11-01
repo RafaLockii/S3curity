@@ -7,17 +7,17 @@ import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { api } from "@/lib/axios";
 
 const registerFormShceme = z.object({
-  nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
+  nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s0-9]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
   razao_social: z.string().refine((value) => {
     const numericValue = value.replace(/\D/g, '');
     return numericValue.length === 14;
   }, { message: 'CNPJ inválido' }),
   logo: z.string().min(1, {message: 'Preencha o campo'}),
   background_img: z.string().min(1, {message: 'Preencha o campo'}),
-  data_criacao: z.string().min(1, {message: 'Preencha o campo'}),
-  usuario_criacao: z.string().min(1, {message: 'Preencha o campo'}),
-  data_alteracao: z.string().min(1, {message: 'Preencha o campo'}),
-  usuario_alteracao: z.string().min(1, {message: 'Preencha o campo'}),
+  // data_criacao: z.string().min(1, {message: 'Preencha o campo'}),
+  // usuario_criacao: z.string().min(1, {message: 'Preencha o campo'}),
+  // data_alteracao: z.string().min(1, {message: 'Preencha o campo'}),
+  // usuario_alteracao: z.string().min(1, {message: 'Preencha o campo'}),
 });
 
 type RegisterFormData = z.infer<typeof registerFormShceme>;
@@ -37,15 +37,15 @@ export default function CreateForm() {
   async function handleRegister(data: RegisterFormData) {
     try{
       await api.post('empresa/create',{
-        id: Math.floor(Math.random() * (100 - 1) + 1),
+        // id: Math.floor(Math.random() * (100 - 1) + 1),
         nome: data.nome,
         razao_s: data.razao_social,
         logo: data.logo,
-        data_alt: null,
+        // data_alt: null,
         imagem_fundo: data.background_img,
-        usuario_criacao: data.usuario_criacao,
-        data_criacao: "2023-10-28T00:00:00.000Z",
-        usuario_cad_alt: null,
+        usuario_criacao: "usuário criador",
+        // data_criacao: "2023-10-28T00:00:00.000Z",
+        // usuario_cad_alt: null,
       })
       await back();
     }catch(e){
@@ -105,7 +105,7 @@ export default function CreateForm() {
             <div className={styles.formAnnotation}>{errors.background_img.message}</div>
           )}
         </div>
-        <div className={styles.inputWithContents}>
+        {/* <div className={styles.inputWithContents}>
           <input
             className={styles.input}
             placeholder="Data de Criação"
@@ -114,8 +114,8 @@ export default function CreateForm() {
           {errors.data_criacao && (
             <div className={styles.formAnnotation}>{errors.data_criacao.message}</div>
           )}
-        </div>
-        <div className={styles.inputWithContents}>
+        </div> */}
+        {/* <div className={styles.inputWithContents}>
           <input
             className={styles.input}
             placeholder="Usuário de Criação"
@@ -124,8 +124,8 @@ export default function CreateForm() {
           {errors.usuario_criacao && (
             <div className={styles.formAnnotation}>{errors.usuario_criacao.message}</div>
           )}
-        </div>
-        <div className={styles.inputWithContents}>
+        </div> */}
+        {/* <div className={styles.inputWithContents}>
           <input
             className={styles.input}
             placeholder="Data de Alteração"
@@ -134,8 +134,8 @@ export default function CreateForm() {
           {errors.data_alteracao && (
             <div className={styles.formAnnotation}>{errors.data_alteracao.message}</div>
           )}
-        </div>
-        <div className={styles.inputWithContents}>
+        </div> */}
+        {/* <div className={styles.inputWithContents}>
           <input
             className={styles.input}
             placeholder="Usuário de Alteração"
@@ -144,7 +144,7 @@ export default function CreateForm() {
           {errors.usuario_alteracao && (
             <div className={styles.formAnnotation}>{errors.usuario_alteracao.message}</div>
           )}
-        </div>
+        </div> */}
         
         <button
         className={styles.createUserButton}

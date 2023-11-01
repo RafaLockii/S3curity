@@ -18,6 +18,7 @@ const registerFormShceme = z.object({
     return /^\d+$/.test(value) && value.length >= 8;
   }, { message: 'Telefone inválido' }),
   modulo: z.number(),
+  empresa_id: z.number(),
   img_url: z.string().refine((value) => {
     // Verifica se a img_url é uma URL válida (formato básico)
     const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
@@ -27,10 +28,24 @@ const registerFormShceme = z.object({
   admin: z.boolean(),
 });
 
+
+interface EmpresaData {
+  id: number;
+  nome: string;
+  cnpj: string;
+  logo: string;
+  data_alt: any;
+  data_criacao: string;
+  imagem_fundo: string;
+  usuario_criacao: string;
+  usuario_cad_alt: any;
+}
+
 //Propriedades recebidas da rota
 interface CreateUserformProps {
   empresa: string;
   empresaid: number;
+  empresas: EmpresaData[];
 }
 
 type RegisterFormData = z.infer<typeof registerFormShceme>;
@@ -56,10 +71,19 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
     { value: 2, label: "Gerencial" },
     { value: 3, label: "Estratégico" },
   ];
+  console.log(options)
+
+  const empresaOptions = empresa.empresas.map((empresaData) => ({
+    value: empresaData.id,
+    label: empresaData.nome,
+  }));
+
+  console.log(empresaOptions)
 
   const {back} = useRouter();
 
   async function handleRegister(data: RegisterFormData) {
+    console.log("entrou aq")
     try{
       await api.post('user/create', {
         nome: data.nome,
@@ -67,19 +91,16 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
         email: data.email,
         telefone: data.telefone,
         //Valores estáticos que precisam ser mudados
-        //Pode tirar
-        data_criacao: "2023-10-27T12:00:00",
-        //Pode tirar
         usuario_criacao: "Criador",
         modulo_default: "default",
         //Fim dos valores estáticos
         acesso_admin: data.admin,
         cargo_id: data.modulo,
-        empresa_id: empresa.empresaid,
+        empresa_id: data.empresa_id,
         imagem_perfil_url: data.img_url,
         // FALTA IMPLEMENTAR NO BACKEND A OPPÇÃO DE CRIAR COMO ATIVO OU INATIVO ativo: data.ativo,
       });
-      await back();
+      back();
     }catch(e){
       console.log(e)
     }
@@ -87,13 +108,16 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
 
   // Função de manipulação para o evento onChange do Select
   const handleSelectChange = (selectedOption: any) => {
-    setValue("modulo", selectedOption.value); // Atualiza o valor no registro
+      setValue("modulo", selectedOption.value); // Atualiza o valor no registro
+  };
+  const handleSelectChangeEmpresa = (selectedOption: any) => {
+      setValue("empresa_id", selectedOption.value); // Atualiza o valor no registro
   };
 
 
   return (
     <div>
-      <form  className={styles.form}>
+      <form  className={styles.form} onSubmit={handleSubmit(handleRegister)}>
         <div className={styles.inputWithContents}>
             <input
             className={styles.input}
@@ -156,6 +180,13 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
           onChange={handleSelectChange}
           placeholder="Modulo Default"
         />
+        <Select
+          options={empresaOptions}
+          className={styles.input}
+          // Adicione o evento onChange
+          onChange={handleSelectChangeEmpresa}
+          placeholder="Empresa do usuário"
+        />
         <div className={styles.inputWithContents}>
             <input
             type="text"
@@ -189,10 +220,7 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
             className={styles.checkbox}
           />
         </div>
-        <button className={styles.createUserButton} onClick={(e) => {
-          e.preventDefault(); // Impede o comportamento padrão do botão
-          handleSubmit(handleRegister)(); // Chame a função de envio do formulário
-        }}>
+        <button className={styles.createUserButton} type="submit">
             Salvar
         </button>
         

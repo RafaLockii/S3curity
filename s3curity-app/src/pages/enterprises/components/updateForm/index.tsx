@@ -54,9 +54,6 @@ export default function UpdateForm(props: EmpresaData) {
       "razao_s": data.razao_s,
       "logo": data.logo,
       "imagem_fundo": data.imagem_fundo,
-      //Não vai mais precisar, vai ser algo feito elo back
-      "data_alt": 1,
-      //
       "usuario_cad_alt": "usuario_cad_alt",
       //"ativo": true,
     });

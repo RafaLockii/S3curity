@@ -21,6 +21,7 @@ interface EmpresaData {
     usuario_criacao: string;
     usuario_cad_alt: any;
   }
+
   
 
 export default function Users(){
@@ -41,17 +42,20 @@ export default function Users(){
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await api.get('users/all');
-                setUserData(response.data);
-    
+
                 const response2 = await api.get('empresas');
                 setEmpresas(response2.data);
-    
                 // Encontrar a empresa correspondente e definir o ID
                 const foundEmpresa = response2.data.find((empresa: { nome: string; }) => empresa.nome === empresaParams);
                 if (foundEmpresa) {
                     setEmpresaId(foundEmpresa.id);
                 }
+
+                const response = await api.get(`users/all/${empresaParams}`);
+                setUserData(response.data);
+    
+    
+                
             } catch (error) {
                 console.error(error);
             }
@@ -92,7 +96,7 @@ export default function Users(){
                     </div>
 
                     {/* Aqui eu estou passando a epresa da url para o forms */}
-                    {empresaid && <CreateUserForm empresa={empresaParams} empresaid={empresaid}/>}
+                    {empresaid && <CreateUserForm empresa={empresaParams} empresaid={empresaid} empresas={empresas}/>}
                     {empresaid == undefined && (
                         <div>Carregando...</div>
                     )}

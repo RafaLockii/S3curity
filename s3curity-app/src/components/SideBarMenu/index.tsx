@@ -46,7 +46,7 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                     Home
                   </MenuItem>
 
-                  {empresa == 'S3curity' && (
+                  {empresa == 's3curity' && (
                   <MenuItem icon={<Buildings/>} onClick={() => handleMenuClick('enterprises')}>Empresas</MenuItem>
                   )}
                   <MenuItem icon={<User/>} onClick={() => handleMenuClick('users')}>Usuários</MenuItem>
