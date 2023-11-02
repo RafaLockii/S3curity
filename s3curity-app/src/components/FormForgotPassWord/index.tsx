@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import {z} from 'zod';
 import styles from './styles.module.css';
 import Image from 'next/image';
@@ -26,35 +26,54 @@ export default function FormForgotPassWord(){
         handleSubmit,
         formState: { errors, isSubmitting }
     } = useForm<RegisterFormData>({
-        resolver: zodResolver(registerFormShceme),
+        //resolver: zodResolver(registerFormShceme),
     });
 
     const router = useRouter();
     const {back} = router;
     const[showEmailButton, setShowEmailButton] = useState(true);
     const[message, setMessage] = useState('');
+    const[errorMessage, setErrorMessage] = useState('');
 
     // async funtion handleSendEmail(email: string){
 
     // }
     async function handleEmailRegister(data: RegisterFormData){
-        const response = await api.post('activate-2fa', {
-            email: data.email,
-        });
-        if(response.status === 200){
-            setShowEmailButton(false);
-            setMessage('Email enviado com sucesso');
+        try{
+            console.log('Entrou no handleEmailRegister')
+            const response = await api.post('activate-2fa', {
+                email: data.email,
+            });
+            if(response.status === 200){
+                console.log('Enviado com sucesso')
+                setShowEmailButton(false);
+                setMessage('Email enviado com sucesso');
+                setErrorMessage('');
+            }
+        }catch(e){
+            console.log('Erro ao enviar email: '+ e);
+            setErrorMessage('Erro ao enviar email');
         }
+       
     }
     async function handleResetPassword(data: RegisterFormData){
-        const response = await api.post('verify-2fa', {
-            email: data.email,
-            code: data.token,
-            newPassword: data.newPassword,
-        });
-        if(response.status === 200){
-            setMessage('Senha Redefinida com sucesso');
-            await back();
+
+        try{
+            console.log('Entrou np handleResetpasswprd');
+            const response = await api.post('verify-2fa', {
+                email: data.email,
+                code: data.token,
+                newPassword: data.newPassword,
+            });
+            if(response.status === 200){
+                setMessage('Senha Redefinida com sucesso');
+                setTimeout(() => {
+                    back(); // Chama 'back()' após um atraso de 2500 milissegundos (2.5 segundos)
+                }, 2500);
+            }
+        }catch(e){
+            console.log('Erro ao enviar email: '+ e);
+            setErrorMessage('Erro ao resetar a senha');
         }
     }
 
@@ -97,7 +116,9 @@ export default function FormForgotPassWord(){
                 )}
                 {errors.email && <div className={styles.formAnnotation}>{errors.email.message}</div>}
                 {message && <div className={styles.formAnnotationSuccess}>{message}</div>}
+                {errorMessage && <div className={styles.formAnnotation}>{errorMessage}</div>}
             </form>
+
         </div>
     )
 }
