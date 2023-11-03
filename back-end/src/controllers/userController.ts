@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
 import prisma from '../services/prisma';
+import { transporter } from '../services/nodemailer';
 const speakeasy = require('speakeasy');
 
 export const createUser = async (req: Request, res: Response) => {
@@ -69,6 +70,24 @@ export const createUser = async (req: Request, res: Response) => {
                 },
             },
         });
+
+        if(user.token){
+            transporter.sendMail(
+                {
+                    from: 'jocyannovittor@hotmail.com',
+                    to: email,
+                    subject: 'Código de Ativação de Usuário',
+                    text: `Seu Token de Ativação é: ${code}`,
+                },
+                (error: Error, info: any) => {
+                    if (error) {
+                        console.error(error);
+                    } else {
+                        console.log('Chave secreta 2FA enviada com sucesso: ' + info.response);
+                    }
+                }
+            );
+        }
 
         res.status(201).json(user);
     } catch (error) {
@@ -358,3 +377,54 @@ export const deleteUser = async (req: Request, res: Response) => {
     }
 };
 
+export const ativarUser = async (req: Request, res: Response) => {
+
+    const { email, token } = req.body;
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                email: email,
+            },
+        });
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuário não encontrado.' });
+        }
+
+        if(user.verified == true){
+            return res.status(404).json({ message: 'Usuário já se encontra ativo.' });
+        }
+
+        const userVerified = await prisma.user.findFirst({
+            where: {
+                email: email,
+                token: token,
+                verified: false
+            },
+        });
+
+        if (!userVerified) {
+            return res.status(400).json({ message: 'Falha ao verificar usuário' });
+        }
+
+        if (userVerified) {
+
+            await prisma.user.update({
+                where: {
+                    email: email,
+                },
+                data: {
+                    verified: true,
+                }
+            })
+
+            return res.status(200).json({ message: 'Usuário ativado com sucesso.' });
+        } else {
+            return res.status(401).json({ message: 'Código Token inválido.' });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Erro ao verificar o 2FA e atualizar a senha.' });
+    }
+}

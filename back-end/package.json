@@ -4,6 +4,7 @@
   "description": "",
   "main": "app.js",
   "scripts": {
+    "dev": "nodemon -r dotenv/config app.ts",
     "start": "nodemon app.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

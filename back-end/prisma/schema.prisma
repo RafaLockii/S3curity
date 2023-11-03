@@ -21,7 +21,7 @@ model User {
   email    String @unique
   telefone String
   token    String
-  verified Boolean @default(false)
+  verified Boolean? @default(false)
   funcionario Funcionario?
   twoFactorAuth TwoFactorAuth?
 }
