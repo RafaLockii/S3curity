@@ -15,14 +15,14 @@ datasource db {
 }
 
 model User {
-  id       Int      @id @default(autoincrement())
-  nome     String
-  senha    String
-  email    String @unique
-  telefone String
-  token    String
-  verified Boolean? @default(false)
-  funcionario Funcionario?
+  id            Int            @id @default(autoincrement())
+  nome          String
+  senha         String
+  email         String         @unique
+  telefone      String
+  token         String
+  verified      Boolean?       @default(false)
+  funcionario   Funcionario?
   twoFactorAuth TwoFactorAuth?
 }
 
@@ -35,26 +35,26 @@ model TwoFactorAuth {
 }
 
 model Funcionario {
-  id               Int      @id @default(autoincrement())
-  modulo_default   String
-  acesso_admin     Boolean
-  ativo            Boolean  @default(true)
+  id                Int      @id @default(autoincrement())
+  modulo_default    String
+  acesso_admin      Boolean
+  ativo             Boolean  @default(true)
   cadastro_alterado DateTime
-  usuario_cad_alt  String
-  cargo_id         Int?
-  usuario_id       Int      @unique
-  empresa_id       Int?
-  imagem_perfil_id Int?
+  usuario_cad_alt   String
+  cargo_id          Int?
+  usuario_id        Int      @unique
+  empresa_id        Int?
+  imagem_perfil_id  Int?
 
-  imagem     Imagem?   @relation(fields: [imagem_perfil_id], references: [id])
-  user       User     @relation(fields: [usuario_id], references: [id])
-  empresa    Empresa?  @relation(fields: [empresa_id], references: [id])
-  cargo      Cargos?  @relation(fields: [cargo_id], references: [cargo_id])
+  imagem  Imagem?  @relation(fields: [imagem_perfil_id], references: [id])
+  user    User     @relation(fields: [usuario_id], references: [id])
+  empresa Empresa? @relation(fields: [empresa_id], references: [id])
+  cargo   Cargos?  @relation(fields: [cargo_id], references: [cargo_id])
 }
 
 model Empresa {
-  id              Int      @id @default(autoincrement())
-  nome            String   @unique
+  id              Int           @id @default(autoincrement())
+  nome            String        @unique
   razao_s         String?
   logo            String?
   data_alt        DateTime?
@@ -62,56 +62,69 @@ model Empresa {
   usuario_criacao String
   data_criacao    DateTime
   usuario_cad_alt String?
-  funcionarios Funcionario[]
+  funcionarios    Funcionario[]
+  carrosseis      Carrossel[]
+  menus           Menus[]
 }
 
 model Imagem {
-  id      Int      @id @default(autoincrement())
-  caminho String?
-  nome    String?
-  url     String
+  id           Int           @id @default(autoincrement())
+  caminho      String?
+  nome         String?
+  url          String
   funcionarios Funcionario[]
 }
 
 model Cargos {
-  cargo_id   Int      @id @default(autoincrement())
-  nome_cargo String
-  permissoes String
+  cargo_id     Int           @id @default(autoincrement())
+  nome_cargo   String
+  permissoes   String
   funcionarios Funcionario[]
 }
 
 model Modulos {
-  id    Int      @id @default(autoincrement())
-  nome  String
-  menus String
+  id   Int    @id @default(autoincrement())
+  nome String
+
   Menus Menus[]
 }
 
 model Menus {
-  id         Int      @id @default(autoincrement())
+  id         Int    @id @default(autoincrement())
   nome       String
-  itens_id   Int
   modulos_id Int
+  empresa_id Int
 
+  empresa Empresa @relation(fields: [empresa_id], references: [id])
   modulos Modulos @relation(fields: [modulos_id], references: [id])
   itens   Itens[]
 }
 
 model Itens {
-  id            Int      @id @default(autoincrement())
-  nome          String
-  relatorios_id Int
-  menus_id      Int
+  id       Int    @id @default(autoincrement())
+  nome     String
+  menus_id Int
 
   menus      Menus        @relation(fields: [menus_id], references: [id])
   relatorios relatorios[]
 }
 
 model relatorios {
-  id        Int      @id @default(autoincrement())
-  itens_id  Int
+  id        Int    @id @default(autoincrement())
   nome      String
   relatorio String
+  itens_id  Int
 
   itens Itens @relation(fields: [itens_id], references: [id])
+}
+
+model Carrossel {
+  id           Int      @id @default(autoincrement())
+  imagem_1     String?
+  imagem_2     String?
+  imagem_3     String?
+  empresa_id   Int
+  data_criacao DateTime
+
+  empresa Empresa @relation(fields: [empresa_id], references: [id])
 }

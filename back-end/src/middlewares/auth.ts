@@ -41,7 +41,12 @@ export const login = async (req: Request, res: Response) => {
     try {
         const token = jwt.sign({ nome }, chaveSecreta);
         console.log('Token gerado:', token);
-        return res.status(200).json({ token });
+        return res.status(200).json({
+            token: token,
+            id: user.id,
+            email: user.email,
+            nome: user.nome,
+        });
     } catch (error) {
         return res.status(404).json({ error: 'Ocorreu um erro ao atualizar o usuário.' });
     }

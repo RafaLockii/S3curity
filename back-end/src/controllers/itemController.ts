@@ -3,131 +3,153 @@ import prisma from '../services/prisma';
 
 export const createItem = async (req: Request, res: Response) => {
     try {
-        const { nome, menus_id, relatorios_id } = req.body;
+      const {
+        nome,
+        relatorios,
+        empresa_id,
+        imagem1,
+        imagem2,
+        imagem3,
+        modulo_id,
+      } = req.body;
 
-        const existingMenu = await prisma.menus.findUnique({
-            where: { id: menus_id },
+      const modulo = await prisma.modulos.findUnique({
+        where: { id: modulo_id },
+      });
+  
+      if (!modulo) {
+        return res.status(404).json({ error: "Modulo not found" });
+      }
+
+      const createdMenu = await prisma.menus.create({
+        data: {
+          nome: nome,
+          modulos: {
+            connect: { id: modulo_id },
+          },
+          empresa: {
+            connect: { id: empresa_id },
+          },
+        },
+      });
+
+      const createdItems = await prisma.itens.create({
+        data: {
+          nome,
+          menus: {
+            connect: { id: createdMenu.id },
+          },
+          relatorios: {
+            create: relatorios.map((relatorio:any) => ({
+              nome: relatorio.nome,
+              relatorio: relatorio.relatorio,
+            })),
+          },
+        },
+      });
+
+      if (imagem1 || imagem2 || imagem3) {
+        const data_criacao = new Date();
+        await prisma.carrossel.create({
+          data: {
+            empresa_id: empresa_id,
+            imagem_1: imagem1,
+            imagem_2: imagem2,
+            imagem_3: imagem3,
+            data_criacao: data_criacao,
+          },
         });
-
-        if (!existingMenu) {
-            return res.status(404).json({ message: 'Menu não encontrado.' });
-        }
-
-        if (relatorios_id) {
-
-            const existingRelatorio = await prisma.relatorios.findUnique({
-                where: { id: relatorios_id },
-            });
-
-            if (!existingRelatorio) {
-                return res.status(404).json({ message: 'Relatório não encontrado.' });
-            }
-        }
-
-        const item = await prisma.itens.create({
-            data: {
-                nome,
-                menus: {
-                    connect: { id: menus_id }
-                },
-                relatorios_id: relatorios_id
-            },
-        });
-
-        res.status(201).json(item);
+      }
+  
+      res.status(201).json({ menu: createdMenu, itens: createdItems });
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Erro ao criar o item.' });
+      console.error(error);
+      res.status(500).json({ error: "Item creation failed" });
     } finally {
-        await prisma.$disconnect();
+      await prisma.$disconnect();
     }
-};
+  };
 
-export const getItem = async (req: Request, res: Response) => {
-    const itemId = parseInt(req.params.id);
+// export const editItem = async (req: Request, res: Response) => {
+//   try {
+//     const {
+//       id,
+//       nome,
+//       relatorios,
+//       empresa_id,
+//       imagem1,
+//       imagem2,
+//       imagem3,
+//       modulo_id,
+//     } = req.body;
 
-    const item = await prisma.itens.findUnique({
-        where: { id: itemId },
-    });
+//     // Check if the Modulo ID is valid
+//     const modulo = await prisma.modulos.findUnique({
+//       where: { id: modulo_id },
+//     });
 
-    if (!item) {
-        return res.status(404).json({ message: 'Item não encontrado.' });
-    }
+//     if (!modulo) {
+//       return res.status(404).json({ error: 'Modulo not found' });
+//     }
 
-    res.json(item);
-};
+//     // Check if the Item ID is valid
+//     const existingItem = await prisma.itens.findUnique({
+//       where: { id },
+//       include: {
+//         menu: true,
+//         menu: {
+//           include: {
+//             empresa: true,
+//           },
+//         },
+//       },
+//     });
 
-export const updateItem = async (req: Request, res: Response) => {
-    const itemId = parseInt(req.params.id);
-    const { nome, menus_id } = req.body;
+//     if (!existingItem) {
+//       return res.status(404).json({ error: 'Item not found' });
+//     }
 
-    const existingItem = await prisma.itens.findUnique({
-        where: { id: itemId },
-    });
+//     // Atualiza os campos apenas se um novo valor for fornecido
+//     const updatedFields: any = {
+//       nome,
+//       modulos: {
+//         connect: { id: modulo_id },
+//       },
+//       empresa: {
+//         connect: { id: empresa_id },
+//       },
+//     };
 
-    if (!existingItem) {
-        return res.status(404).json({ message: 'Item não encontrado.' });
-    }
+//     if (imagem1) {
+//       updatedFields.imagem1 = imagem1;
+//     }
 
-    try {
-        const existingMenu = await prisma.menus.findUnique({
-            where: { id: menus_id },
-        });
+//     if (imagem2) {
+//       updatedFields.imagem2 = imagem2;
+//     }
 
-        if (!existingMenu) {
-            return res.status(404).json({ message: 'Menu não encontrado.' });
-        }
+//     if (imagem3) {
+//       updatedFields.imagem3 = imagem3;
+//     }
 
-        const updatedItem = await prisma.itens.update({
-            where: { id: itemId },
-            data: {
-                nome,
-                menus_id,
-            },
-        });
+//     const updatedMenu = await prisma.menus.update({
+//       where: { id: existingItem.menu.id },
+//       data: updatedFields,
+//     });
 
-        res.json(updatedItem);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Erro ao atualizar o item.' });
-    } finally {
-        await prisma.$disconnect();
-    }
-};
+//     const updatedRelatorios = await prisma.relatorios.updateMany({
+//       where: { item_id: id },
+//       data: {
+//         nome: { set: relatorios.map((relatorio: any) => relatorio.nome) },
+//         relatorio: { set: relatorios.map((relatorio: any) => relatorio.relatorio) },
+//       },
+//     });
 
-export const deleteItem = async (req: Request, res: Response) => {
-    const itemId = parseInt(req.params.id);
-
-    const existingItem = await prisma.itens.findUnique({
-        where: { id: itemId },
-    });
-
-    if (!existingItem) {
-        return res.status(404).json({ message: 'Item não encontrado.' });
-    }
-
-    try {
-        await prisma.itens.delete({
-            where: { id: itemId },
-        });
-
-        res.status(204).send();
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Erro ao excluir o item.' });
-    } finally {
-        await prisma.$disconnect();
-    }
-};
-
-export const getAllItens = async (req: Request, res: Response) => {
-    try {
-        const itens = await prisma.itens.findMany();
-        res.json(itens);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Erro ao buscar itens.' });
-    } finally {
-        await prisma.$disconnect();
-    }
-};
+//     res.status(200).json({ menu: updatedMenu, relatorios: updatedRelatorios });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Item update failed' });
+//   } finally {
+//     await prisma.$disconnect();
+//   }
+// };
