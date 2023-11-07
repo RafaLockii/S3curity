@@ -3,9 +3,19 @@ import { Sidebar, Menu, MenuItem, SidebarProps, SubMenu} from 'react-pro-sidebar
 import { HouseSimple, Buildings, User, ListDashes, ArrowDown, ChartLineUp } from 'phosphor-react';
 import {useRouter} from 'next/router'
 import { useUserContext } from '@/context/UserContext';
+import { useState, useEffect } from 'react';
 
 interface SidebarInfoProps{
   empresa: string;
+}
+
+interface MenuItemProps{
+  label: string;
+  itens: itemProps[];
+}
+
+interface itemProps{
+  label: string;
 }
 
 export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
@@ -16,6 +26,40 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
     }
     const {empresa} = props;
     const {user} = useUserContext();
+    const [menuItens, setMenuItens] = useState<MenuItemProps[]>();
+
+    useEffect(() => {
+      setMenuItens([
+        {
+          label: 'Menu 01',
+          itens: [
+            {
+              label: 'Item 01',
+            },
+            {
+              label: 'Item 02',
+            },
+            {
+              label: 'Item 03',
+            },
+          ],
+        },
+        {
+          label: 'Menu 02',
+          itens: [
+            {
+              label: 'Item 01',
+            },
+            {
+              label: 'Item 02',
+            },
+            {
+              label: 'Item 03',
+            },
+          ],
+        },
+      ]);
+    }, []);
 
   return (
     <div className={styles.container}>
@@ -54,9 +98,13 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                   <MenuItem icon={<User/>} onClick={() => handleMenuClick('users')}>Usuários</MenuItem>
 
                   <SubMenu title="Menu" icon={<ListDashes/>} label='Menu'>
-                        <SubMenu title='Itens' label='Itens' icon={<ListDashes/>}>
-                        <MenuItem icon={<ChartLineUp/>} onClick={()=> handleMenuClick('reports')}>Relátorio</MenuItem>
-                        </SubMenu>                    
+                        {menuItens?.map((menu) => (
+                          <SubMenu title={menu.label} icon={<ListDashes/>} label={menu.label}>
+                            {menu.itens.map((subItem) => (
+                              <MenuItem icon={<ChartLineUp/>} onClick={()=> handleMenuClick('reports')}>{subItem.label}</MenuItem>
+                            ))}
+                          </SubMenu>
+                        ))}
                   </SubMenu>
                   
                 
