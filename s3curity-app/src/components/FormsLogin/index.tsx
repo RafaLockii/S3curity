@@ -50,6 +50,7 @@ export default function FormLogin({ empresa }: FormLoginProps) {
                     token: response.data.token,
                     email: response.data.email,
                     nome: response.data.nome,
+                    acesso_admin: true,
                 });
                 await router.push(`/home/${empresa}`);
             } else if (response.status === 404) {

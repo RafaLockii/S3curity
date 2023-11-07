@@ -5,6 +5,7 @@ type User = {
   token: string;
   email: string;
   nome: string;
+  acesso_admin: boolean;
 };
 
 type UserContextType = {
@@ -32,6 +33,7 @@ export const UserProvider = ({ children }: UserProviderProps) => {
     token: '',
     email: '',
     nome: '',
+    acesso_admin: false,
   });
 
   return (

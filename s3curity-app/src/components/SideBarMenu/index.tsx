@@ -95,8 +95,9 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                   {empresa == 's3curity' && (
                   <MenuItem icon={<Buildings/>} onClick={() => handleMenuClick('enterprises')}>Empresas</MenuItem>
                   )}
-                  <MenuItem icon={<User/>} onClick={() => handleMenuClick('users')}>Usuários</MenuItem>
-
+                  {user?.acesso_admin == true && (
+                   <MenuItem icon={<User/>} onClick={() => handleMenuClick('users')}>Usuários</MenuItem>
+                  )}
                   <SubMenu title="Menu" icon={<ListDashes/>} label='Menu'>
                         {menuItens?.map((menu) => (
                           <SubMenu title={menu.label} icon={<ListDashes/>} label={menu.label}>
