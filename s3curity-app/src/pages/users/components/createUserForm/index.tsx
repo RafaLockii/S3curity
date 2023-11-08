@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { set, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import styles from "./styles.module.css";
@@ -49,6 +49,11 @@ interface CreateUserformProps {
   empresas: EmpresaData[];
 }
 
+interface draggableItensProps{
+  label: string;
+  type: string;
+}
+
 type RegisterFormData = z.infer<typeof registerFormShceme>;
 
 export default function CreateUserForm(empresa: CreateUserformProps) {
@@ -67,7 +72,35 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
  //pega informação do usuário logado
  const {user} = useUserContext();
 
-  console.log("Id da Empresa: " + empresa.empresaid)
+
+//Bloco de itens arrastáveis
+ const [draggableItens, setDraggableItens] = useState<draggableItensProps[]>([
+  {
+    label: "Contas",
+    type: "Menu",
+ },
+  {
+    label: "Conta 01",
+    type: "Item",
+ }
+]);
+
+const [droppedItems, setDroppedItems] = useState<draggableItensProps[]>([]);
+
+function handleDragStart(e: React.DragEvent, itemType: draggableItensProps) {
+  e.dataTransfer.setData("itemType", JSON.stringify(itemType));
+}
+
+function handleDrop(e: React.DragEvent) {
+  e.preventDefault();
+  const item = JSON.parse(e.dataTransfer.getData("itemType")) as draggableItensProps;
+  setDroppedItems([...droppedItems, item]);
+}
+
+function handleDragOver(e: React.DragEvent) {
+  e.preventDefault();
+}
+
 
   
   //Opções do select
@@ -76,15 +109,12 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
     { value: 2, label: "Gerencial" },
     { value: 3, label: "Estratégico" },
   ];
-  console.log(options)
 
   const empresaOptions = empresa.empresas.map((empresaData) => ({
     value: empresaData.id,
     label: empresaData.nome,
   }));
 
-  console.log(empresaOptions)
-  console.log("EMPRESA DO PARAMETRO"+ empresa.empresaid)
 
   const {back} = useRouter();
 
@@ -128,7 +158,7 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
 
 
   return (
-    <div>
+    <div className={styles.formContainer}>
       <form  className={styles.form} onSubmit={handleSubmit(handleRegister)}>
         <div className={styles.inputWithContents}>
             <input
@@ -239,6 +269,28 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
         </button>
         
       </form>
+
+      <div className={styles.draggableBoxOutput}>
+        {draggableItens.map((item) => (
+          <div
+            key={item.label}
+            draggable
+            onDragStart={(e) => handleDragStart(e, item)}
+          >
+            {item.label}
+          </div>
+        ))}
+      </div>
+      
+      <div
+        className={styles.draggableBoxInput}
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+      >
+        {droppedItems.map((item, index) => (
+          <div key={index}>{item.label}</div>
+        ))}
+      </div>
       
     </div>
   );
