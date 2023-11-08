@@ -9,6 +9,7 @@ import tokenRoutes from './src/routes/token';
 
 import prisma from './src/services/prisma';
 import loginRoutes from './src/routes/login';
+import logoRoutes from './src/routes/logo';
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -23,6 +24,7 @@ app.use(cargoRoutes);
 app.use(userRoutes);
 app.use(loginRoutes);
 app.use(tokenRoutes);
+app.use(logoRoutes);
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
