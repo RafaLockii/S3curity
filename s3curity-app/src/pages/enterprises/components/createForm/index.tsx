@@ -7,6 +7,7 @@ import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { api } from "@/lib/axios";
 import { useUserContext } from "@/context/UserContext";
 import Select from "react-select";
+import { useState } from "react";
 
 
 const registerFormShceme = z.object({
@@ -41,12 +42,31 @@ export default function CreateForm() {
 
   const{user} = useUserContext();
 
+  const [menus, setMenus] = useState(['']); // Initialize with one menu input
+  const [itens, setItens] = useState(['']);
+  const [relatorios, setRelatorios] = useState(['']);
+
+  const addInput = (type: string) => {
+    if(type === 'menu'){
+      setMenus([...menus, '']); // Add another menu input
+    };
+    if(type === 'item'){
+      setItens([...itens, '']); // Add another item input
+    };
+    if(type === 'relatorio'){
+      setRelatorios([...relatorios, '']); // Add another relatorio input
+    };
+  };
+
+
    //Opções do select
    const options = [
     { value: 1, label: "Operacional" },
     { value: 2, label: "Gerencial" },
     { value: 3, label: "Estratégico" },
   ];
+
+
   const handleSelectChange = (selectedOption: any) => {
     setValue("modulo", selectedOption.value); // Atualiza o valor no registro
   };
@@ -136,45 +156,75 @@ export default function CreateForm() {
             <div className={styles.formAnnotation}>{errors.background_img.message}</div>
           )}
         </div>
-        <div className={styles.inputWithContents}>
-          <input
-            type="text"
-            id="menu"
-            placeholder="Menus"
-            {...register("menu")}
-            className={styles.input}
-          />
-            <CloudArrowUp />
-          {errors.background_img && (
-            <div className={styles.formAnnotation}>{errors.background_img.message}</div>
-          )}
-        </div>
-        <div className={styles.inputWithContents}>
-          <input
-            type="text"
-            id="item"
-            placeholder="Itens"
-            {...register("item")}
-            className={styles.input}
-          />
-            <CloudArrowUp />
-          {errors.background_img && (
-            <div className={styles.formAnnotation}>{errors.background_img.message}</div>
-          )}
-        </div>
-        <div className={styles.inputWithContents}>
-          <input
-            type="text"
-            id="relatorio"
-            placeholder="Relatorios"
-            {...register("relatorio")}
-            className={styles.input}
-          />
-            <CloudArrowUp />
-          {errors.background_img && (
-            <div className={styles.formAnnotation}>{errors.background_img.message}</div>
-          )}
-        </div>
+        {menus.map((menu, index) => (
+          <div className={styles.inputWithContents}>
+            <input
+              type="text"
+              id="menu"
+              placeholder="Menu"
+              {...register("menu")}
+              className={styles.input}
+            />
+              <CloudArrowUp />
+            {errors.background_img && (
+              <div className={styles.formAnnotation}>{errors.background_img.message}</div>
+            )}
+          </div>
+        ))}
+        <button
+          className={styles.addButton}
+          type="button"
+          onClick={() => addInput('menu')}
+        >
+          Adicionar +
+        </button>
+        
+        {itens.map((item, index) => (
+          <div className={styles.inputWithContents}>
+            <input
+              type="text"
+              id="item"
+              placeholder="Itens"
+              {...register("item")}
+              className={styles.input}
+            />
+              <CloudArrowUp />
+            {errors.background_img && (
+              <div className={styles.formAnnotation}>{errors.background_img.message}</div>
+            )}
+          </div>
+        ))}
+        <button
+          className={styles.addButton}
+          type="button"
+          onClick={() => addInput('item')}
+        >
+          Adicionar +
+        </button>
+
+        {relatorios.map((relatorio, index) => (
+          <div className={styles.inputWithContents}>
+            <input
+              type="text"
+              id="relatorio"
+              placeholder="Relatórios"
+              {...register("relatorio")}
+              className={styles.input}
+            />
+              <CloudArrowUp />
+            {errors.background_img && (
+              <div className={styles.formAnnotation}>{errors.background_img.message}</div>
+            )}
+          </div>
+        ))}
+
+        <button
+          className={styles.addButton}
+          type="button"
+          onClick={() => addInput('relatorio')}
+        >
+          Adicionar +
+        </button>
         
         <button
         className={styles.createUserButton}
