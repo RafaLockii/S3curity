@@ -73,7 +73,7 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
  const {user} = useUserContext();
 
 
-//Bloco de itens arrastáveis
+//Bloco de itens arrastáveis ------------------------------------->
  const [draggableItens, setDraggableItens] = useState<draggableItensProps[]>([
   {
     label: "Contas",
@@ -100,6 +100,13 @@ function handleDrop(e: React.DragEvent) {
 function handleDragOver(e: React.DragEvent) {
   e.preventDefault();
 }
+
+function handleRemoveItem(item: draggableItensProps) {
+  const updatedDroppedItems = droppedItems.filter((i) => i !== item);
+  setDroppedItems(updatedDroppedItems);
+}
+
+//Fim do bloco de itens arrastáveis ------------------------------------->
 
 
   
@@ -290,7 +297,12 @@ function handleDragOver(e: React.DragEvent) {
         onDragOver={handleDragOver}
       >
         {droppedItems.map((item, index) => (
-          <div key={index} className={styles.draggableItens}>
+          <div 
+          key={index}
+          className={styles.draggableItens}
+          draggable
+          onDragStart={(e) => handleDragStart(e, item)}
+          onDragEnd={() => handleRemoveItem(item)}>
             <div>{item.label}</div>
             <div>{item.type}</div>
           </div>
