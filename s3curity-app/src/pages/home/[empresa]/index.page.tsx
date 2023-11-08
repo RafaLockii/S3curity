@@ -24,7 +24,7 @@ console.log("Token: "+user?.token);
                     <p>Home</p>
                 </div>
                 <div className={styles.carouselContainer}>
-                    <CarouselComponent/>
+                    <CarouselComponent empresa={empresa}/>
                 </div>
                 <div className={styles.textContainer}>
                     <div className={styles.mainText}>

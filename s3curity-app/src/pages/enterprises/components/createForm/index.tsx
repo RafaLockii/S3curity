@@ -165,19 +165,18 @@ export default function CreateForm() {
               {...register("menu")}
               className={styles.input}
             />
-              <CloudArrowUp />
             {errors.background_img && (
               <div className={styles.formAnnotation}>{errors.background_img.message}</div>
             )}
           </div>
         ))}
-        <button
+        {/* <button
           className={styles.addButton}
           type="button"
           onClick={() => addInput('menu')}
         >
           Adicionar +
-        </button>
+        </button> */}
         
         {itens.map((item, index) => (
           <div className={styles.inputWithContents}>
@@ -188,19 +187,18 @@ export default function CreateForm() {
               {...register("item")}
               className={styles.input}
             />
-              <CloudArrowUp />
             {errors.background_img && (
               <div className={styles.formAnnotation}>{errors.background_img.message}</div>
             )}
           </div>
         ))}
-        <button
+        {/* <button
           className={styles.addButton}
           type="button"
           onClick={() => addInput('item')}
         >
           Adicionar +
-        </button>
+        </button> */}
 
         {relatorios.map((relatorio, index) => (
           <div className={styles.inputWithContents}>
@@ -211,20 +209,19 @@ export default function CreateForm() {
               {...register("relatorio")}
               className={styles.input}
             />
-              <CloudArrowUp />
             {errors.background_img && (
               <div className={styles.formAnnotation}>{errors.background_img.message}</div>
             )}
           </div>
         ))}
 
-        <button
+        {/* <button
           className={styles.addButton}
           type="button"
           onClick={() => addInput('relatorio')}
         >
           Adicionar +
-        </button>
+        </button> */}
         
         <button
         className={styles.createUserButton}

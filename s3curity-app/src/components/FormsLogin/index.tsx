@@ -17,11 +17,12 @@ const registerFormScheme = z.object({
 
 interface FormLoginProps {
     empresa: string;
+    logoUrl: string;
 }
 
 type RegisterFormData = z.infer<typeof registerFormScheme>;
 
-export default function FormLogin({ empresa }: FormLoginProps) {
+export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
     const {
         register,
         handleSubmit,
@@ -68,7 +69,7 @@ export default function FormLogin({ empresa }: FormLoginProps) {
 
     return (
         <div className={styles.formContainer}>
-            <Image src={logo} alt='' className={styles.logo} />
+            <img src={logoUrl} alt='' className={styles.logo} />
             <form onSubmit={handleSubmit(handleRegister)}>
                 <input className={styles.input} placeholder="Email" {...register('email')} />
 
