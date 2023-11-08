@@ -278,6 +278,7 @@ function handleRemoveItem(item: draggableItensProps) {
       </form>
 
       <div className={styles.draggableBoxOutput}>
+        <h4>Escolha Suas opções</h4>
         {draggableItens.map((item) => (
           <div
             key={item.label}
@@ -296,6 +297,7 @@ function handleRemoveItem(item: draggableItensProps) {
         onDrop={handleDrop}
         onDragOver={handleDragOver}
       >
+        {droppedItems.length === 0 && <h4>Arraste os itens aqui</h4>}
         {droppedItems.map((item, index) => (
           <div 
           key={index}
