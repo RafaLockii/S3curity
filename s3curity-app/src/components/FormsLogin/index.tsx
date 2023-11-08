@@ -39,7 +39,7 @@ export default function FormLogin({ empresa }: FormLoginProps) {
     async function handleRegister(data: RegisterFormData) {
         try {
             const response = await api.post('login', {
-                login: data.email,
+                email: data.email,
                 senha: data.senha,
             });
 
@@ -50,7 +50,7 @@ export default function FormLogin({ empresa }: FormLoginProps) {
                     token: response.data.token,
                     email: response.data.email,
                     nome: response.data.nome,
-                    acesso_admin: true,
+                    acesso_admin: response.data.isAdmin,
                 });
                 await router.push(`/home/${empresa}`);
             } else if (response.status === 404) {

@@ -58,6 +58,20 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
             },
           ],
         },
+        {
+          label: 'Menu 02',
+          itens: [
+            {
+              label: 'Item 01',
+            },
+            {
+              label: 'Item 02',
+            },
+            {
+              label: 'Item 03',
+            },
+          ],
+        },
       ]);
     }, []);
 

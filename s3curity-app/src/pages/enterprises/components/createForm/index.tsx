@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { api } from "@/lib/axios";
 import { useUserContext } from "@/context/UserContext";
+import Select from "react-select";
+
 
 const registerFormShceme = z.object({
   nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s0-9]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
@@ -15,6 +17,10 @@ const registerFormShceme = z.object({
   }, { message: 'CNPJ inválido' }),
   logo: z.string().min(1, {message: 'Preencha o campo'}),
   background_img: z.string().min(1, {message: 'Preencha o campo'}),
+  modulo: z.string().min(1, {message: 'Preencha o campo'}),
+  menu: z.string().min(1, {message: 'Preencha o campo'}),
+  item: z.string().min(1, {message: 'Preencha o campo'}),
+  relatorio: z.string().min(1, {message: 'Preencha o campo'}),
   // data_criacao: z.string().min(1, {message: 'Preencha o campo'}),
   // usuario_criacao: z.string().min(1, {message: 'Preencha o campo'}),
   // data_alteracao: z.string().min(1, {message: 'Preencha o campo'}),
@@ -34,6 +40,16 @@ export default function CreateForm() {
   });
 
   const{user} = useUserContext();
+
+   //Opções do select
+   const options = [
+    { value: 1, label: "Operacional" },
+    { value: 2, label: "Gerencial" },
+    { value: 3, label: "Estratégico" },
+  ];
+  const handleSelectChange = (selectedOption: any) => {
+    setValue("modulo", selectedOption.value); // Atualiza o valor no registro
+  };
 
   const {back} = useRouter();
 
@@ -57,7 +73,7 @@ export default function CreateForm() {
   }
 
   return (
-    <div>
+    <div className={styles.formContainer}>
       
       <form className={styles.form}>
         <div className={styles.inputWithContents}>
@@ -99,7 +115,7 @@ export default function CreateForm() {
           <input
             type="text"
             id="background_img"
-            placeholder="Imagem de fundo"
+            placeholder="Imagem Carrosel"
             {...register("background_img")}
             className={styles.input}
           />
@@ -108,46 +124,57 @@ export default function CreateForm() {
             <div className={styles.formAnnotation}>{errors.background_img.message}</div>
           )}
         </div>
-        {/* <div className={styles.inputWithContents}>
-          <input
-            className={styles.input}
-            placeholder="Data de Criação"
-            {...register("data_criacao")}
-          ></input>
-          {errors.data_criacao && (
-            <div className={styles.formAnnotation}>{errors.data_criacao.message}</div>
+        <div className={styles.inputWithContents}>
+        <Select
+          options={options}
+          className={styles.input}
+          // Adicione o evento onChange
+          onChange={handleSelectChange}
+          placeholder="Modulo Default"
+        />
+          {errors.background_img && (
+            <div className={styles.formAnnotation}>{errors.background_img.message}</div>
           )}
-        </div> */}
-        {/* <div className={styles.inputWithContents}>
+        </div>
+        <div className={styles.inputWithContents}>
           <input
+            type="text"
+            id="menu"
+            placeholder="Menus"
+            {...register("menu")}
             className={styles.input}
-            placeholder="Usuário de Criação"
-            {...register("usuario_criacao")}
-          ></input>
-          {errors.usuario_criacao && (
-            <div className={styles.formAnnotation}>{errors.usuario_criacao.message}</div>
+          />
+            <CloudArrowUp />
+          {errors.background_img && (
+            <div className={styles.formAnnotation}>{errors.background_img.message}</div>
           )}
-        </div> */}
-        {/* <div className={styles.inputWithContents}>
+        </div>
+        <div className={styles.inputWithContents}>
           <input
+            type="text"
+            id="item"
+            placeholder="Itens"
+            {...register("item")}
             className={styles.input}
-            placeholder="Data de Alteração"
-            {...register("data_alteracao")}
-          ></input>
-          {errors.data_alteracao && (
-            <div className={styles.formAnnotation}>{errors.data_alteracao.message}</div>
+          />
+            <CloudArrowUp />
+          {errors.background_img && (
+            <div className={styles.formAnnotation}>{errors.background_img.message}</div>
           )}
-        </div> */}
-        {/* <div className={styles.inputWithContents}>
+        </div>
+        <div className={styles.inputWithContents}>
           <input
+            type="text"
+            id="relatorio"
+            placeholder="Relatorios"
+            {...register("relatorio")}
             className={styles.input}
-            placeholder="Usuário de Alteração"
-            {...register("usuario_alteracao")}
-          ></input>
-          {errors.usuario_alteracao && (
-            <div className={styles.formAnnotation}>{errors.usuario_alteracao.message}</div>
+          />
+            <CloudArrowUp />
+          {errors.background_img && (
+            <div className={styles.formAnnotation}>{errors.background_img.message}</div>
           )}
-        </div> */}
+        </div>
         
         <button
         className={styles.createUserButton}

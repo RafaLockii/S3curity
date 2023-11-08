@@ -23,7 +23,7 @@
     margin-left: 2rem;
     display: flex;
     flex-direction: row;
-    width: 25%;
+    width: 50%;
     padding: 8px;
     margin-bottom: 3rem;
     border: none;
@@ -85,5 +85,11 @@
     padding: 0.5rem;
     border-radius: 5px;
     box-shadow: 5px 5px 5px 2px rgba(0,0,0,0.1);
+  }
+
+  .formContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
   }
   
