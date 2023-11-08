@@ -274,10 +274,12 @@ function handleDragOver(e: React.DragEvent) {
         {draggableItens.map((item) => (
           <div
             key={item.label}
+            className={styles.draggableItens}
             draggable
             onDragStart={(e) => handleDragStart(e, item)}
           >
-            {item.label}
+            <div>{item.label}</div>
+            <div>{item.type}</div>
           </div>
         ))}
       </div>
@@ -288,7 +290,10 @@ function handleDragOver(e: React.DragEvent) {
         onDragOver={handleDragOver}
       >
         {droppedItems.map((item, index) => (
-          <div key={index}>{item.label}</div>
+          <div key={index} className={styles.draggableItens}>
+            <div>{item.label}</div>
+            <div>{item.type}</div>
+          </div>
         ))}
       </div>
       
