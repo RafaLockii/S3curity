@@ -1,18 +1,20 @@
 import styles from './styles.module.css';
 import Image from 'next/image';
 import logo from '../../../public/images/logo.png';
+import { useImageContext } from '@/context/imagesContext';
 
 interface HeaderProps {
     logoUrl: string;
 }
 
 export function Header({logoUrl}: HeaderProps) {
+    const { image, setImage } = useImageContext();
     return(
         <header>
             <div className={styles.Content}>
                 <section className={styles.sectionContent}>
                     <Image 
-                        src={logoUrl}
+                        src={image?.logo || logo}
                         alt='Logo'
                         quality={100}
                         width={200}

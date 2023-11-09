@@ -4,6 +4,8 @@ import styles from './styles.module.css';
 import {useRouter} from 'next/router';
 import { use, useEffect, useState } from 'react';
 import { api } from '@/lib/axios';
+import { useImageContext } from '@/context/imagesContext';
+import { set } from 'zod';
 
 interface ImagemProps {
     img01: string;
@@ -16,6 +18,7 @@ export default function SignIn() {
 
     const {query} = useRouter();
     const empresa = typeof query.empresa == 'string' ? query.empresa : "";
+    const { image, setImage } = useImageContext();
     const [images, setImages] = useState<ImagemProps>({
         img01: '',
         img02: '',
@@ -35,6 +38,9 @@ export default function SignIn() {
                         img03: response.data.carrosseis[0].imagem_3,
                         logo: response.data.logo
                     });
+                    setImage({
+                        logo: response.data.logo
+                    })
                     console.log("Imagens: " + images);
                 }
             } catch (e) {

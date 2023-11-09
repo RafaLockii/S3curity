@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/lib/axios";
 import { useUserContext } from '@/context/UserContext'; // Importe o UserContext com a tipagem
+import { useImageContext } from '@/context/imagesContext'; // Importe o ImageContext com a tipagem
 
 const registerFormScheme = z.object({
     email: z.string().email({ message: 'E-mail inválido' }),
@@ -35,7 +36,7 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     //Utilização do contexto
     const { user, setUser } = useUserContext();
-    console.log(user);
+    const { image, setImage } = useImageContext();
 
     async function handleRegister(data: RegisterFormData) {
         try {
