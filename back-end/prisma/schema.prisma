@@ -98,7 +98,6 @@ model Menus {
   empresa Empresa @relation(fields: [empresa_id], references: [id])
   modulos Modulos @relation(fields: [modulos_id], references: [id])
   itens   Itens[]
-  carrosseis Carrossel[]
 }
 
 model Itens {
@@ -120,14 +119,11 @@ model relatorios {
 }
 
 model Carrossel {
-  id           Int      @id @default(autoincrement())
-  imagem_1     String?
-  imagem_2     String?
-  imagem_3     String?
-  menus_id     Int
-  empresa_id   Int
+  id         Int    @id @default(autoincrement())
+  nome       String
+  empresa_id Int
+
   data_criacao DateTime
 
-  menus Menus @relation(fields: [menus_id], references: [id]) // Agora é uma relação para Menus
   empresa Empresa @relation(fields: [empresa_id], references: [id])
 }

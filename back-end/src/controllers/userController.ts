@@ -127,7 +127,6 @@ export const editUser = async (req: Request, res: Response) => {
             return res.status(404).json({ message: 'Usuário não encontrado.' });
         }
 
-        // Atualize as informações do usuário no banco de dados
         const updatedUser = await prisma.user.update({
             where: {
                 id: userId,
@@ -359,12 +358,6 @@ export const deleteUser = async (req: Request, res: Response) => {
                 where: { id: editingUser.funcionario.imagem_perfil_id },
             });
         }
-
-        // if (editingUser.funcionario.empresa) {
-        //     await prisma.empresa.delete({
-        //         where: { id: editingUser.funcionario.empresa.id },
-        //     });
-        // }
 
         await prisma.user.delete({
             where: { id: userId },
