@@ -29,4 +29,27 @@
   .carouselBox:last-child {
     clip-path: polygon(0 0, 100% 0, 100% 50%, 0 50%);
   }
+
+  .imageBox {
+    border: 2px solid #ccc; /* Add a border to each image */
+    padding: 16px; /* Add padding around each image */
+    margin: 8px; /* Add margin between each image */
+    text-align: center; /* Center-align the image within the box */
+    box-shadow: 0 0 4px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow */
+    width: 15vw;
+    height: 30vh;
+    display: flex;
+  }
+  
+  /* Style for the container div */
+  .imageContainer {
+    display: flex; /* Display images in a row */
+    justify-content: space-between; /* Add spacing between images */
+  }
+
+  .carouselStyle{
+    width: 70%;
+    margin: 0 auto;
+    margin-bottom: 3rem;
+  }
   

@@ -1,5 +1,5 @@
-import { Carousel } from 'react-responsive-carousel';
-import 'react-responsive-carousel/lib/styles/carousel.min.css';
+import Carousel from "react-multi-carousel";
+import "react-multi-carousel/lib/styles.css";
 import styles from './styles.module.css';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -7,52 +7,60 @@ import { api } from '@/lib/axios';
 
 interface CarouselProps {
     empresa: string;
-}
-
-interface ImagemProps {
     img01: string;
     img02: string;
     img03: string;
-    logo: string;
 }
 
-export default function CarouselComponent({ empresa }: CarouselProps) {
-    const [images, setImages] = useState<ImagemProps>({
-        img01: '',
-        img02: '',
-        img03: '',
-        logo: ''
-    });
+const responsive = {
+  desktop: {
+    breakpoint: { max: 3000, min: 1024 },
+    items: 3,
+    slidesToSlide: 3 // optional, default to 1.
+  },
+  tablet: {
+    breakpoint: { max: 1024, min: 464 },
+    items: 2,
+    slidesToSlide: 2 // optional, default to 1.
+  },
+  mobile: {
+    breakpoint: { max: 464, min: 0 },
+    items: 1,
+    slidesToSlide: 1 // optional, default to 1.
+  }
+};
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                if (empresa) {
-                    console.log("Empresa params: " + empresa);
-                    const response = await api.get(`logo/${empresa}`);
-                    setImages({
-                        img01: response.data.carrosseis[0].imagem_1,
-                        img02: response.data.carrosseis[0].imagem_2,
-                        img03: response.data.carrosseis[0].imagem_3,
-                        logo: response.data.logo
-                    });
-                    console.log("Imagens: " + images);
-                }
-            } catch (e) {
-                console.log("CATCH Empresa: " + empresa);
-                console.error("Erro: " + e);
-            }
-        }
-        fetchData();
-    }, []);
+export default function CarouselComponent({ empresa, img01, img02, img03 }: CarouselProps) {
+   
 
     return (
-        <div>
-          <Carousel swipeable={true} emulateTouch showThumbs={false}>
-              <img src={images.img01} alt='' className={styles.carouselBox} />
-              <img src={images.img02} alt='' className={styles.carouselBox} />
-              <img src={images.img03} alt='' className={styles.carouselBox} />
-          </Carousel>
-        </div>
+        <div className={styles.carouselStyle}>
+        {img01 && (
+          <Carousel
+          swipeable={true}
+          draggable={true}
+          showDots={false}
+          responsive={responsive}
+          ssr={true} // means to render carousel on server-side.
+          infinite={true}
+          autoPlay={false}
+          autoPlaySpeed={1000}
+          keyBoardControl={true}
+          customTransition="all .5"
+          transitionDuration={500}
+          containerClass="carousel-container"
+          removeArrowOnDeviceType={["tablet", "mobile"]}
+          dotListClass="custom-dot-list-style"
+          itemClass="carousel-item-padding-40-px"
+          
+        >
+          <img src={img01} alt='' className={styles.imageBox}></img>
+          <img src={img02} alt='' className={styles.imageBox}></img>
+          <img src={img03} alt='' className={styles.imageBox}></img>
+          {/* <img src='https://static.todamateria.com.br/upload/ca/va/cavalo-og.jpg?class=ogImageWide' alt='' className={styles.imageBox}></img>
+          <img src='https://static.todamateria.com.br/upload/ca/va/cavalo-og.jpg?class=ogImageWide' alt='' className={styles.imageBox}></img> */}
+        </Carousel>
+        )}
+      </div>
       );
 }

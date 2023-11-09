@@ -4,28 +4,62 @@ import { Header } from "@/components/header";
 import CarouselComponent from "@/components/Carousel";
 import userRouter from 'next/router';
 import { useUserContext } from "@/context/UserContext";
+import { useEffect, useState } from "react";
+import { api } from "@/lib/axios";
+
+interface ImagemProps {
+    img01: string;
+    img02: string;
+    img03: string;
+    logo: string;
+}
 
 export default function Home() {
     
 const{query} = userRouter;
 const empresa = typeof query.empresa == 'string' ? query.empresa : "";
 const {user} = useUserContext();
-console.log("ID: "+user?.id);
-console.log("Token: "+user?.token);
+
+const [images, setImages] = useState<ImagemProps>({
+    img01: '',
+    img02: '',
+    img03: '',
+    logo: ''
+});
+
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                if (empresa) {
+                    console.log("Empresa params: " + empresa);
+                    const response = await api.get(`logo/${empresa}`);
+                    setImages({
+                        img01: response.data.carrosseis[0].imagem_1,
+                        img02: response.data.carrosseis[0].imagem_2,
+                        img03: response.data.carrosseis[0].imagem_3,
+                        logo: response.data.logo
+                    });
+                    console.log("Imagens: " + images);
+                }
+            } catch (e) {
+                console.log("CATCH Empresa: " + empresa);
+                console.error("Erro: " + e);
+            }
+        }
+        fetchData();
+    }, [empresa]);
 
     return (
        <div className={styles.pageContainer}>
             <SidebarMenu empresa={empresa}/>
             <div className={styles.header}>
-                <Header/>
+                <Header logoUrl={images.logo}/>
             </div>
             <div className={styles.container}>
                 <div className={styles.containerHeader}>
                     <p>Home</p>
                 </div>
-                <div className={styles.carouselContainer}>
-                    <CarouselComponent empresa={empresa}/>
-                </div>
+                    <CarouselComponent empresa={empresa} img01={images.img01} img02={images.img02} img03={images.img03} />
                 <div className={styles.textContainer}>
                     <div className={styles.mainText}>
                         A Proteção da sua empresa é a nossa prioridade

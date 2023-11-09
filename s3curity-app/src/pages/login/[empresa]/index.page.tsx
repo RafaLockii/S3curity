@@ -48,7 +48,7 @@ export default function SignIn() {
 
     return(
         <div className={styles.container}>
-            <Carousel empresa={empresa}/>
+            <Carousel empresa={empresa} img01={images.img01} img02={images.img02} img03={images.img03}/>
             <FormLogin empresa={empresa} logoUrl={images.logo}/>
         </div>
     )
