@@ -200,3 +200,49 @@ export const getEmpresa = async (req: Request, res: Response) => {
         res.status(500).json({ message: 'Erro ao buscar as informações da empresa.' });
     }
 };
+
+export const getEmpresaByName = async (req: Request, res: Response) => {
+    const { nome } = req.body;
+
+    try {
+        const empresa = await prisma.empresa.findUnique({
+            where: {
+                nome: nome,
+            },
+            include: {
+                carrosseis: true,
+                funcionarios: true,
+            },
+        });
+
+        if (!empresa) {
+            return res.status(404).json({ message: 'Empresa não encontrada.' });
+        }
+
+        const formattedEmpresa = {
+            id: empresa.id,
+            nome: empresa.nome,
+            razao_s: empresa.razao_s,
+            logo: empresa.logo,
+            data_alt: empresa.data_alt,
+            imagem_fundo: empresa.imagem_fundo,
+            usuario_criacao: empresa.usuario_criacao,
+            data_criacao: empresa.data_criacao.toLocaleString(),
+            usuario_cad_alt: empresa.usuario_cad_alt,
+            carrosseis: empresa.carrosseis,
+            numero_funcionarios: empresa.funcionarios.length,
+        };
+
+        if (!formattedEmpresa) {
+            res.status(404).json({ error: "Empresa not found" });
+            return;
+        }
+
+        res.status(200).json({ formattedEmpresa });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to get empresa" });
+    } finally {
+        await prisma.$disconnect();
+    }
+};
