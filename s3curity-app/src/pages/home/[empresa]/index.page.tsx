@@ -27,33 +27,36 @@ const [images, setImages] = useState<ImagemProps>({
     logo: ''
 });
 
-    useEffect(() => {
-        async function fetchData() {
-            try {
-                if (empresa) {
-                    console.log("Empresa params: " + empresa);
-                    const response = await api.get(`logo/${empresa}`);
-                    setImages({
-                        img01: response.data.carrosseis[0].imagem_1,
-                        img02: response.data.carrosseis[0].imagem_2,
-                        img03: response.data.carrosseis[0].imagem_3,
-                        logo: response.data.logo
-                    });
-                    console.log("Imagens: " + images);
-                }
-            } catch (e) {
-                console.log("CATCH Empresa: " + empresa);
-                console.error("Erro: " + e);
+useEffect(() => {
+    async function fetchData() {
+        try {
+            if (empresa) {
+                console.log("Empresa params: " + empresa);
+                const response = await api.get(`empresa_name/${empresa}`);
+                response.data.formattedEmpresa.carrosseis.map((item: any) => {
+                    console.log(item.nome)
+                });
+                setImages({
+                    img01: response.data.formattedEmpresa.carrosseis[0].nome,
+                    img02: response.data.formattedEmpresa.carrosseis[1].nome,
+                    img03: response.data.formattedEmpresa.carrosseis[2].nome,
+                    logo: response.data.formattedEmpresa.logo
+                });
+                console.log("Imagens: " + images);
             }
+        } catch (e) {
+            console.log("CATCH Empresa: " + empresa);
+            console.error("Erro: " + e);
         }
-        fetchData();
-    }, [empresa]);
+    }
+    fetchData();
+}, [empresa]);
 
     return (
        <div className={styles.pageContainer}>
             <SidebarMenu empresa={empresa}/>
             <div className={styles.header}>
-                <Header logoUrl={images.logo}/>
+                <Header/>
             </div>
             <div className={styles.container}>
                 <div className={styles.containerHeader}>

@@ -14,6 +14,7 @@ interface ImagemProps {
     logo: string;
 }
 
+
 export default function SignIn() {
 
     const {query} = useRouter();
@@ -31,15 +32,18 @@ export default function SignIn() {
             try {
                 if (empresa) {
                     console.log("Empresa params: " + empresa);
-                    const response = await api.get(`logo/${empresa}`);
+                    const response = await api.get(`empresa_name/${empresa}`);
+                    response.data.formattedEmpresa.carrosseis.map((item: any) => {
+                        console.log(item.nome)
+                    });
                     setImages({
-                        img01: response.data.carrosseis[0].imagem_1,
-                        img02: response.data.carrosseis[0].imagem_2,
-                        img03: response.data.carrosseis[0].imagem_3,
-                        logo: response.data.logo
+                        img01: response.data.formattedEmpresa.carrosseis[0].nome,
+                        img02: response.data.formattedEmpresa.carrosseis[1].nome,
+                        img03: response.data.formattedEmpresa.carrosseis[2].nome,
+                        logo: response.data.formattedEmpresa.logo
                     });
                     setImage({
-                        logo: response.data.logo
+                        logo: response.data.formattedEmpresa.logo
                     })
                     console.log("Imagens: " + images);
                 }
