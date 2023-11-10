@@ -1,22 +1,24 @@
 import { Request, Response } from 'express';
 import prisma from '../services/prisma';
 import { transporter } from '../services/nodemailer';
+import bcrypt from 'bcrypt';
 const speakeasy = require('speakeasy');
 
 export const createUser = async (req: Request, res: Response) => {
+    const {
+        nome,
+        senha,
+        email,
+        telefone,
+        usuario_criacao,
+        modulo_default,
+        acesso_admin,
+        cargo_id,
+        empresa_id,
+        imagem_perfil_url,
+    } = req.body;
+    
     try {
-        const {
-            nome,
-            senha,
-            email,
-            telefone,
-            usuario_criacao,
-            modulo_default,
-            acesso_admin,
-            cargo_id,
-            empresa_id,
-            imagem_perfil_url,
-        } = req.body;
 
         const existingUser = await prisma.user.findUnique({
             where: {
@@ -38,6 +40,8 @@ export const createUser = async (req: Request, res: Response) => {
             return res.status(400).json({ message: 'A empresa especificada não foi encontrada.' });
         }
 
+        const hashedPassword = await bcrypt.hash(senha, 10);
+
         const createdImagem = await prisma.imagem.create({
             data: {
                 url: imagem_perfil_url,
@@ -52,7 +56,7 @@ export const createUser = async (req: Request, res: Response) => {
         const user = await prisma.user.create({
             data: {
                 nome,
-                senha,
+                senha: hashedPassword,
                 email,
                 telefone,
                 token: code,
