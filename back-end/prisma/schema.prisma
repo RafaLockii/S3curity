@@ -39,17 +39,18 @@ model Funcionario {
   modulo_default    String
   acesso_admin      Boolean
   ativo             Boolean  @default(true)
-  cadastro_alterado DateTime
+  cadastro_alterado DateTime @updatedAt
   usuario_cad_alt   String
   cargo_id          Int?
   usuario_id        Int      @unique
   empresa_id        Int?
   imagem_perfil_id  Int?
 
-  imagem  Imagem?  @relation(fields: [imagem_perfil_id], references: [id])
+  imagem  Imagem?
   user    User     @relation(fields: [usuario_id], references: [id])
   empresa Empresa? @relation(fields: [empresa_id], references: [id])
   cargo   Cargos?  @relation(fields: [cargo_id], references: [cargo_id])
+  menus   Menus[]
 }
 
 model Empresa {
@@ -68,15 +69,16 @@ model Empresa {
 }
 
 model Imagem {
-  id           Int           @id @default(autoincrement())
-  caminho      String?
-  nome         String?
-  url          String
-  funcionarios Funcionario[]
+  id             Int         @id @default(autoincrement())
+  caminho        String?
+  nome           String?
+  url            String
+  funcionario_id Int         @unique
+  funcionario    Funcionario @relation(fields: [funcionario_id], references: [id])
 }
 
 model Cargos {
-  cargo_id     Int           @id @default(autoincrement()) 
+  cargo_id     Int           @id @default(autoincrement())
   nome_cargo   String
   permissoes   String
   funcionarios Funcionario[]
@@ -90,14 +92,16 @@ model Modulos {
 }
 
 model Menus {
-  id         Int    @id @default(autoincrement()) 
-  nome       String
-  modulos_id Int
-  empresa_id Int
+  id             Int    @id @default(autoincrement())
+  nome           String
+  modulos_id     Int
+  empresa_id     Int
+  funcionario_id Int?
 
-  empresa Empresa @relation(fields: [empresa_id], references: [id])
-  modulos Modulos @relation(fields: [modulos_id], references: [id])
-  itens   Itens[]
+  funcionario Funcionario? @relation(fields: [funcionario_id], references: [id])
+  empresa     Empresa      @relation(fields: [empresa_id], references: [id])
+  modulos     Modulos      @relation(fields: [modulos_id], references: [id])
+  itens       Itens[]
 }
 
 model Itens {

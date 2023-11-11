@@ -9,5 +9,7 @@ userRoutes.post('/user/create', UserController.createUser);
 userRoutes.post('/user/ativar', UserController.ativarUser);
 userRoutes.put('/user/edit/:id', UserController.editUser);
 userRoutes.delete('/user/:id', UserController.deleteUser);
+userRoutes.delete('/user/:funcionarioId/menu/:id', UserController.deleteMenu);
+userRoutes.get('/user/:id/menus', UserController.getUserAndCompanyMenus);
 
 export default userRoutes;
