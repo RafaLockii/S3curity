@@ -15,7 +15,8 @@ export const createUser = async (req: Request, res: Response) => {
     acesso_admin,
     cargo_id,
     empresa_id,
-    imagem_perfil_url
+    imagem_perfil_url,
+    menus_ids
   } = req.body;
 
   try {
@@ -90,6 +91,41 @@ export const createUser = async (req: Request, res: Response) => {
             }
         }
 
+        const funcionario = await prisma.funcionario.findUnique({
+            where: { id: user.funcionario?.id },
+        });
+
+        if (!funcionario) {
+            return res.status(404).json({ error: "Funcionario not found" });
+        }
+
+        const menus = await prisma.menus.findMany({
+            where: { id: { in: menus_ids } },
+        });
+
+        if (menus.length !== menus_ids.length) {
+            return res.status(404).json({ error: "One or more menus not found" });
+        }
+
+        const existingFuncionarioMenus = await prisma.funcionarioMenu.findMany({
+            where: { funcionarioId: funcionario.id },
+        });
+
+        const newMenus = menus.filter(
+            (menu: any) => !existingFuncionarioMenus.some((fm: any) => fm.menuId === menu.id)
+        );
+
+        const createdFuncionarioMenus = await Promise.all(
+            newMenus.map((menu: any) =>
+                prisma.funcionarioMenu.create({
+                    data: {
+                        funcionarioId: funcionario.id,
+                        menuId: menu.id,
+                    },
+                })
+            )
+        );
+
         if (user.token) {
         transporter.sendMail(
             {
@@ -130,7 +166,8 @@ export const editUser = async (req: Request, res: Response) => {
         ativo,
         cargo_id,
         empresa_id,
-        imagem_perfil_url
+        imagem_perfil_url,
+        menus_ids
         } = req.body;
 
         const existingUser = await prisma.user.findUnique({
@@ -190,7 +227,10 @@ export const editUser = async (req: Request, res: Response) => {
             ativo: ativo,
             acesso_admin,
             empresa: { connect: { id: empresa_id } },
-            cargo: { connect: { cargo_id: cargo_id } }
+            cargo: { connect: { cargo_id: cargo_id } },
+            menus: {
+                set: menus_ids.map((menuId: number) => ({ id: menuId })),
+            },
             }
         });
 
@@ -449,12 +489,27 @@ export const ativarUser = async (req: Request, res: Response) => {
 };
 
 export const deleteMenuUser = async (req: Request, res: Response) => {
-    const { funcionario_id, menu_id } = req.params;
+    
+    const { userId, menu_id } = req.body;
 
     try {
+
+        const existingUser = await prisma.user.findUnique({
+            where: {
+                id: userId
+            },
+            include: {
+                funcionario: true
+            }
+            });
+    
+        if (!existingUser) {
+        return res.status(404).json({ message: "Usuário não encontrado." });
+        }
+
         await prisma.funcionarioMenu.deleteMany({
             where: { 
-                funcionarioId: Number(funcionario_id),
+                funcionarioId: Number(existingUser.funcionario?.id),
                 menuId: Number(menu_id)
             },
         });

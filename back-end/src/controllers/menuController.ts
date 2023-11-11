@@ -91,11 +91,11 @@ export const createMenuUser = async (req: Request, res: Response) => {
         });
 
         const newMenus = menus.filter(
-            (menu) => !existingFuncionarioMenus.some((fm) => fm.menuId === menu.id)
+            (menu: any) => !existingFuncionarioMenus.some((fm: any) => fm.menuId === menu.id)
         );
 
         const createdFuncionarioMenus = await Promise.all(
-            newMenus.map((menu) =>
+            newMenus.map((menu: any) =>
                 prisma.funcionarioMenu.create({
                     data: {
                         funcionarioId: funcionario_id,
