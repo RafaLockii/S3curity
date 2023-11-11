@@ -482,7 +482,7 @@ export const ativarUser = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteMenu = async (req: Request, res: Response) => {
+export const deleteMenuUser = async (req: Request, res: Response) => {
     const menuId = parseInt(req.params.id);
     const funcionarioId = parseInt(req.params.funcionarioId);
 

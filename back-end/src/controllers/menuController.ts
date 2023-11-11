@@ -66,53 +66,65 @@ export const createMenu = async (req: Request, res: Response) => {
     }
 };
 
-// export const createMenuUser = async (req: Request, res: Response) => {
-//     const {
-//         nomeMenu,
-//         itens,
-//         empresa_id,
-//         modulo_id,
-//     } = req.body;
+export const createMenuUser = async (req: Request, res: Response) => {
+    const {
+        nomeMenu,
+        itens,
+        empresa_id,
+        modulo_id,
+        funcionario_id
+    } = req.body;
     
-//     try {
+    try {
 
-//         const modulo = await prisma.modulos.findUnique({
-//             where: { id: modulo_id },
-//         });
+        const funcionario = await prisma.funcionario.findUnique({
+            where: { id: funcionario_id },
+        });
+        
+        if (!funcionario) {
+            return res.status(404).json({ error: "Funcionario not found" });
+        }
 
-//         if (!modulo) {
-//             return res.status(404).json({ error: "Modulo not found" });
-//         }
+        const modulo = await prisma.modulos.findUnique({
+            where: { id: modulo_id },
+        });
 
-//         const createdMenu = await prisma.menus.create({
-//             data: {
-//                 nome: nomeMenu,
-//                 modulos: {
-//                     connect: { id: modulo_id },
-//                 },
-//                 empresa: {
-//                     connect: { id: empresa_id },
-//                 },
-//                 itens: {
-//                     create: itens.map((item: any) => ({
-//                         nome: item.nomeItem,
-//                         relatorios: {
-//                             create: item.relatorios.map((relatorio: any) => ({
-//                                 nome: relatorio.nome,
-//                                 relatorio: relatorio.relatorio,
-//                             })),
-//                         },
-//                     })),
-//                 },
-//             },
-//         });
+        if (!modulo) {
+            return res.status(404).json({ error: "Modulo not found" });
+        }
 
-//         res.status(201).json({ menu: createdMenu });
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: "Item creation failed" });
-//     }
-// };
+        const createdMenu = await prisma.menus.create({
+            data: {
+                nome: nomeMenu,
+                funcionario: {
+                    connect: { id: funcionario_id },
+                },
+                modulos: {
+                    connect: { id: modulo_id },
+                },
+                empresa: {
+                    connect: { id: empresa_id },
+                },
+                itens: {
+                    create: itens.map((item: any) => ({
+                        nome: item.nomeItem,
+                        relatorios: {
+                            create: item.relatorios.map((relatorio: any) => ({
+                                nome: relatorio.nome,
+                                relatorio: relatorio.relatorio,
+                            })),
+                        },
+                    })),
+                },
+            },
+        });
+
+        res.status(201).json({ menu: createdMenu });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Item creation failed" });
+    }
+};
 
 export const editMenu = async (req: Request, res: Response) => {
     try {
@@ -248,6 +260,7 @@ export const getMenusByEmpresaAndModulo = async (req: Request, res: Response) =>
 };
 
 export const getAllMenus = async (req: Request, res: Response) => {
+
     try {
         const menus = await prisma.menus.findMany({
             include: {
