@@ -67,64 +67,50 @@ export const createMenu = async (req: Request, res: Response) => {
 };
 
 export const createMenuUser = async (req: Request, res: Response) => {
-    const {
-        nomeMenu,
-        itens,
-        empresa_id,
-        modulo_id,
-        funcionario_id
-    } = req.body;
-    
-    try {
+    const { funcionario_id, menus_ids } = req.body;
 
+    try {
         const funcionario = await prisma.funcionario.findUnique({
             where: { id: funcionario_id },
         });
-        
+
         if (!funcionario) {
             return res.status(404).json({ error: "Funcionario not found" });
         }
 
-        const modulo = await prisma.modulos.findUnique({
-            where: { id: modulo_id },
+        const menus = await prisma.menus.findMany({
+            where: { id: { in: menus_ids } },
         });
 
-        if (!modulo) {
-            return res.status(404).json({ error: "Modulo not found" });
+        if (menus.length !== menus_ids.length) {
+            return res.status(404).json({ error: "One or more menus not found" });
         }
 
-        const createdMenu = await prisma.menus.create({
-            data: {
-                nome: nomeMenu,
-                funcionario: {
-                    connect: { id: funcionario_id },
-                },
-                modulos: {
-                    connect: { id: modulo_id },
-                },
-                empresa: {
-                    connect: { id: empresa_id },
-                },
-                itens: {
-                    create: itens.map((item: any) => ({
-                        nome: item.nomeItem,
-                        relatorios: {
-                            create: item.relatorios.map((relatorio: any) => ({
-                                nome: relatorio.nome,
-                                relatorio: relatorio.relatorio,
-                            })),
-                        },
-                    })),
-                },
-            },
+        const existingFuncionarioMenus = await prisma.funcionarioMenu.findMany({
+            where: { funcionarioId: funcionario_id },
         });
 
-        res.status(201).json({ menu: createdMenu });
+        const newMenus = menus.filter(
+            (menu) => !existingFuncionarioMenus.some((fm) => fm.menuId === menu.id)
+        );
+
+        const createdFuncionarioMenus = await Promise.all(
+            newMenus.map((menu) =>
+                prisma.funcionarioMenu.create({
+                    data: {
+                        funcionarioId: funcionario_id,
+                        menuId: menu.id,
+                    },
+                })
+            )
+        );
+
+        res.status(200).json(createdFuncionarioMenus);
     } catch (error) {
         console.error(error);
-        res.status(500).json({ error: "Item creation failed" });
+        res.status(500).json({ message: "Erro ao criar o menu do usuário." });
     }
-};
+}
 
 export const editMenu = async (req: Request, res: Response) => {
     try {

@@ -47,10 +47,10 @@ model Funcionario {
   imagem_perfil_id  Int?
 
   imagem  Imagem?
-  user    User     @relation(fields: [usuario_id], references: [id])
-  empresa Empresa? @relation(fields: [empresa_id], references: [id])
-  cargo   Cargos?  @relation(fields: [cargo_id], references: [cargo_id])
-  menus   Menus[]
+  user    User              @relation(fields: [usuario_id], references: [id])
+  empresa Empresa?          @relation(fields: [empresa_id], references: [id])
+  cargo   Cargos?           @relation(fields: [cargo_id], references: [cargo_id])
+  menus   FuncionarioMenu[]
 }
 
 model Empresa {
@@ -92,16 +92,25 @@ model Modulos {
 }
 
 model Menus {
-  id             Int    @id @default(autoincrement())
-  nome           String
-  modulos_id     Int
-  empresa_id     Int
-  funcionario_id Int?
+  id           Int               @id @default(autoincrement())
+  nome         String
+  modulos_id   Int
+  empresa_id   Int
+  funcionarios FuncionarioMenu[]
 
-  funcionario Funcionario? @relation(fields: [funcionario_id], references: [id])
-  empresa     Empresa      @relation(fields: [empresa_id], references: [id])
-  modulos     Modulos      @relation(fields: [modulos_id], references: [id])
-  itens       Itens[]
+  empresa Empresa @relation(fields: [empresa_id], references: [id])
+  modulos Modulos @relation(fields: [modulos_id], references: [id])
+  itens   Itens[]
+}
+
+model FuncionarioMenu {
+  funcionarioId Int
+  funcionario   Funcionario @relation(fields: [funcionarioId], references: [id])
+
+  menuId Int
+  menu   Menus @relation(fields: [menuId], references: [id])
+
+  @@id([funcionarioId, menuId])
 }
 
 model Itens {
