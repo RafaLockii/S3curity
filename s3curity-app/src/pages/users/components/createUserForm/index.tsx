@@ -176,6 +176,7 @@ function handleRemoveItem(item: MenuProps) {
         empresa_id: data.empresa_id,
         imagem_perfil_url: data.img_url,
         // FALTA IMPLEMENTAR NO BACKEND A OPPÇÃO DE CRIAR COMO ATIVO OU INATIVO ativo: data.ativo,
+        menus_ids: droppedItems.map((item) => item.id)
       });
       back();
     }catch(e){
