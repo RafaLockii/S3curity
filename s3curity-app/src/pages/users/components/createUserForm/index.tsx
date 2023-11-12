@@ -100,6 +100,8 @@ function handleDrop(e: React.DragEvent) {
   e.preventDefault();
   const item = JSON.parse(e.dataTransfer.getData("itemType")) as MenuProps;
   setDroppedItems([...droppedItems, item]);
+  console.log(item)
+  console.log(droppedItems);
 }
 
 function handleDragOver(e: React.DragEvent) {
@@ -326,7 +328,7 @@ function handleRemoveItem(item: MenuProps) {
         {droppedItems.length === 0 && <h4>Arraste os itens aqui</h4>}
         {droppedItems.map((item, index) => (
           <div 
-          key={index}
+          key={item.id}
           className={styles.draggableItens}
           draggable
           onDragStart={(e) => handleDragStart(e, item)}
