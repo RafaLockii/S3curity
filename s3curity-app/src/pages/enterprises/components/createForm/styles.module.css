@@ -20,18 +20,27 @@
 }
 
 .input {
-    margin-left: 2rem;
-    display: flex;
-    flex-direction: row;
-    width: 20rem;
-    padding: 8px;
-    margin-bottom: 3rem;
-    border: none;
-  }
+  margin-left: 2rem;
+  display: flex;
+  flex-direction: row;
+  width: 20rem;
+  padding: 8px;
+  margin-bottom: 3rem;
+  border: none;
+}
+.inputForMenu {
+  margin-left: 2rem;
+  display: flex;
+  flex-direction: row;
+  width: 20rem;
+  padding: 8px;
+  border: none;
+  margin-bottom: 0.25rem;
+}
 
   .form{
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     margin-right: 2rem;
   }
   .formHeader{
@@ -92,4 +101,49 @@
     flex-direction: row;
     align-items: center;
   }
+
+  .addImage{
+    width: 7rem;
+    height: 2rem;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 0.5rem;
+    margin: 1rem 0 0 3rem;
+    cursor: pointer;
+    box-shadow: 5px 5px 5px 2px rgba(0,0,0,0.1);
+
+  }
+
+  .menu {
+    margin-left: 2rem;
+  }
   
+  .item {
+    margin-left: 2rem;
+  }
+  
+  .relatorio {
+    margin-left: 2rem;
+  }
+  
+  .addInput{
+    width: 7rem;
+    height: 2rem;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 0.5rem;
+    margin: 2rem 0 0 3rem;
+    cursor: pointer;
+    box-shadow: 5px 5px 5px 2px rgba(0,0,0,0.1);
+  }
+  .addInputMenu{
+    width: 7rem;
+    height: 2rem;
+    border: 1px solid #1BC5BD;
+    border-radius: 5px;
+    padding: 0.5rem;
+    margin: 2rem 0 0 3rem;
+    color: #1BC5BD;
+    background-color: #C9F7F5;
+    cursor: pointer;
+  }

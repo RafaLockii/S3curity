@@ -46,6 +46,14 @@ export default function UpdateForm(props: EmpresaData) {
   const {back} = useRouter();
  const {user} = useUserContext();
 
+ //Bloco de imagens do carrossel ----------------------------------------------->
+ const [imagensCarrosel, setImagensCarrosel] = useState<string[]>([]);
+ const [numImageInputs, setNumImageInputs] = useState(1);
+ // Function to add more image inputs
+ const addImageInput = () => {
+  setNumImageInputs(numImageInputs + 1);
+};
+// Fim do bloco de imagens do carrossel ---------------------------------------->
 
     
 
@@ -130,6 +138,29 @@ export default function UpdateForm(props: EmpresaData) {
                 </div>
             )}
         </div>
+        {/* Render image inputs dynamically */}
+        {Array.from({ length: numImageInputs }).map((_, index) => (
+          <div key={index} className={styles.inputWithContents}>
+            <input
+              className={styles.input}
+              placeholder={`Imagem do carrossel ${index + 1}`}
+              onChange={(e) => {
+                const newImages = [...imagensCarrosel];
+                newImages[index] = e.target.value;
+                setImagensCarrosel(newImages);
+              }}
+            ></input>
+          </div>
+        ))}
+
+        {/* Button to add more image inputs */}
+        <button
+          className={styles.addImage}
+          type="button"
+          onClick={addImageInput}
+        >
+          Imagem +
+        </button>
         
       </form>
 
