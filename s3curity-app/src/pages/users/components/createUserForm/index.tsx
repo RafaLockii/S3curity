@@ -53,6 +53,11 @@ interface draggableItensProps{
   label: string;
   type: string;
 }
+interface MenuProps{
+  id: number;
+  nome: string;
+  itens: string[];
+}
 
 type RegisterFormData = z.infer<typeof registerFormShceme>;
 
@@ -74,26 +79,26 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
 
 
 //Bloco de itens arrastáveis ------------------------------------->
- const [draggableItens, setDraggableItens] = useState<draggableItensProps[]>([
-  {
-    label: "Contas",
-    type: "Menu",
- },
-  {
-    label: "Conta 01",
-    type: "Item",
- }
+ const [draggableItens, setDraggableItens] = useState<MenuProps[]>([
+//   {
+//     label: "Contas",
+//     type: "Menu",
+//  },
+//   {
+//     label: "Conta 01",
+//     type: "Item",
+//  }
 ]);
 
-const [droppedItems, setDroppedItems] = useState<draggableItensProps[]>([]);
+const [droppedItems, setDroppedItems] = useState<MenuProps[]>([]);
 
-function handleDragStart(e: React.DragEvent, itemType: draggableItensProps) {
+function handleDragStart(e: React.DragEvent, itemType: MenuProps) {
   e.dataTransfer.setData("itemType", JSON.stringify(itemType));
 }
 
 function handleDrop(e: React.DragEvent) {
   e.preventDefault();
-  const item = JSON.parse(e.dataTransfer.getData("itemType")) as draggableItensProps;
+  const item = JSON.parse(e.dataTransfer.getData("itemType")) as MenuProps;
   setDroppedItems([...droppedItems, item]);
 }
 
@@ -101,7 +106,7 @@ function handleDragOver(e: React.DragEvent) {
   e.preventDefault();
 }
 
-function handleRemoveItem(item: draggableItensProps) {
+function handleRemoveItem(item: MenuProps) {
   const updatedDroppedItems = droppedItems.filter((i) => i !== item);
   setDroppedItems(updatedDroppedItems);
 }
@@ -124,13 +129,34 @@ function handleRemoveItem(item: draggableItensProps) {
 
 
   const {back} = useRouter();
+  console.log("Id da empresa :" + empresa.empresaid)
 
   useEffect(() => {
     if (!showEmpresaSelect) {
       setValue('empresa_id', empresa.empresaid);
     }
-  }, [showEmpresaSelect, empresa.empresaid]);
+    const fetchData = async () => {
+      console.log("Entrou no fetch data")
+      try{
+        const response = await api.get(`menu/${empresa.empresaid}/1`);
+        response.data.map((item: any) => {
+          setDraggableItens((prev) => [...prev, {
+            id: item.id,
+            nome: item.nome,
+            itens: item.itens.map((item: any) => item.nome)
+          }]);
+        })
+
   
+      } catch(e){
+        console.log(`Erro ao chamar a api: ${e}`);
+      }
+    }
+    fetchData();
+
+  }, []);
+  
+  //Dentro do array do useeffect tinha sses itens : showEmpresaSelect, empresa.empresaid
   async function handleRegister(data: RegisterFormData) {
     console.log("entrou aq")
     try{
@@ -281,13 +307,13 @@ function handleRemoveItem(item: draggableItensProps) {
         <h4>Escolha Suas opções</h4>
         {draggableItens.map((item) => (
           <div
-            key={item.label}
+            key={item.id}
             className={styles.draggableItens}
             draggable
             onDragStart={(e) => handleDragStart(e, item)}
           >
-            <div>{item.label}</div>
-            <div>{item.type}</div>
+            <div>{item.nome}</div>
+            <div>{item.itens}</div>
           </div>
         ))}
       </div>
@@ -305,8 +331,8 @@ function handleRemoveItem(item: draggableItensProps) {
           draggable
           onDragStart={(e) => handleDragStart(e, item)}
           onDragEnd={() => handleRemoveItem(item)}>
-            <div>{item.label}</div>
-            <div>{item.type}</div>
+            <div>{item.nome}</div>
+            <div>{item.itens}</div>
           </div>
         ))}
       </div>

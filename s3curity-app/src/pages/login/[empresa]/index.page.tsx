@@ -33,13 +33,13 @@ export default function SignIn() {
                 if (empresa) {
                     console.log("Empresa params: " + empresa);
                     const response = await api.get(`empresa_name/${empresa}`);
-                    response.data.formattedEmpresa.carrosseis.map((item: any) => {
-                        console.log(item.nome)
-                    });
+                    // response.data.formattedEmpresa.carrosseis.map((item: any) => {
+                    //     console.log(item.nome)
+                    // });
                     setImages({
-                        img01: response.data.formattedEmpresa.carrosseis[0].nome,
-                        img02: response.data.formattedEmpresa.carrosseis[1].nome,
-                        img03: response.data.formattedEmpresa.carrosseis[2].nome,
+                        img01: "",
+                        img02: "",
+                        img03: "",
                         logo: response.data.formattedEmpresa.logo
                     });
                     setImage({
@@ -54,6 +54,8 @@ export default function SignIn() {
         }
         fetchData();
     }, [empresa]);
+
+    console.log(images.logo);
         
 
     return(
@@ -63,3 +65,6 @@ export default function SignIn() {
         </div>
     )
 }
+
+//TODO:
+// PRECISO QUE RETORNE O CARROSSEL DE IMAGENS NO GETEMPRESA BY NAME, PARA QU EU POSSA USAR NO LOGIN
