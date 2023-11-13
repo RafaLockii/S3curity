@@ -13,8 +13,9 @@ export default function Enterprise(){
     const[showCreateForm, setShowCreateForm] = useState(false);
     const[showUpdateForm, setShowUpdateForm] = useState(false);
     const[empresaData, setEmpresaData] = useState([]);
-    const {query} = useRouter;
-    const empresa = typeof query.empresa == 'string' ? query.empresa : "";
+    // const {query} = useRouter;
+    // const empresa = typeof query.empresa == 'string' ? query.empresa : "";
+    const[empresa, setEmpresa] = useState<string>();
 
     const handleShowCreateForm = (show: boolean) => {
         setShowCreateForm(show);}
@@ -32,6 +33,7 @@ export default function Enterprise(){
    useEffect(() =>{
     const fetchData = async () =>{
         try{
+            setEmpresa(JSON.parse(window.localStorage.getItem('empresa') || '{}').empresa || '');
             const response = await api.get('empresas')
             setEmpresaData(response.data);
         } catch(e){
@@ -48,7 +50,7 @@ export default function Enterprise(){
 
     return(
         <div className={styles.pageContainer}>
-            <SidebarMenu empresa={empresa}/>
+            <SidebarMenu empresa={empresa as string}/>
             <div className={styles.createFormContainer}>
                 {!showCreateForm && !showUpdateForm && (
                     <>
@@ -63,7 +65,7 @@ export default function Enterprise(){
                             </button>
                         </div>
                     </div>
-                    <TableComponent data={empresaData} empresa={empresa}/>
+                    <TableComponent data={empresaData} empresa={empresa as string}/>
                     </>
                 ) }
                 {showCreateForm && (

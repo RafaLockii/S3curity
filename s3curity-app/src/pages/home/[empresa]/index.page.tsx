@@ -15,63 +15,62 @@ interface ImagemProps {
 }
 
 export default function Home() {
-    
-const{query} = userRouter;
-const empresa = typeof query.empresa == 'string' ? query.empresa : "";
-const {user} = useUserContext();
+    const[empresa, setEmpresa] = useState<string>();
+    // const{query} = userRouter;
+    // const empresa = typeof query.empresa == 'string' ? query.empresa : "";
+    const {user} = useUserContext();
 
-const [images, setImages] = useState<ImagemProps>({
-    img01: '',
-    img02: '',
-    img03: '',
-    logo: ''
-});
+    const [images, setImages] = useState<string[]>([]);
+    const [loading, setLoading] = useState(true);
 
-useEffect(() => {
-    async function fetchData() {
-        try {
-            if (empresa) {
-                console.log("Empresa params: " + empresa);
-                const response = await api.get(`empresa_name/${empresa}`);
-                response.data.formattedEmpresa.carrosseis.map((item: any) => {
-                    console.log(item.nome)
-                });
-                setImages({
-                    img01: response.data.formattedEmpresa.carrosseis[0].nome,
-                    img02: response.data.formattedEmpresa.carrosseis[1].nome,
-                    img03: response.data.formattedEmpresa.carrosseis[2].nome,
-                    logo: response.data.formattedEmpresa.logo
-                });
-                console.log("Imagens: " + images);
+    useEffect(() => {
+        async function fetchData() {
+            try {
+                setEmpresa(JSON.parse(window.localStorage.getItem('empresa') || '{}').empresa || '');
+                if (empresa) {
+                    const response = await api.get(`empresa_nome/${empresa}`);
+                    console.log("Imagens da api: " + response.data.formattedEmpresa.carrosseis);
+
+                    const imageNames = response.data.formattedEmpresa.carrosseis.map((item: any) => item.nome);
+                    setImages(imageNames);
+                }
+            } catch (e) {
+                console.error("Erro: " + e);
+            } finally {
+                setLoading(false);
             }
-        } catch (e) {
-            console.log("CATCH Empresa: " + empresa);
-            console.error("Erro: " + e);
         }
-    }
-    fetchData();
-}, [empresa]);
 
-    return (
-       <div className={styles.pageContainer}>
-            <SidebarMenu empresa={empresa}/>
-            <div className={styles.header}>
-                <Header/>
-            </div>
-            <div className={styles.container}>
-                <div className={styles.containerHeader}>
-                    <p>Home</p>
+        fetchData();
+    }, [empresa]);
+
+    if (loading) {
+        // You can render a loading spinner or message here while data is being fetched.
+        return <p>Loading...</p>;
+    }
+        
+        return (
+        <div className={styles.pageContainer}>
+                <SidebarMenu empresa={empresa as string}/>
+                <div className={styles.header}>
+                    <Header/>
                 </div>
-                    <CarouselComponent empresa={empresa} img01={images.img01} img02={images.img02} img03={images.img03} />
-                <div className={styles.textContainer}>
-                    <div className={styles.mainText}>
-                        A Proteção da sua empresa é a nossa prioridade
+                <div className={styles.container}>
+                    <div className={styles.containerHeader}>
+                        <p>Home</p>
                     </div>
-                    <div className={styles.subText}>
-                    Utilizamos as melhores práticas de segurança para ajudar sua empresa a detectar ameaças em tempo real, coletar e analisar dados para prevenir incidentes futuros, reagir prontamente a eventos de segurança e implementar medidas preventivas para manter a segurança de sua empresa, colaboradores e clientes em todos os momentos.
+                        {images && (
+                            <CarouselComponent empresa={empresa as string} images={images}/>
+                        )}
+                    <div className={styles.textContainer}>
+                        <div className={styles.mainText}>
+                            A Proteção da sua empresa é a nossa prioridade
+                        </div>
+                        <div className={styles.subText}>
+                        Utilizamos as melhores práticas de segurança para ajudar sua empresa a detectar ameaças em tempo real, coletar e analisar dados para prevenir incidentes futuros, reagir prontamente a eventos de segurança e implementar medidas preventivas para manter a segurança de sua empresa, colaboradores e clientes em todos os momentos.
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    )
-}
+        )
+    }

@@ -36,13 +36,15 @@ export default function Users(){
         setShowCreateUserForm(show);}
 
     //Resgatando data da URL
-    const {query} = useRouter;
-    const empresaParams = typeof query.empresa == 'string' ? query.empresa : "";
+    // const {query} = useRouter;
+    // const empresaParams = typeof query.empresa == 'string' ? query.empresa : "";
+
+    const[empresaParams, setEmpresaParams] = useState<string>();
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-
+                setEmpresaParams(JSON.parse(window.localStorage.getItem('empresa') || '{}').empresa || '');
                 const response2 = await api.get('empresas');
                 setEmpresas(response2.data);
                 // Encontrar a empresa correspondente e definir o ID
@@ -68,7 +70,7 @@ export default function Users(){
     console.log("Id da empresa: "+empresaid)
     return(
         <div className={styles.pageContainer}>
-            <SidebarMenu empresa={empresaParams}/>
+            <SidebarMenu empresa={empresaParams as string}/>
             <div className={styles.createUserFormContainer}>
                 {!showCreateUserForm && !showUpdateForm && (
                 <>
@@ -84,7 +86,7 @@ export default function Users(){
                     </div>
                 </div>
 
-                <TableComponent data={userData} empresa={empresaParams}/>
+                <TableComponent data={userData} empresa={empresaParams as string}/>
                 </>
 
                 )}
@@ -96,7 +98,7 @@ export default function Users(){
                     </div>
 
                     {/* Aqui eu estou passando a epresa da url para o forms */}
-                    {empresaid && <CreateUserForm empresa={empresaParams} empresaid={empresaid} empresas={empresas}/>}
+                    {empresaid && <CreateUserForm empresa={empresaParams as string} empresaid={empresaid} empresas={empresas}/>}
                     {empresaid == undefined && (
                         <div>Carregando...</div>
                     )}

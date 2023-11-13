@@ -36,6 +36,7 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     //Utilização do contexto
     const { user, setUser } = useUserContext();
+    const [userLocalStorage, setUserLocalStorage] = useState(); // Crie um estado para o usuário logado [userLocalStorage]
     const { image, setImage } = useImageContext();
 
     async function handleRegister(data: RegisterFormData) {
@@ -54,6 +55,15 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
                     nome: response.data.nome,
                     acesso_admin: response.data.isAdmin,
                 });
+
+                localStorage.setItem('user', JSON.stringify({
+                    id: response.data.id,
+                    token: response.data.token,
+                    email: response.data.email,
+                    nome: response.data.nome,
+                    acesso_admin: response.data.isAdmin,
+                }));
+                
                 await router.push(`/home/${empresa}`);
             } else if (response.status === 404) {
                 setErrorMessage("Credenciais inválidas");

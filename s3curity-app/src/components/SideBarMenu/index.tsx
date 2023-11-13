@@ -25,37 +25,53 @@ interface relatorios{
   relatorio: string;
 }
 
+interface userProps{
+  id: number;
+  token: string;
+  email: string;
+  nome: string;
+  acesso_admin: boolean;
+}
+
 export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
 
     const router = useRouter();
     async function handleMenuClick (route: String) {
         router.push('/'+route + '/' + props.empresa);
     }
-    const {empresa} = props;
-    const {user} = useUserContext();
+    // const {empresa} = props;
+    // const {user, setUser} = useUserContext();
+
+    const[user,setUser] = useState<userProps>();
     const [menus, setMenus] = useState<MenuItemProps[]>();
+    const[empresa, setEmpresa] = useState<string>();
 
     useEffect(() => {
       const fetchData = async () => {
         try{
-          const response = await api.get(`user/${user?.id}/menus`);
-          const menus = response.data.funcionario.menus;
-          setMenus(menus.map((menu: any) =>{
-            return {
-              nome: menu.nome,
-              itens: menu.itens.map((item: any) => {
-                return {
-                  nome: item.nome,
-                  relatorios: item.relatorios.map((relatorio: any) => {
-                    return {
-                      nome: relatorio.nome,
-                      relatorio: relatorio.relatorio
-                    }
-                  })
-                }
-              })
-            }
-          }));
+          setEmpresa(JSON.parse(window.localStorage.getItem('empresa') || '{}').empresa || '');
+          setUser(JSON.parse(window.localStorage.getItem('user') || '') as userProps);
+          // if(user){
+            const response = await api.get(`user/${(JSON.parse(window.localStorage.getItem('user') || '') as userProps).id}/menus`);
+            const menus = response.data.funcionario.menus;
+            console.log(menus)
+            setMenus(menus.map((menu: any) =>{
+              return {
+                nome: menu.nome,
+                itens: menu.itens.map((item: any) => {
+                  return {
+                    nome: item.nome,
+                    relatorios: item.relatorios.map((relatorio: any) => {
+                      return {
+                        nome: relatorio.nome,
+                        relatorio: relatorio.relatorio
+                      }
+                    })
+                  }
+                })
+              }
+            }));
+          // }
         } catch (e) {
           console.error(e);
         }
@@ -100,24 +116,26 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                   {user?.acesso_admin == true && (
                    <MenuItem icon={<User/>} onClick={() => handleMenuClick('users')}>Usuários</MenuItem>
                   )}
-                  {menus?.map((menu: MenuItemProps) => {
-                    return (
-                      <SubMenu label={menu.nome} icon={<ListDashes/>}>
-                        {menu.itens.map((item: itemProps) => {
-                          return (
-                            <SubMenu label={item.nome} icon={<ListDashes/>}>
-                              {item.relatorios.map((relatorio: relatorios) => {
-                                return (
-                                  <MenuItem onClick={() => handleMenuClick(relatorio.relatorio)}>{relatorio.nome}</MenuItem>
-                                )
-                              })}
-                            </SubMenu>
-                          )
-                        })}
-                      </SubMenu>
-                    )
-                  })
-                  }
+                  {menus && (
+                    menus?.map((menu: MenuItemProps) => {
+                      return (
+                        <SubMenu label={menu.nome} icon={<ListDashes/>}>
+                          {menu.itens.map((item: itemProps) => {
+                            return (
+                              <SubMenu label={item.nome} icon={<ListDashes/>}>
+                                {item.relatorios.map((relatorio: relatorios) => {
+                                  return (
+                                    <MenuItem onClick={() => handleMenuClick(relatorio.relatorio)}>{relatorio.nome}</MenuItem>
+                                  )
+                                })}
+                              </SubMenu>
+                            )
+                          })}
+                        </SubMenu>
+                      )
+                    })
+                    
+                  )}
               </Menu>
               </Sidebar>
       </div> 

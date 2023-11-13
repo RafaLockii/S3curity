@@ -1,7 +1,7 @@
 import FormLogin from '../../../components/FormsLogin/index';
 import Carousel from '@/components/Carousel';
 import styles from './styles.module.css';
-import {useRouter} from 'next/router';
+import { useRouter } from 'next/router';
 import { use, useEffect, useState } from 'react';
 import { api } from '@/lib/axios';
 import { useImageContext } from '@/context/imagesContext';
@@ -18,34 +18,26 @@ interface ImagemProps {
 export default function SignIn() {
 
     const {query} = useRouter();
-    const empresa = typeof query.empresa == 'string' ? query.empresa : "";
-    const { image, setImage } = useImageContext();
-    const [images, setImages] = useState<ImagemProps>({
-        img01: '',
-        img02: '',
-        img03: '',
-        logo: ''
-    });
+    const empresa = query.empresa;
+    // const empresa = typeof query.empresa == 'string' ? query.empresa : "";
+    const [images, setImages] = useState<string[]>([]);
+    const [logo, setLogo] = useState<string>("");
 
     useEffect(() => {
         async function fetchData() {
             try {
                 if (empresa) {
                     console.log("Empresa params: " + empresa);
-                    const response = await api.get(`empresa_name/${empresa}`);
-                    // response.data.formattedEmpresa.carrosseis.map((item: any) => {
-                    //     console.log(item.nome)
-                    // });
-                    setImages({
-                        img01: "",
-                        img02: "",
-                        img03: "",
-                        logo: response.data.formattedEmpresa.logo
-                    });
-                    setImage({
-                        logo: response.data.formattedEmpresa.logo
+                    const response = await api.get(`empresa_nome/${empresa}`);
+                    console.log(response.data)
+
+                    response.data.formattedEmpresa.carrosseis.map((item: any) => {
+                        setImages(prevImages => [...prevImages, item.nome]);
                     })
-                    console.log("Imagens: " + images);
+                    setLogo(response.data.formattedEmpresa.logo);
+                    window.localStorage.setItem('empresa', JSON.stringify({
+                        empresa: empresa,
+                    }));
                 }
             } catch (e) {
                 console.log("CATCH Empresa: " + empresa);
@@ -54,14 +46,15 @@ export default function SignIn() {
         }
         fetchData();
     }, [empresa]);
-
-    console.log(images.logo);
-        
-
+    const isClientSide = typeof window !== 'undefined';
+    if(isClientSide){
+    window.localStorage.setItem('images', JSON.stringify(images));
+    }
+    
     return(
         <div className={styles.container}>
-            <Carousel empresa={empresa} img01={images.img01} img02={images.img02} img03={images.img03}/>
-            <FormLogin empresa={empresa} logoUrl={images.logo}/>
+            <Carousel empresa={empresa as string} images={images}/>
+            <FormLogin empresa={empresa as string} logoUrl={logo}/>
         </div>
     )
 }

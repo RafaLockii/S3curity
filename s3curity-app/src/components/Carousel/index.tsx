@@ -7,9 +7,7 @@ import { api } from '@/lib/axios';
 
 interface CarouselProps {
     empresa: string;
-    img01: string;
-    img02: string;
-    img03: string;
+    images: string[];
 }
 
 const responsive = {
@@ -30,12 +28,12 @@ const responsive = {
   }
 };
 
-export default function CarouselComponent({ empresa, img01, img02, img03 }: CarouselProps) {
-   
+export default function CarouselComponent({ empresa, images }: CarouselProps) {
+   console.log("Imagens: "+images)
 
     return (
         <div className={styles.carouselStyle}>
-        {img01 && (
+        {Array.isArray(images) && images.length > 0 && (
           <Carousel
           swipeable={true}
           draggable={true}
@@ -45,20 +43,20 @@ export default function CarouselComponent({ empresa, img01, img02, img03 }: Caro
           infinite={true}
           autoPlay={false}
           autoPlaySpeed={1000}
-          keyBoardControl={true}
+          keyBoardControl={false}
           customTransition="all .5"
           transitionDuration={500}
           containerClass="carousel-container"
-          removeArrowOnDeviceType={["tablet", "mobile"]}
+          removeArrowOnDeviceType={["tablet", "mobile", 'desktop']}
           dotListClass="custom-dot-list-style"
           itemClass="carousel-item-padding-40-px"
           
         >
-          <img src={img01} alt='' className={styles.imageBox}></img>
-          <img src={img02} alt='' className={styles.imageBox}></img>
-          <img src={img03} alt='' className={styles.imageBox}></img>
-          {/* <img src='https://static.todamateria.com.br/upload/ca/va/cavalo-og.jpg?class=ogImageWide' alt='' className={styles.imageBox}></img>
-          <img src='https://static.todamateria.com.br/upload/ca/va/cavalo-og.jpg?class=ogImageWide' alt='' className={styles.imageBox}></img> */}
+          {images.map((img, index)=>{
+            return(
+              <img key={index} src={img} alt='' className={styles.imageBox}></img>
+            )
+          })}
         </Carousel>
         )}
       </div>
