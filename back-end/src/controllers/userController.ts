@@ -49,7 +49,8 @@ export const createUser = async (req: Request, res: Response) => {
 
     const currentDatetime = new Date();
 
-    const user = await prisma.user.create({
+    const user = await prisma.$transaction([
+        prisma.user.create({
         data: {
             nome,
             senha: hashedPassword,
@@ -71,28 +72,29 @@ export const createUser = async (req: Request, res: Response) => {
         include: {
             funcionario: true
         }
-        });
+        })
+    ]);
 
-        if (imagem_perfil_url) {
+        if (user[0].funcionario) {
             const createdImagem = await prisma.imagem.create({
                 data: {
-                url: imagem_perfil_url,
-                funcionario: {
-                    connect: { id: user.funcionario?.id }
-                }
+                    url: imagem_perfil_url,
+                    funcionario: {
+                        connect: { id: user[0].funcionario.id }
+                    }
                 }
             });
 
             if (createdImagem) {
                 const updatedFuncionario = await prisma.funcionario.update({
-                where: { id: user.funcionario?.id },
-                data: { imagem_perfil_id: createdImagem.id }
+                    where: { id: user[0].funcionario.id },
+                    data: { imagem_perfil_id: createdImagem.id }
                 });
             }
         }
 
         const funcionario = await prisma.funcionario.findUnique({
-            where: { id: user.funcionario?.id },
+            where: { id: user[0].funcionario?.id },
         });
 
         if (!funcionario) {
@@ -126,7 +128,7 @@ export const createUser = async (req: Request, res: Response) => {
             )
         );
 
-        if (user.token) {
+        if (user[0].token) {
         transporter.sendMail(
             {
             from: "jocyannovittor@hotmail.com",
@@ -528,6 +530,68 @@ export const getUserAndCompanyMenus = async (req: Request, res: Response) => {
     try {
         const user = await prisma.user.findUnique({
             where: { id: Number(id) },
+        });
+
+        if (!user) {
+            return res.status(404).json({ error: "User not found" });
+        }
+
+        const funcionario = await prisma.funcionario.findUnique({
+            where: { usuario_id: user.id },
+            include: {
+                menus: {
+                    include: {
+                        menu: {
+                            include: {
+                                itens: {
+                                    include: {
+                                        relatorios: true,
+                                    },
+                                },
+                            },
+                        },
+                    },
+                },
+                empresa: true,
+            },
+        });
+
+        if (!funcionario) {
+            return res.status(404).json({ error: "Funcionario not found" });
+        }
+
+        const menus = await prisma.menus.findMany({
+            where: {
+                id: {
+                    in: funcionario.menus.map((fm) => fm.menu.id),
+                },
+            },
+            include: {
+                itens: {
+                    include: {
+                        relatorios: true,
+                    },
+                },
+            },
+        });
+
+        const combinedMenus = [
+            ...menus,
+        ];
+
+        res.status(200).json({ ...user, funcionario: { ...funcionario, menus: combinedMenus } });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: "Erro ao buscar o usuário e os menus da empresa." });
+    }
+};
+
+export const getUserAndCompanyMenusByEmail = async (req: Request, res: Response) => {
+    const { email } = req.params;
+
+    try {
+        const user = await prisma.user.findUnique({
+            where: { email: email },
         });
 
         if (!user) {
