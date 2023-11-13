@@ -238,6 +238,7 @@ export const getEmpresaByName = async (req: Request, res: Response) => {
             usuario_criacao: empresa.usuario_criacao,
             data_criacao: empresa.data_criacao.toLocaleString(),
             usuario_cad_alt: empresa.usuario_cad_alt,
+            carrosseis: empresa.carrosseis,
             menus: empresa.menus.map(menu => ({
                 id: menu.id,
                 nome: menu.nome,
@@ -263,7 +264,5 @@ export const getEmpresaByName = async (req: Request, res: Response) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ error: "Failed to get empresa" });
-    } finally {
-        await prisma.$disconnect();
     }
 };
