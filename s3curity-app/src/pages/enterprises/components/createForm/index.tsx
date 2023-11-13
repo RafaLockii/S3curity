@@ -87,10 +87,28 @@ export default function CreateForm() {
 
   const addItemInput = (menuIndex: number) => {
     const newMenus = [...menus];
+  
+    // Certifique-se de que newMenus[menuIndex] está definido
+    if (!newMenus[menuIndex]) {
+      newMenus[menuIndex] = {
+        nomeMenu: '', 
+        empresa_id: 0, 
+        modulo_id: 0, 
+        itens: [], // Inicialize como um array vazio
+      };
+    }
+  
+    // Certifique-se de que newMenus[menuIndex].itens está definido
+    if (!newMenus[menuIndex].itens) {
+      newMenus[menuIndex].itens = [];
+    }
+  
+    // Adicione um novo item ao array
     newMenus[menuIndex].itens.push({
       nomeItem: "",
       relatorios: [],
     });
+  
     setMenus(newMenus);
   };
 
@@ -232,7 +250,7 @@ export default function CreateForm() {
                 />
               </div>
 
-              {menus[menuIndex]?.itens.map((item, itemIndex) => (
+              {menus[menuIndex] && menus[menuIndex]?.itens && menus[menuIndex]?.itens.map((item, itemIndex) => (
                 <div key={itemIndex} className={styles.item}>
                   <div className={styles.inputWithContents}>
                     <input

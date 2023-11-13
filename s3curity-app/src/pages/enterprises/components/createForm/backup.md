@@ -39,15 +39,15 @@ usuario_cad_alt: any;
 
 interface MenuItem {
 nomeItem: string;
-relatorios: string[];
+relatorios: { nome: string; relatorio: string }[];
 }
 
 interface MenuData {
 nomeMenu: string;
 empresa_id: number;
-modulo_id: number; // You may need to replace this with the actual module ID
+modulo_id: number;
 itens: MenuItem[];
-}
+}''
 
 type RegisterFormData = z.infer<typeof registerFormShceme>;
 
@@ -77,16 +77,13 @@ setNumImageInputs(numImageInputs + 1);
 };
 
 //Bloco de código refrente a criação de menus --------------------------------------->
-// Track the number of menu inputs
 const [numMenuInputs, setNumMenuInputs] = useState(1);
 const [menus, setMenus] = useState<MenuData[]>([{ nomeMenu: '', empresa_id: 0, modulo_id: 0, itens: [] }]);
 
-// Function to add more menu inputs
 const addMenuInput = () => {
 setNumMenuInputs(numMenuInputs + 1);
 };
 
-// Function to add more item inputs for a specific menu
 const addItemInput = (menuIndex: number) => {
 const newMenus = [...menus];
 newMenus[menuIndex].itens.push({
@@ -96,10 +93,12 @@ relatorios: [],
 setMenus(newMenus);
 };
 
-// Function to add more relatório inputs for a specific menu and item
 const addRelatorioInput = (menuIndex: number, itemIndex: number) => {
 const newMenus = [...menus];
-newMenus[menuIndex].itens[itemIndex].relatorios.push("");
+newMenus[menuIndex].itens[itemIndex].relatorios.push({
+nome: "",
+relatorio: "",
+});
 setMenus(newMenus);
 };
 
@@ -116,14 +115,17 @@ imagem_fundo: data.imagem_fundo,
 usuario_criacao: user?.nome || "Usuário Não definido",
 carrosselImagens: imagensCarrosel,
 });
+// Assigning empresa_id to each menu in menuData
+console.log(response.data.empresa.id)
 const menuData: MenuData[] = menus.map((menu) => ({
 ...menu,
-empresa_id: response.data.id,
+empresa_id: response.data.empresa.id,
+modulo_id: 1,
 }));
 
-      const menuResponses = await Promise.all(
-        menuData.map((menu) => api.post("itens/create", menu))
-      );
+    const menuResponses = await Promise.all(
+      menuData.map((menu) => api.post("menu/create", menu))
+    );
       back();
     } catch (e) {
       console.log(e);
@@ -134,6 +136,7 @@ empresa_id: response.data.id,
 return (
 <div className={styles.formContainer}>
 <form className={styles.form} onSubmit={handleSubmit(handleRegister)}>
+<div>
 <div className={styles.inputWithContents}>
 <input
 className={styles.input}
@@ -205,76 +208,94 @@ placeholder="Nome"
         >
           Imagem +
         </button>
+        </div>
 
-        {Array.from({ length: numMenuInputs }).map((_, menuIndex) => (
-          <div key={menuIndex}>
-            <div className={styles.inputWithContents}>
-              <input
-                className={styles.input}
-                placeholder={`Nome do Menu ${menuIndex + 1}`}
-                onChange={(e) => {
-                  const newMenus = [...menus];
-                  newMenus[menuIndex] = {
-                    ...newMenus[menuIndex],
-                    nomeMenu: e.target.value,
-                  };
-                  setMenus(newMenus);
-                }}
-              />
-            </div>
+        {/* FORMS DOS MENUS -------------------------------------------------------> */}
 
-            {menus[menuIndex]?.itens.map((item, itemIndex) => (
-              <div key={itemIndex}>
-                <div className={styles.inputWithContents}>
-                  <input
-                    className={styles.input}
-                    placeholder={`Nome do Item ${itemIndex + 1}`}
-                    onChange={(e) => {
-                      const newMenus = [...menus];
-                      newMenus[menuIndex].itens[itemIndex] = {
-                        ...newMenus[menuIndex].itens[itemIndex],
-                        nomeItem: e.target.value,
-                      };
-                      setMenus(newMenus);
-                    }}
-                  />
-                </div>
-
-                {item.relatorios.map((relatorio, relatorioIndex) => (
-                  <div key={relatorioIndex}>
-                    <div className={styles.inputWithContents}>
-                      <input
-                        className={styles.input}
-                        placeholder={`Nome do Relatório ${relatorioIndex + 1}`}
-                        onChange={(e) => {
-                          const newMenus = [...menus];
-                          newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex] = e.target.value;
-                          setMenus(newMenus);
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-                <button
-                  className={styles.addImage}
-                  type="button"
-                  onClick={() => addRelatorioInput(menuIndex, itemIndex)}
-                >
-                  Adicionar Relatório
-                </button>
+        <div>
+          {Array.from({ length: numMenuInputs }).map((_, menuIndex) => (
+            <div key={menuIndex} className={styles.menu}>
+              <div className={styles.inputWithContents}>
+                <input
+                  className={styles.inputForMenu}
+                  placeholder={`Nome do Menu ${menuIndex + 1}`}
+                  onChange={(e) => {
+                    const newMenus = [...menus];
+                    newMenus[menuIndex] = {
+                      ...newMenus[menuIndex],
+                      nomeMenu: e.target.value,
+                    };
+                    setMenus(newMenus);
+                  }}
+                />
               </div>
-            ))}
-            <button
-              className={styles.addImage}
-              type="button"
-              onClick={() => addItemInput(menuIndex)}
-            >
-              Adicionar Item
-            </button>
-          </div>
-        ))}
+
+              {menus[menuIndex]?.itens.map((item, itemIndex) => (
+                <div key={itemIndex} className={styles.item}>
+                  <div className={styles.inputWithContents}>
+                    <input
+                      className={styles.inputForMenu}
+                      placeholder={`Nome do Item ${itemIndex + 1}`}
+                      onChange={(e) => {
+                        const newMenus = [...menus];
+                        newMenus[menuIndex].itens[itemIndex] = {
+                          ...newMenus[menuIndex].itens[itemIndex],
+                          nomeItem: e.target.value,
+                        };
+                        setMenus(newMenus);
+                      }}
+                    />
+                  </div>
+
+                  {item.relatorios.map((relatorio, relatorioIndex) => (
+                    <div key={relatorioIndex} className={styles.relatorio}>
+                      <div className={styles.inputWithContents}>
+                        <input
+                          className={styles.inputForMenu}
+                          placeholder={`Nome do Relatório ${relatorioIndex + 1}`}
+                          onChange={(e) => {
+                            const newMenus = [...menus];
+                            newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].nome = e.target.value;
+                            newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].relatorio = e.target.value;
+                            setMenus(newMenus);
+                          }}
+                        />
+                      </div>
+                      <div className={styles.inputWithContents}>
+                        <input
+                          className={styles.inputForMenu}
+                          placeholder={`Relatório ${relatorioIndex + 1}`}
+                          onChange={(e) => {
+                            const newMenus = [...menus];
+                            newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].relatorio = e.target.value;
+                            setMenus(newMenus);
+                          }}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  <button
+                    className={styles.addInput}
+                    type="button"
+                    onClick={() => addRelatorioInput(menuIndex, itemIndex)}
+                  >
+                    Relatório +
+                  </button>
+                </div>
+              ))}
+              <button
+                className={styles.addInput}
+                type="button"
+                onClick={() => addItemInput(menuIndex)}
+              >
+                Item +
+              </button>
+            </div>
+          ))}
+        </div>
+
         <button
-          className={styles.addImage}
+          className={styles.addInput}
           type="button"
           onClick={addMenuInput}
         >

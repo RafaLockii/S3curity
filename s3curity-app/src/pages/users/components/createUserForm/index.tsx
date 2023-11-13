@@ -167,15 +167,12 @@ function handleRemoveItem(item: MenuProps) {
         senha: data.senha,
         email: data.email,
         telefone: data.telefone,
-        //Valores estáticos que precisam ser mudados
         usuario_criacao: user?.email || "Não idnetificado",
         modulo_default: "default",
-        //Fim dos valores estáticos
         acesso_admin: data.admin,
         cargo_id: data.modulo,
         empresa_id: data.empresa_id,
         imagem_perfil_url: data.img_url,
-        // FALTA IMPLEMENTAR NO BACKEND A OPPÇÃO DE CRIAR COMO ATIVO OU INATIVO ativo: data.ativo,
         menus_ids: droppedItems.map((item) => item.id)
       });
       back();
@@ -316,7 +313,11 @@ function handleRemoveItem(item: MenuProps) {
             onDragStart={(e) => handleDragStart(e, item)}
           >
             <div>{item.nome}</div>
-            <div>{item.itens}</div>
+            <div>{item.itens.map((item)=>{
+              return(
+                <div>{item}</div>
+              )
+            })}</div>
           </div>
         ))}
       </div>
@@ -335,7 +336,11 @@ function handleRemoveItem(item: MenuProps) {
           onDragStart={(e) => handleDragStart(e, item)}
           onDragEnd={() => handleRemoveItem(item)}>
             <div>{item.nome}</div>
-            <div>{item.itens}</div>
+            <div>{item.itens.map((item)=>{
+              return(
+                <div>{item}</div>
+              )
+            })}</div>
           </div>
         ))}
       </div>

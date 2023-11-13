@@ -11,10 +11,10 @@ export function Header() {
         <header>
             <div className={styles.Content}>
                 <section className={styles.sectionContent}>
-                    <Image 
-                        src={image?.logo || logo}
+                    <img 
+                        src={image?.logo}
                         alt='Logo'
-                        quality={100}
+                        // quality={100}
                         width={200}
                         height={50}
                     />
