@@ -4,18 +4,25 @@ import { HouseSimple, Buildings, User, ListDashes, ArrowDown, ChartLineUp } from
 import {useRouter} from 'next/router'
 import { useUserContext } from '@/context/UserContext';
 import { useState, useEffect } from 'react';
+import { api } from '@/lib/axios';
 
 interface SidebarInfoProps{
   empresa: string;
 }
 
 interface MenuItemProps{
-  label: string;
+  nome: string;
   itens: itemProps[];
 }
 
 interface itemProps{
-  label: string;
+  nome: string;
+  relatorios: relatorios[];
+}
+
+interface relatorios{
+  nome: string;
+  relatorio: string;
 }
 
 export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
@@ -26,53 +33,34 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
     }
     const {empresa} = props;
     const {user} = useUserContext();
-    const [menuItens, setMenuItens] = useState<MenuItemProps[]>();
+    const [menus, setMenus] = useState<MenuItemProps[]>();
 
     useEffect(() => {
-      setMenuItens([
-        {
-          label: 'Menu 01',
-          itens: [
-            {
-              label: 'Item 01',
-            },
-            {
-              label: 'Item 02',
-            },
-            {
-              label: 'Item 03',
-            },
-          ],
-        },
-        {
-          label: 'Menu 02',
-          itens: [
-            {
-              label: 'Item 01',
-            },
-            {
-              label: 'Item 02',
-            },
-            {
-              label: 'Item 03',
-            },
-          ],
-        },
-        {
-          label: 'Menu 02',
-          itens: [
-            {
-              label: 'Item 01',
-            },
-            {
-              label: 'Item 02',
-            },
-            {
-              label: 'Item 03',
-            },
-          ],
-        },
-      ]);
+      const fetchData = async () => {
+        try{
+          const response = await api.get(`user/${user?.id}/menus`);
+          const menus = response.data.funcionario.menus;
+          setMenus(menus.map((menu: any) =>{
+            return {
+              nome: menu.nome,
+              itens: menu.itens.map((item: any) => {
+                return {
+                  nome: item.nome,
+                  relatorios: item.relatorios.map((relatorio: any) => {
+                    return {
+                      nome: relatorio.nome,
+                      relatorio: relatorio.relatorio
+                    }
+                  })
+                }
+              })
+            }
+          }));
+        } catch (e) {
+          console.error(e);
+        }
+      }
+      fetchData();
     }, []);
 
   return (
@@ -112,17 +100,24 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                   {user?.acesso_admin == true && (
                    <MenuItem icon={<User/>} onClick={() => handleMenuClick('users')}>Usuários</MenuItem>
                   )}
-                  <SubMenu title="Menu" icon={<ListDashes/>} label='Menu'>
-                        {menuItens?.map((menu) => (
-                          <SubMenu title={menu.label} icon={<ListDashes/>} label={menu.label}>
-                            {menu.itens.map((subItem) => (
-                              <MenuItem icon={<ChartLineUp/>} onClick={()=> handleMenuClick('reports')}>{subItem.label}</MenuItem>
-                            ))}
-                          </SubMenu>
-                        ))}
-                  </SubMenu>
-                  
-                
+                  {menus?.map((menu: MenuItemProps) => {
+                    return (
+                      <SubMenu label={menu.nome} icon={<ListDashes/>}>
+                        {menu.itens.map((item: itemProps) => {
+                          return (
+                            <SubMenu label={item.nome} icon={<ListDashes/>}>
+                              {item.relatorios.map((relatorio: relatorios) => {
+                                return (
+                                  <MenuItem onClick={() => handleMenuClick(relatorio.relatorio)}>{relatorio.nome}</MenuItem>
+                                )
+                              })}
+                            </SubMenu>
+                          )
+                        })}
+                      </SubMenu>
+                    )
+                  })
+                  }
               </Menu>
               </Sidebar>
       </div> 
