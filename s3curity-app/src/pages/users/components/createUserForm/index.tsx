@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
+import { CreateUserformProps, MenuProps  } from "@/types/types";
 
 //Validação do formulário
 const registerFormShceme = z.object({
@@ -28,36 +29,6 @@ const registerFormShceme = z.object({
   ativo: z.boolean(),
   admin: z.boolean(),
 });
-
-
-interface EmpresaData {
-  id: number;
-  nome: string;
-  cnpj: string;
-  logo: string;
-  data_alt: any;
-  data_criacao: string;
-  imagem_fundo: string;
-  usuario_criacao: string;
-  usuario_cad_alt: any;
-}
-
-//Propriedades recebidas da rota
-interface CreateUserformProps {
-  empresa: string;
-  empresaid: number;
-  empresas: EmpresaData[];
-}
-
-interface draggableItensProps{
-  label: string;
-  type: string;
-}
-interface MenuProps{
-  id: number;
-  nome: string;
-  itens: string[];
-}
 
 type RegisterFormData = z.infer<typeof registerFormShceme>;
 

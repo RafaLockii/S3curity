@@ -8,21 +8,8 @@ import { ArrowLeft } from "phosphor-react";
 import TableComponent from "../components/table";
 import  useRouter from "next/router";
 import { api } from "@/lib/axios";
+import { EmpresaData } from "@/types/types";
 
-//Interface de dados da empresa
-interface EmpresaData {
-    id: number;
-    nome: string;
-    cnpj: string;
-    logo: string;
-    data_alt: any;
-    data_criacao: string;
-    imagem_fundo: string;
-    usuario_criacao: string;
-    usuario_cad_alt: any;
-  }
-
-  
 
 export default function Users(){
     

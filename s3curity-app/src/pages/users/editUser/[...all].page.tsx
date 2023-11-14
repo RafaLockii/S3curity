@@ -6,37 +6,9 @@ import { useEffect, useState } from "react";
 import { ArrowLeft } from "phosphor-react";
 import  useRouter from "next/router";
 import { api } from "@/lib/axios";
+import { UserData } from "@/types/types";
 
 
-interface UserData {
-    id: number;
-    nome: string;
-    email: string;
-    telefone: string;
-    acesso_admin: boolean;
-    ativo: boolean;
-    funcionario: {
-      acesso_admin: boolean;
-      ativo: boolean;
-      imagem: { url: string };
-      cargo: { nome_cargo: string; permissoes: string };
-      empresa: { nome: string };
-    }
-  }
-
-//   interface EmpresaData {
-//     id: number;
-//     nome: string;
-//     cnpj: string;
-//     logo: string;
-//     data_alt: any;
-//     data_criacao: string;
-//     imagem_fundo: string;
-//     usuario_criacao: string;
-//     usuario_cad_alt: any;
-//   }
-
-  
 
 export default function editUsers(){
     

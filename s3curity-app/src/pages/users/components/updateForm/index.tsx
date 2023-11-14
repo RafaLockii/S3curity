@@ -7,35 +7,7 @@ import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
-
-interface updateFormProps {
-  id: number;
-  nome: string;
-  email: string;
-  telefone: string;
-  acesso_admin: boolean;
-  ativo: boolean;
-  funcionario: {
-    acesso_admin: boolean;
-    ativo: boolean;
-    imagem: { url: string };
-    cargo: { nome_cargo: string; permissoes: string };
-    empresa: { nome: string };
-  }
-}
-
-//Interface de dados da empresa
-interface EmpresaData {
-  id: number;
-  nome: string;
-  cnpj: string;
-  logo: string;
-  data_alt: any;
-  data_criacao: string;
-  imagem_fundo: string;
-  usuario_criacao: string;
-  usuario_cad_alt: any;
-}
+import { updateFormProps } from "@/types/types";
 
 const registerFormShceme = z.object({
   nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),

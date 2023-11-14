@@ -1,26 +1,6 @@
 import styles from './styles.module.css';
 import  useRouter  from 'next/router';
-
-interface TableData {
-  id: number;
-  nome: string;
-  email: string;
-  telefone: string;
-  acesso_admin: boolean;
-  ativo: boolean;
-  funcionario: {
-    acesso_admin: boolean;
-    ativo: boolean;
-    imagem: { url: string };
-    cargo: { nome_cargo: string; permissoes: string };
-    empresa: { nome: string };
-  }
-}
-
-interface TableComponentProps {
-  data: TableData[] | { datas: TableData[] };
-  empresa: string;
-}
+import { TableComponentProps, TableData } from '@/types/types';
 
 export default function TableComponent({ data, empresa }: TableComponentProps) {
   let dataArray: TableData[];
