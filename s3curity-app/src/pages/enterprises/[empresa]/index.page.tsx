@@ -44,10 +44,6 @@ export default function Enterprise(){
     fetchData();
    }, [])
 
-
-
-
-
     return(
         <div className={styles.pageContainer}>
             <SidebarMenu empresa={empresa as string}/>

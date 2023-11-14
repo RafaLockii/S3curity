@@ -41,10 +41,27 @@ export interface TableData {
       cargo: { nome_cargo: string; permissoes: string };
       empresa: { nome: string };
     }
-  }
+}
   
 export interface TableComponentProps {
     data: TableData[] | { datas: TableData[] };
+    empresa: string;
+}
+
+export interface EmpresaTableData {
+    id: number;
+    nome: string;
+    razao_s: string;
+    logo: string;
+    data_alt: any;
+    data_criacao: string;
+    imagem_fundo: string;
+    usuario_criacao: string;
+    usuario_cad_alt: any;
+}
+  
+export interface EmpresaTableComponentProps {
+    data: EmpresaTableData[] | {datas: EmpresaTableData[]};
     empresa: string;
 }
 
@@ -78,4 +95,16 @@ export interface UserData {
       cargo: { nome_cargo: string; permissoes: string };
       empresa: { nome: string };
     }
+}
+
+export interface MenuItem {
+    nomeItem: string;
+    relatorios: { nome: string; relatorio: string }[];
+}
+  
+export interface MenuData {
+    nomeMenu: string;
+    empresa_id: number;
+    modulo_id: number;
+    itens: MenuItem[];
 }

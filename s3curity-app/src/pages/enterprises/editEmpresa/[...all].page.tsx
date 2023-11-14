@@ -6,20 +6,7 @@ import { useEffect, useState } from "react";
 import { ArrowLeft } from "phosphor-react";
 import  useRouter from "next/router";
 import { api } from "@/lib/axios";
-
-
-  interface EmpresaData {
-    id: number;
-    nome: string;
-    razao_s: string;
-    logo: string;
-    data_alt: any;
-    data_criacao: string;
-    imagem_fundo: string;
-    usuario_criacao: string;
-    usuario_cad_alt: any;
-  }
-
+import { EmpresaData } from "@/types/types";
 
 export default function editUsers(){
     
@@ -65,7 +52,7 @@ export default function editUsers(){
     }, []);
 
     console.log(empresaData);  
-    console.log("razao_s DA EMPRESA: "+empresaData?.razao_s)
+    console.log("razao_s DA EMPRESA: "+empresaData?.cnpj)
 
 
     return(
@@ -83,7 +70,7 @@ export default function editUsers(){
                         <UpdateForm
                             id={empresaData.id}
                             nome={empresaData.nome}
-                            razao_s={empresaData.razao_s}
+                            cnpj={empresaData.cnpj}
                             logo={empresaData.logo}
                             data_alt={empresaData.data_alt}
                             data_criacao={empresaData.data_criacao}

@@ -2,18 +2,8 @@ import FormLogin from '../../../components/FormsLogin/index';
 import Carousel from '@/components/Carousel';
 import styles from './styles.module.css';
 import { useRouter } from 'next/router';
-import { use, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { api } from '@/lib/axios';
-import { useImageContext } from '@/context/imagesContext';
-import { set } from 'zod';
-
-interface ImagemProps {
-    img01: string;
-    img02: string;
-    img03: string;
-    logo: string;
-}
-
 
 export default function SignIn() {
 

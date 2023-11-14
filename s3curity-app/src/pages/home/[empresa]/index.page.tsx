@@ -2,17 +2,9 @@ import SidebarMenu from "@/components/SideBarMenu";
 import styles from './styles.module.css';
 import { Header } from "@/components/header";
 import CarouselComponent from "@/components/Carousel";
-import userRouter from 'next/router';
 import { useUserContext } from "@/context/UserContext";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
-
-interface ImagemProps {
-    img01: string;
-    img02: string;
-    img03: string;
-    logo: string;
-}
 
 export default function Home() {
     const[empresa, setEmpresa] = useState<string>();

@@ -1,31 +1,15 @@
 import { useRouter } from 'next/router';
 import styles from './styles.module.css';
+import { EmpresaTableData, EmpresaTableComponentProps } from '@/types/types';
 
-interface TableData {
-  id: number;
-  nome: string;
-  razao_s: string;
-  logo: string;
-  data_alt: any;
-  data_criacao: string;
-  imagem_fundo: string;
-  usuario_criacao: string;
-  usuario_cad_alt: any;
-}
-
-interface TableComponentProps {
-  data: TableData[] | {datas: TableData[]};
-  empresa: string;
-}
-
-export default function TableComponent({ data, empresa }: TableComponentProps) {
-  let dataArray: TableData[];
+export default function TableComponent({ data, empresa }: EmpresaTableComponentProps) {
+  let dataArray: EmpresaTableData[];
   console.log(data);
   // Verifique se data é um objeto com uma propriedade "datas"
   if ('datas' in data) {
     dataArray = data.datas;
   } else {
-    dataArray = data as TableData[];
+    dataArray = data as EmpresaTableData[];
   }
   if(!Array.isArray(dataArray)){
     // Verifique se data não é uma matriz e, se não for, retorne uma mensagem de erro ou um componente alternativo.

@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
+import {MenuData } from "@/types/types";
 
 // Validação do formulário
 const registerFormShceme = z.object({
@@ -24,30 +25,6 @@ const registerFormShceme = z.object({
   imagem_fundo: z.string().min(10,{message: 'A URL da imagem de fundo precisa ter ao menos 10 caracteres'}),
   // senha: z.string().min(8, {message: 'A senha precisa ter ao menos 8 caracteres'}),
 });
-
-interface EmpresaData {
-  id: number;
-  nome: string;
-  cnpj: string;
-  logo: string;
-  data_alt: any;
-  data_criacao: string;
-  imagem_fundo: string;
-  usuario_criacao: string;
-  usuario_cad_alt: any;
-}
-
-interface MenuItem {
-  nomeItem: string;
-  relatorios: { nome: string; relatorio: string }[];
-}
-
-interface MenuData {
-  nomeMenu: string;
-  empresa_id: number;
-  modulo_id: number;
-  itens: MenuItem[];
-}''
 
 
 type RegisterFormData = z.infer<typeof registerFormShceme>;
