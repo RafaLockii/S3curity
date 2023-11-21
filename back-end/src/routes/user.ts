@@ -10,7 +10,7 @@ userRoutes.post('/user/ativar', UserController.ativarUser);
 userRoutes.put('/user/edit/:id', UserController.editUser);
 userRoutes.delete('/user/:id', UserController.deleteUser);
 userRoutes.delete('/delete-menu', UserController.deleteMenuUser);
-userRoutes.get('/user/:id/menus', UserController.getUserAndCompanyMenus);
-userRoutes.get('/user/menus/:email', UserController.getUserAndCompanyMenusByEmail);
+userRoutes.delete("/delete-item", UserController.deleteItemWithReportsForUser);
+userRoutes.delete("/delete-relatorio", UserController.deleteReportForItem);
 
 export default userRoutes;

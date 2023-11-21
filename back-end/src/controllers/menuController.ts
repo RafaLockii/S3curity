@@ -22,7 +22,6 @@ export const createMenu = async (req: Request, res: Response) => {
     const {
         nomeMenu,
         itens,
-        empresa_id,
         modulo_id,
     } = req.body;
     
@@ -42,9 +41,7 @@ export const createMenu = async (req: Request, res: Response) => {
                 modulos: {
                     connect: { id: modulo_id },
                 },
-                empresa: {
-                    connect: { id: empresa_id },
-                },
+                
                 itens: {
                     create: itens.map((item: any) => ({
                         nome: item.nomeItem,
@@ -66,51 +63,73 @@ export const createMenu = async (req: Request, res: Response) => {
     }
 };
 
-export const createMenuUser = async (req: Request, res: Response) => {
-    const { funcionario_id, menus_ids } = req.body;
+// export const createMenuUser = async (req: Request, res: Response) => {
+//   const { usuario_id, menus_ids, itens_ids, relatorios_ids } = req.body;
 
-    try {
-        const funcionario = await prisma.funcionario.findUnique({
-            where: { id: funcionario_id },
-        });
+//   try {
+//     const usuario = await prisma.funcionario.findUnique({
+//       where: { usuario_id: usuario_id }
+//     });
 
-        if (!funcionario) {
-            return res.status(404).json({ error: "Funcionario not found" });
-        }
+//     if (!usuario) {
+//       return res.status(404).json({ error: "Usuario not found" });
+//     }
 
-        const menus = await prisma.menus.findMany({
-            where: { id: { in: menus_ids } },
-        });
+//     const menus = await prisma.menus.findMany({
+//       where: { id: { in: menus_ids } },
+//     });
 
-        if (menus.length !== menus_ids.length) {
-            return res.status(404).json({ error: "One or more menus not found" });
-        }
+//     const itens = await prisma.itens.findMany({
+//       where: { id: { in: itens_ids } },
+//     });
 
-        const existingFuncionarioMenus = await prisma.funcionarioMenu.findMany({
-            where: { funcionarioId: funcionario_id },
-        });
+//     const relatorios = await prisma.relatorios.findMany({
+//       where: { id: { in: relatorios_ids } },
+//     });
 
-        const newMenus = menus.filter(
-            (menu: any) => !existingFuncionarioMenus.some((fm: any) => fm.menuId === menu.id)
-        );
+//     if (menus.length !== menus_ids.length || itens.length !== itens_ids.length || relatorios.length !== relatorios_ids.length) {
+//       return res.status(404).json({ error: "One or more menus, items or reports not found" });
+//     }
 
-        const createdFuncionarioMenus = await Promise.all(
-            newMenus.map((menu: any) =>
-                prisma.funcionarioMenu.create({
-                    data: {
-                        funcionarioId: funcionario_id,
-                        menuId: menu.id,
-                    },
-                })
-            )
-        );
+//     // await prisma.funcionario.create({
+//     //   where: { usuario_id: usuario_id },
+//     //   data: {
 
-        res.status(200).json(createdFuncionarioMenus);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erro ao criar o menu do usuário." });
-    }
-}
+//     //     menus: {
+//     //       connect: menus_ids.map((id: any) => ({ id }))
+//     //     },
+//     //     itens: {
+//     //       connect: itens_ids.map((id: any) => ({ id }))
+//     //     },
+//     //     relatorios: {
+//     //       connect: relatorios_ids.map((id: any) => ({ id }))
+//     //     }
+//     //   }
+//     // });
+
+//     // await prisma.funcionario.update({
+//     //   where: { usuario_id: usuario_id },
+//     //   data: {
+//     //     menus: {
+//     //       connect: menus_ids.map((id: any) => ({ id }))
+//     //     },
+//     //     itens: {
+//     //       connect: itens_ids.map((id: any) => ({ id }))
+//     //     },
+//     //     relatorios: {
+//     //       connect: relatorios_ids.map((id: any) => ({ id }))
+//     //     }
+//     //   }
+//     // });
+
+//     return res.status(200).json({ message: "Menus, items and reports successfully associated with the user" });
+//   } catch (error) {
+//     if (error instanceof Error) {
+//         return res.status(500).json({ error: error.message });
+//     } else {
+//         return res.status(500).json({ error: "An unknown error occurred" });
+//     }
+// }}
 
 export const editMenu = async (req: Request, res: Response) => {
     try {
@@ -212,47 +231,46 @@ export const getMenu = async (req: Request, res: Response) => {
     }
 };
 
-export const getMenusByEmpresaAndModulo = async (req: Request, res: Response) => {
-    const { empresa_id, modulo_id } = req.params;
+// export const getMenusByEmpresaAndModulo = async (req: Request, res: Response) => {
+//     const { empresa_id, modulo_id } = req.params;
 
-    if (!empresa_id || !modulo_id) {
-        return res.status(400).json({ error: "Empresa ID and Modulo ID are required" });
-    }
+//     if (!empresa_id || !modulo_id) {
+//         return res.status(400).json({ error: "Empresa ID and Modulo ID are required" });
+//     }
 
-    try {
-        const menus = await prisma.menus.findMany({
-            where: {
-                modulos_id: Number(modulo_id),
-                empresa_id: Number(empresa_id),
-            },
-            include: {
-                empresa: true,
-                modulos: true,
-                itens: {
-                    include: {
-                        relatorios: true,
-                    },
-                },
-            },
-        });
+//     try {
+//         const menus = await prisma.menus.findMany({
+//             where: {
+//                 modulos_id: Number(modulo_id),
+//                 empresa_id: Number(empresa_id),
+//             },
+//             include: {
+//                 empresa: true,
+//                 modulos: true,
+//                 itens: {
+//                     include: {
+//                         relatorios: true,
+//                     },
+//                 },
+//             },
+//         });
 
-        if (!menus.length) {
-            return res.status(404).json({ error: "Menus not found for this company and module" });
-        }
+//         if (!menus.length) {
+//             return res.status(404).json({ error: "Menus not found for this company and module" });
+//         }
 
-        res.status(200).json(menus);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: "Failed to get menus" });
-    }
-};
+//         res.status(200).json(menus);
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ error: "Failed to get menus" });
+//     }
+// };
 
 export const getAllMenus = async (req: Request, res: Response) => {
 
     try {
         const menus = await prisma.menus.findMany({
             include: {
-                empresa: true,
                 modulos: true,
                 itens: { include: { relatorios: true } },
             },
@@ -261,7 +279,6 @@ export const getAllMenus = async (req: Request, res: Response) => {
         const formattedMenus = menus.map(menu => ({
             id: menu.id,
             nome: menu.nome,
-            empresa: menu.empresa.nome,
             modulo: menu.modulos.nome,
             itens: menu.itens
         }));

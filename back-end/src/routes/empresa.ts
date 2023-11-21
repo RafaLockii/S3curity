@@ -1,6 +1,5 @@
 import express from 'express';
 import * as EmpresaController from '../controllers/empresaController';
-import { adminAuthMiddleware, autenticarToken } from '../middlewares/auth';
 
 const empresaRouter = express.Router();
 

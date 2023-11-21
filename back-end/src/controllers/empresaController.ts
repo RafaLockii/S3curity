@@ -145,6 +145,7 @@ export const listEmpresas = async (req: Request, res: Response) => {
         const empresas = await prisma.empresa.findMany({
             include: {
                 carrosseis: true,
+                funcionarios: true,
             },
         });
 
@@ -212,15 +213,6 @@ export const getEmpresaByName = async (req: Request, res: Response) => {
             include: {
                 carrosseis: true,
                 funcionarios: true,
-                menus: {
-                    include: {
-                        itens: {
-                            include: {
-                                relatorios: true,
-                            },
-                        },
-                    },
-                },
             },
         });
 
@@ -239,20 +231,6 @@ export const getEmpresaByName = async (req: Request, res: Response) => {
             data_criacao: empresa.data_criacao.toLocaleString(),
             usuario_cad_alt: empresa.usuario_cad_alt,
             carrosseis: empresa.carrosseis,
-            menus: empresa.menus.map(menu => ({
-                id: menu.id,
-                nome: menu.nome,
-                modulos_id: menu.modulos_id,
-                itens: menu.itens.map(item => ({
-                    id: item.id,
-                    nome: item.nome,
-                    relatorios: item.relatorios.map(relatorio => ({
-                        id: relatorio.id,
-                        nome: relatorio.nome,
-                        relatorio: relatorio.relatorio,
-                    })),
-                })),
-            })),
         };
 
         if (!formattedEmpresa) {

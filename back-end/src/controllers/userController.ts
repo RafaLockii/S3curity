@@ -16,7 +16,10 @@ export const createUser = async (req: Request, res: Response) => {
     cargo_id,
     empresa_id,
     imagem_perfil_url,
-    menus_ids
+    usuario_id,
+    menus_ids,
+    itens_ids,
+    relatorios_ids
   } = req.body;
 
   try {
@@ -42,6 +45,28 @@ export const createUser = async (req: Request, res: Response) => {
             .json({ message: "A empresa especificada não foi encontrada." });
     }
 
+    const menus = await prisma.menus.findMany({
+      where: { id: { in: menus_ids } }
+    });
+
+    const itens = await prisma.itens.findMany({
+      where: { id: { in: itens_ids } }
+    });
+
+    const relatorios = await prisma.relatorios.findMany({
+      where: { id: { in: relatorios_ids } }
+    });
+
+    if (
+      menus.length !== menus_ids.length ||
+      itens.length !== itens_ids.length ||
+      relatorios.length !== relatorios_ids.length
+    ) {
+      return res
+        .status(404)
+        .json({ error: "One or more menus, items or reports not found" });
+    }
+
     const hashedPassword = await bcrypt.hash(senha, 10);
 
     const secret = speakeasy.generateSecret({ length: 6 });
@@ -50,29 +75,38 @@ export const createUser = async (req: Request, res: Response) => {
     const currentDatetime = new Date();
 
     const user = await prisma.$transaction([
-        prisma.user.create({
+      prisma.user.create({
         data: {
-            nome,
-            senha: hashedPassword,
-            email,
-            telefone,
-            token: code,
-            funcionario: {
+          nome,
+          senha: hashedPassword,
+          email,
+          telefone,
+          token: code,
+          funcionario: {
             create: {
-                ativo: true,
-                cadastro_alterado: currentDatetime,
-                usuario_cad_alt: usuario_criacao,
-                modulo_default,
-                acesso_admin,
-                empresa: { connect: { id: empresa_id } },
-                cargo: { connect: { cargo_id: cargo_id } }
+              ativo: true,
+              cadastro_alterado: currentDatetime,
+              usuario_cad_alt: usuario_criacao,
+              modulo_default,
+              acesso_admin,
+              empresa: { connect: { id: empresa_id } },
+              cargo: { connect: { cargo_id: cargo_id } },
+              menus: {
+                connect: menus_ids.map((id: any) => ({ id }))
+              },
+              itens: {
+                connect: itens_ids.map((id: any) => ({ id }))
+              },
+              relatorios: {
+                connect: relatorios_ids.map((id: any) => ({ id }))
+              }
             }
-            }
+          }
         },
         include: {
-            funcionario: true
+          funcionario: true
         }
-        })
+      })
     ]);
 
         if (user[0].funcionario) {
@@ -100,33 +134,6 @@ export const createUser = async (req: Request, res: Response) => {
         if (!funcionario) {
             return res.status(404).json({ error: "Funcionario not found" });
         }
-
-        const menus = await prisma.menus.findMany({
-            where: { id: { in: menus_ids } },
-        });
-
-        if (menus.length !== menus_ids.length) {
-            return res.status(404).json({ error: "One or more menus not found" });
-        }
-
-        const existingFuncionarioMenus = await prisma.funcionarioMenu.findMany({
-            where: { funcionarioId: funcionario.id },
-        });
-
-        const newMenus = menus.filter(
-            (menu: any) => !existingFuncionarioMenus.some((fm: any) => fm.menuId === menu.id)
-        );
-
-        const createdFuncionarioMenus = await Promise.all(
-            newMenus.map((menu: any) =>
-                prisma.funcionarioMenu.create({
-                    data: {
-                        funcionarioId: funcionario.id,
-                        menuId: menu.id,
-                    },
-                })
-            )
-        );
 
         if (user[0].token) {
         transporter.sendMail(
@@ -156,9 +163,10 @@ export const createUser = async (req: Request, res: Response) => {
 };
 
 export const editUser = async (req: Request, res: Response) => {
+  const userId = parseInt(req.params.id);
+
     try {
-        const userId = parseInt(req.params.id);
-        const {
+      const {
         nome,
         senha,
         email,
@@ -169,171 +177,188 @@ export const editUser = async (req: Request, res: Response) => {
         cargo_id,
         empresa_id,
         imagem_perfil_url,
-        menus_ids
-        } = req.body;
+        menus_ids,
+        itens_ids,
+        relatorios_ids
+      } = req.body;
 
-        const existingUser = await prisma.user.findUnique({
+      const existingUser = await prisma.user.findUnique({
         where: {
-            id: userId
+          id: userId
         },
         include: {
-            funcionario: true
+          funcionario: true
         }
-        });
+      });
 
-        if (!existingUser) {
+      if (!existingUser) {
         return res.status(404).json({ message: "Usuário não encontrado." });
+      }
+
+      const existingUserWithEmail = await prisma.user.findUnique({
+        where: {
+          email: email
         }
+      });
 
-        const existingUserWithEmail = await prisma.user.findUnique({
-            where: {
-                email: email,
-            }
-        });
+      if (existingUserWithEmail && existingUserWithEmail.id !== userId) {
+        return res.status(400).json({ message: "Email já está em uso." });
+      }
 
-        if (existingUserWithEmail && existingUserWithEmail.id !== userId) {
-            return res.status(400).json({ message: "Email já está em uso." });
+      const hashedPassword = await bcrypt.hash(senha, 10);
+
+      const updatedUser = await prisma.user.update({
+        where: {
+          id: userId
+        },
+        data: {
+          nome,
+          senha: hashedPassword,
+          email,
+          telefone
         }
+      });
 
-        const hashedPassword = await bcrypt.hash(senha, 10);
-
-        const updatedUser = await prisma.user.update({
-            where: {
-                id: userId
-            },
-            data: {
-                nome,
-                senha: hashedPassword,
-                email,
-                telefone
-            }
-        });
-
-        if (empresa_id && cargo_id) {
+      if (empresa_id && cargo_id) {
         const existingEmpresa = await prisma.empresa.findUnique({
-            where: {
+          where: {
             id: empresa_id
-            }
+          }
         });
 
         if (!existingEmpresa) {
-            return res.status(404).json({ message: "Empresa não encontrado." });
+          return res.status(404).json({ message: "Empresa não encontrado." });
         }
 
-        const updatedFuncionario = await prisma.funcionario.update({
-            where: {
-                usuario_id: userId
-            },
-            data: {
-            modulo_default,
-            ativo: ativo,
-            acesso_admin,
-            empresa: { connect: { id: empresa_id } },
-            cargo: { connect: { cargo_id: cargo_id } },
-            menus: {
-                set: menus_ids.map((menuId: number) => ({ id: menuId })),
-            },
+        const updatedFuncionario = await prisma.user.update({
+          where: { id: Number(userId) },
+          data: {
+            nome,
+            email,
+            telefone,
+            funcionario: {
+              update: {
+                modulo_default,
+                acesso_admin,
+                empresa: { connect: { id: empresa_id } },
+                cargo: { connect: { cargo_id: cargo_id } },
+                menus: {
+                  set: menus_ids.map((id: any) => ({ id }))
+                },
+                itens: {
+                  set: itens_ids.map((id: any) => ({ id }))
+                },
+                relatorios: {
+                  set: relatorios_ids.map((id: any) => ({ id }))
+                }
+              }
             }
+          },
+          include: {
+            funcionario: true
+          }
         });
 
-            const ImagemExist = await prisma.imagem.findUnique({
-                where: {funcionario_id: updatedFuncionario.id}
-            });
+        const ImagemExist = await prisma.imagem.findUnique({
+          where: { funcionario_id: updatedFuncionario.id }
+        });
 
-            if (ImagemExist) {
-                const updatedImagem = await prisma.imagem.update({
-                    where: {
-                    funcionario_id: updatedFuncionario.id
-                    },
-                    data: {
-                    url: imagem_perfil_url
-                    }
-                });
-                } else if (existingUser.funcionario) {
-                const createdImagem = await prisma.imagem.create({
-                    data: {
-                    url: imagem_perfil_url,
-                    funcionario_id: updatedFuncionario.id
-                    }
-                });
-
-                const updatedImagem = await prisma.funcionario.update({
-                    where: {
-                        id: updatedFuncionario.id
-                    },
-                    data: {
-                        imagem_perfil_id: createdImagem.id
-                    }
-                });
-                }
+        if (ImagemExist) {
+          const updatedImagem = await prisma.imagem.update({
+            where: {
+              funcionario_id: updatedFuncionario.id
+            },
+            data: {
+              url: imagem_perfil_url
             }
-        res.status(200).json(updatedUser);
+          });
+        } else if (existingUser.funcionario) {
+          const createdImagem = await prisma.imagem.create({
+            data: {
+              url: imagem_perfil_url,
+              funcionario_id: updatedFuncionario.id
+            }
+          });
+
+          const updatedImagem = await prisma.funcionario.update({
+            where: {
+              id: updatedFuncionario.id
+            },
+            data: {
+              imagem_perfil_id: createdImagem.id
+            }
+          });
+        }
+      }
+      res.status(200).json(updatedUser);
     } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erro ao editar o usuário." });
+      if (error instanceof Error) {
+        return res.status(500).json({ error: error.message });
+      } else {
+        return res.status(500).json({ error: "An unknown error occurred" });
+      }
     }
 };
 
 export const getUser = async (req: Request, res: Response) => {
-  const userId = parseInt(req.params.id);
+  const { id } = req.params;
 
   try {
-    const user = await prisma.user.findUnique({
-        where: {
-            id: userId
-        },
-        include: {
-            funcionario: true
-        }
-    });
-
-    if (!user || !user.funcionario) {
-        return res.status(404).json({ message: "Usuário não encontrado." });
-    }
-
-    const funcionario = await prisma.funcionario.findUnique({
-        where: {
-            id: user.funcionario.id
-        },
-        include: {
-            imagem: true,
-            cargo: true,
-            empresa: {
-                include: {
-                    menus: {
-                        include: {
-                            itens: {
-                                include: {
-                                    relatorios: true,
-                                },
-                            },
-                        },
-                    },
-                },
-            },
-        },
-    });
-
-    const formattedUser = {
-      ...user,
-      funcionario: {
-        ...funcionario,
-        cadastro_alterado:
-          funcionario?.cadastro_alterado?.toLocaleString() || null,
-        empresa: {
-          ...funcionario?.empresa,
-          data_criacao:
-            funcionario?.empresa?.data_criacao?.toLocaleString() || null
+    const user = await prisma.funcionario.findUnique({
+      where: { usuario_id: Number(id) },
+      include: {
+        menus: {
+          include: {
+            itens: {
+              include: {
+                relatorios: true
+              }
+            }
+          }
         }
       }
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuario not found" });
+    }
+
+    const structuredData = {
+      id: user.id,
+      modulo_default: user.modulo_default,
+      acesso_admin: user.acesso_admin,
+      ativo: user.ativo,
+      cadastro_alterado: user.cadastro_alterado,
+      usuario_cad_alt: user.usuario_cad_alt,
+      cargo_id: user.cargo_id,
+      usuario_id: user.usuario_id,
+      empresa_id: user.empresa_id,
+      imagem_perfil_id: user.imagem_perfil_id,
+      menus: user.menus.map((menu) => ({
+        id: menu.id,
+        nome: menu.nome,
+        modulos_id: menu.modulos_id,
+        itens: menu.itens.map((item) => ({
+          id: item.id,
+          nome: item.nome,
+          menus_id: item.menus_id,
+          relatorios: item.relatorios.map((relatorio) => ({
+            id: relatorio.id,
+            nome: relatorio.nome,
+            relatorio: relatorio.relatorio,
+            itens_id: relatorio.itens_id
+          }))
+        }))
+      }))
     };
 
-    res.status(200).json(formattedUser);
+    res.json(structuredData);
   } catch (error) {
-    console.error(error);
-    res
-      .status(500)
-      .json({ message: "Erro ao buscar as informações do usuário." });
+    if (error instanceof Error) {
+      return res.status(500).json({ error: error.message });
+    } else {
+      return res.status(500).json({ error: "An unknown error occurred" });
+    }
   }
 };
 
@@ -420,22 +445,35 @@ export const listUsers = async (req: Request, res: Response) => {
 };
 
 export const deleteUser = async (req: Request, res: Response) => {
-    const { id } = req.params;
+  const { id } = req.params;
 
-    try {
-        await prisma.funcionarioMenu.deleteMany({
-            where: { funcionarioId: Number(id) },
-        });
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: { id: Number(id) },
+      include: {
+        funcionario: {
+          include: {
+            imagem: true,
+            menus: true,
+            itens: true,
+            relatorios: true
+          }
+        }
+      }
+    });
 
-        const user = await prisma.funcionario.delete({
-            where: { id: Number(id) },
-        });
-
-        res.status(200).json(user);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erro ao excluir o usuário." });
+    if (!existingUser) {
+      return res.status(404).json({ message: "Usuário não encontrado." });
     }
+
+    const deletedUser = await prisma.user.delete({
+      where: { id: Number(id) },
+    });
+
+    return res.json(deletedUser);
+  } catch (error) {
+    return res.status(500).json({ error: "Falha ao deletar" });
+  }
 };
 
 export const ativarUser = async (req: Request, res: Response) => {
@@ -491,159 +529,210 @@ export const ativarUser = async (req: Request, res: Response) => {
 };
 
 export const deleteMenuUser = async (req: Request, res: Response) => {
-    
-    const { userId, menu_id } = req.body;
+  const { userId, menuId } = req.body;
 
-    try {
-
-        const existingUser = await prisma.user.findUnique({
-            where: {
-                id: userId
-            },
-            include: {
-                funcionario: true
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        id: userId
+      },
+      include: {
+        funcionario: {
+          where: {
+            menus: {
+              some: {
+                id: menuId
+              }
             }
-            });
-    
-        if (!existingUser) {
-        return res.status(404).json({ message: "Usuário não encontrado." });
+          },
+          include: {
+            itens: {
+              where: {
+                menus_id: menuId
+              },
+              include: {
+                relatorios: true
+              }
+            }
+          }
         }
+      }
+    });
 
-        await prisma.funcionarioMenu.deleteMany({
-            where: { 
-                funcionarioId: Number(existingUser.funcionario?.id),
-                menuId: Number(menu_id)
-            },
-        });
-
-        res.status(200).json({ message: "Relacionamento de menu de usuário excluído com sucesso." });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erro ao excluir o relacionamento de menu do usuário." });
+    if (!existingUser || !existingUser.funcionario) {
+      return res
+        .status(404)
+        .json({ message: "Usuário ou funcionário não encontrado." });
     }
+
+    const funcionarioId = existingUser.funcionario.id;
+
+    await prisma.funcionario.update({
+      where: {
+        id: funcionarioId
+      },
+      data: {
+        menus: {
+          disconnect: {
+            id: menuId
+          }
+        },
+        itens: {
+          disconnect: existingUser.funcionario.itens.map((item: any) => ({
+            id: item.id
+          }))
+        },
+        relatorios: {
+          deleteMany: {
+            id: {
+              in: existingUser.funcionario.itens.flatMap((item: any) =>
+                item.relatorios.map((relatorio: any) => relatorio.id)
+              )
+            }
+          }
+        }
+      }
+    });
+
+    res.status(200).json({
+      message: "Relacionamento de menu de usuário excluído com sucesso."
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({ error: error.message });
+    } else {
+      return res.status(500).json({ error: "An unknown error occurred" });
+    }
+  }
 };
 
-// exibir menus do usuario e da empresa
-export const getUserAndCompanyMenus = async (req: Request, res: Response) => {
-    const { id } = req.params;
+export const deleteItemWithReportsForUser = async (
+  req: Request,
+  res: Response
+) => {
+  const { userId, itemId } = req.body;
 
-    try {
-        const user = await prisma.user.findUnique({
-            where: { id: Number(id) },
-        });
-
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        id: Number(userId)
+      },
+      include: {
+        funcionario: {
+          where: {
+            itens: {
+              some: {
+                id: Number(itemId)
+              }
+            }
+          }
         }
+      }
+    });
 
-        const funcionario = await prisma.funcionario.findUnique({
-            where: { usuario_id: user.id },
-            include: {
-                menus: {
-                    include: {
-                        menu: {
-                            include: {
-                                itens: {
-                                    include: {
-                                        relatorios: true,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-                empresa: true,
-            },
-        });
-
-        if (!funcionario) {
-            return res.status(404).json({ error: "Funcionario not found" });
-        }
-
-        const menus = await prisma.menus.findMany({
-            where: {
-                id: {
-                    in: funcionario.menus.map((fm) => fm.menu.id),
-                },
-            },
-            include: {
-                itens: {
-                    include: {
-                        relatorios: true,
-                    },
-                },
-            },
-        });
-
-        const combinedMenus = [
-            ...menus,
-        ];
-
-        res.status(200).json({ ...user, funcionario: { ...funcionario, menus: combinedMenus } });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erro ao buscar o usuário e os menus da empresa." });
+    if (!existingUser || !existingUser.funcionario) {
+      return res
+        .status(404)
+        .json({ message: "Usuário ou item não encontrado." });
     }
+
+    // Remove o item específico associado ao usuário
+    await prisma.itens.delete({
+      where: {
+        id: Number(itemId)
+      }
+    });
+
+    // Busca os relatórios associados ao item para esse usuário e exclui-os
+    const relatoriosDoItem = await prisma.relatorios.findMany({
+      where: {
+        itens_id: Number(itemId)
+      }
+    });
+
+    const relatorioIds = relatoriosDoItem.map((relatorio) => relatorio.id);
+    await prisma.relatorios.deleteMany({
+      where: {
+        id: {
+          in: relatorioIds
+        }
+      }
+    });
+
+    res.status(200).json({
+      message:
+        "Item e seus relatórios associados foram removidos com sucesso para o usuário especificado."
+    });
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({ error: error.message });
+    } else {
+      return res.status(500).json({ error: "An unknown error occurred" });
+    }
+  }
 };
 
-export const getUserAndCompanyMenusByEmail = async (req: Request, res: Response) => {
-    const { email } = req.params;
+export const deleteReportForItem = async (req: Request, res: Response) => {
+  const { userId, itemId, reportId } = req.body;
 
-    try {
-        const user = await prisma.user.findUnique({
-            where: { email: email },
-        });
+  try {
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        id: Number(userId)
+      }
+    });
 
-        if (!user) {
-            return res.status(404).json({ error: "User not found" });
-        }
-
-        const funcionario = await prisma.funcionario.findUnique({
-            where: { usuario_id: user.id },
-            include: {
-                menus: {
-                    include: {
-                        menu: {
-                            include: {
-                                itens: {
-                                    include: {
-                                        relatorios: true,
-                                    },
-                                },
-                            },
-                        },
-                    },
-                },
-                empresa: true,
-            },
-        });
-
-        if (!funcionario) {
-            return res.status(404).json({ error: "Funcionario not found" });
-        }
-
-        const menus = await prisma.menus.findMany({
-            where: {
-                id: {
-                    in: funcionario.menus.map((fm) => fm.menu.id),
-                },
-            },
-            include: {
-                itens: {
-                    include: {
-                        relatorios: true,
-                    },
-                },
-            },
-        });
-
-        const combinedMenus = [
-            ...menus,
-        ];
-
-        res.status(200).json({ ...user, funcionario: { ...funcionario, menus: combinedMenus } });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erro ao buscar o usuário e os menus da empresa." });
+    if (!existingUser) {
+      return res.status(404).json({ message: "Usuário não encontrado." });
     }
+
+    const item = await prisma.itens.findFirst({
+      where: {
+        id: Number(itemId),
+        relatorios: {
+          some: {
+            id: Number(reportId)
+          }
+        }
+      }
+    });
+
+    if (!item) {
+      return res
+        .status(404)
+        .json({ message: "Item não encontrado para este usuário." });
+    }
+
+    const report = await prisma.relatorios.findFirst({
+      where: {
+        id: Number(reportId),
+        itens_id: Number(itemId)
+      }
+    });
+
+    if (!report) {
+      return res
+        .status(404)
+        .json({ message: "Relatório não encontrado para este item." });
+    }
+
+    await prisma.relatorios.delete({
+      where: {
+        id: Number(reportId)
+      }
+    });
+
+    return res
+      .status(200)
+      .json({
+        message: "Relatório removido com sucesso para o item especificado."
+      });
+  } catch (error) {
+    console.error(error);
+    return res
+      .status(500)
+      .json({
+        message: "Erro ao remover o relatório para o item especificado."
+      });
+  }
 };

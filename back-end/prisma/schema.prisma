@@ -46,11 +46,13 @@ model Funcionario {
   empresa_id        Int?
   imagem_perfil_id  Int?
 
-  imagem  Imagem?
-  user    User              @relation(fields: [usuario_id], references: [id])
-  empresa Empresa?          @relation(fields: [empresa_id], references: [id])
-  cargo   Cargos?           @relation(fields: [cargo_id], references: [cargo_id])
-  menus   FuncionarioMenu[]
+  imagem     Imagem?
+  user       User        @relation(fields: [usuario_id], references: [id])
+  empresa    Empresa?    @relation(fields: [empresa_id], references: [id])
+  cargo      Cargos?     @relation(fields: [cargo_id], references: [cargo_id])
+  menus      Menus[]      @relation("FuncionarioMenus")
+  itens      Itens[]      @relation("FuncionarioItens")
+  relatorios Relatorios[] @relation("FuncionarioRelatorios")
 }
 
 model Empresa {
@@ -65,7 +67,6 @@ model Empresa {
   usuario_cad_alt String?
   funcionarios    Funcionario[]
   carrosseis      Carrossel[]
-  menus           Menus[]
 }
 
 model Imagem {
@@ -92,41 +93,31 @@ model Modulos {
 }
 
 model Menus {
-  id           Int               @id @default(autoincrement())
-  nome         String
-  modulos_id   Int
-  empresa_id   Int
-  funcionarios FuncionarioMenu[]
+  id         Int       @id @default(autoincrement())
+  nome       String
+  modulos_id Int
+  usuarios   Funcionario[] @relation("FuncionarioMenus")
 
-  empresa Empresa @relation(fields: [empresa_id], references: [id])
   modulos Modulos @relation(fields: [modulos_id], references: [id])
   itens   Itens[]
 }
 
-model FuncionarioMenu {
-  funcionarioId Int
-  funcionario   Funcionario @relation(fields: [funcionarioId], references: [id])
-
-  menuId Int
-  menu   Menus @relation(fields: [menuId], references: [id])
-
-  @@id([funcionarioId, menuId])
-}
-
 model Itens {
-  id       Int    @id @default(autoincrement())
+  id       Int       @id @default(autoincrement())
   nome     String
   menus_id Int
+  usuarios Funcionario[] @relation("FuncionarioItens")
 
   menus      Menus        @relation(fields: [menus_id], references: [id])
-  relatorios relatorios[]
+  relatorios Relatorios[]
 }
 
-model relatorios {
-  id        Int    @id @default(autoincrement())
+model Relatorios {
+  id        Int       @id @default(autoincrement())
   nome      String
   relatorio String
   itens_id  Int
+  usuarios  Funcionario[] @relation("FuncionarioRelatorios")
 
   itens Itens @relation(fields: [itens_id], references: [id])
 }
