@@ -10,16 +10,7 @@ import {MenuData } from "@/types/types";
 
 // Validação do formulário
 const registerFormShceme = z.object({
-  nome: z.string()
-    .min(5, { message: 'O nome precisa ter ao menos 5 letras' })
-    .regex(/^([a-záàâãéèêíïóôõöúçñ0-9\s]+)$/i, { message: "Nome inválido" })
-    .transform((value) => value.trim().toLowerCase()),
-  razao_s: z.string()
-    .min(5, { message: 'A razão social precisa ter ao menos 5 letras' })
-    .regex(/^\d{2}\.\d{3}\.\d{3}\/\d{4}-\d{2}$/, { message: "CNPJ inválido" })
-    .transform((value) => value.replace(/\D/g, '')),
-  logo: z.string().min(10,{message: 'A URL da logo precisa ter ao menos 10 caracteres'}),
-  imagem_fundo: z.string().min(10,{message: 'A URL da imagem de fundo precisa ter ao menos 10 caracteres'}),
+  nome: z.optional(z.string()), 
   // senha: z.string().min(8, {message: 'A senha precisa ter ao menos 8 caracteres'}),
 });
 
@@ -37,19 +28,7 @@ export default function CreateForm() {
     resolver: zodResolver(registerFormShceme),
   });
 
-  // Pega informação do usuário logado
-  const { user } = useUserContext();
-  const [imagensCarrosel, setImagensCarrosel] = useState<string[]>([]);
-
   const { back } = useRouter();
-
-  // Track the number of image inputs
-  const [numImageInputs, setNumImageInputs] = useState(1);
-
-  // Function to add more image inputs
-  const addImageInput = () => {
-    setNumImageInputs(numImageInputs + 1);
-  };
 
   //Bloco de código refrente a criação de menus --------------------------------------->
   const [numMenuInputs, setNumMenuInputs] = useState(1);
@@ -95,25 +74,13 @@ export default function CreateForm() {
     setMenus(newMenus);
   };
 
-
    //FIm do bloco ------------------------------------------------------------------------>
-
   async function handleRegister(data: RegisterFormData) {
     console.log("entrou aq");
     try {
-      const response =  await api.post("empresa/create", {
-          nome: data.nome,
-          razao_s: data.razao_s,
-          logo: data.logo,
-          imagem_fundo: data.imagem_fundo,
-          usuario_criacao: user?.nome || "Usuário Não definido",
-          carrosselImagens: imagensCarrosel,
-        });
-       // Assigning empresa_id to each menu in menuData
-       console.log(response.data.empresa.id)
     const menuData: MenuData[] = menus.map((menu) => ({
       ...menu,
-      empresa_id: response.data.empresa.id,
+      empresa_id: 1,
       modulo_id: 1,
     }));
 
