@@ -80,7 +80,7 @@ export default function Users(){
                 {showCreateUserForm && (
                 <>
                     <div className={styles.formHeader}>
-                        <p>Cadastro/Edição</p>
+                        <p>Cadastro</p>
                         <ArrowLeft className={styles.arrowLeft} onClick={ () =>handleShowCreateUserForm(false)} />
                     </div>
 

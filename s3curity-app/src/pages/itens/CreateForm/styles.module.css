@@ -1,0 +1,149 @@
+
+.header{
+    position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.createUserButton{
+    position: absolute;
+    bottom: 5rem;
+    right: 6rem;
+    padding: 0.5rem;
+    color: #1BC5BD;
+    background-color: #C9F7F5;
+    border: none;
+    cursor: pointer;
+    width: 5rem;
+    height: 3rem;
+    border-radius: 5px;
+}
+
+.input {
+  margin-left: 2rem;
+  display: flex;
+  flex-direction: row;
+  width: 20rem;
+  padding: 8px;
+  margin-bottom: 3rem;
+  border: none;
+}
+.inputForMenu {
+  margin-left: 2rem;
+  display: flex;
+  flex-direction: row;
+  width: 20rem;
+  padding: 8px;
+  border: none;
+  margin-bottom: 0.25rem;
+}
+
+  .form{
+    display: flex;
+    flex-direction: row;
+    margin-right: 2rem;
+  }
+  .formHeader{
+    font-size: x-large;
+    font-weight: bold;
+    margin-left: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: row;
+    width: 80vw;
+  }
+
+  .checkbox{
+    display: flex;
+    margin-bottom: 2.50rem;
+  }
+
+  .inputWithContents{
+    display: flex;
+    flex-direction: row;
+    align-items: space-between;
+  }
+
+  .arrowLeft{
+    margin-left: auto;
+  }
+
+  .text{
+    font-size: 12px;
+    font-weight: 500;
+  }
+  
+
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: space-between;
+    height: 100vh;
+  }
+
+  .formAnnotation{
+    color: rgb(220, 32, 32);
+    background-color: rgb(243, 170, 170);
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-items: center;
+    padding: 0.5rem;
+    border-radius: 5px;
+    box-shadow: 5px 5px 5px 2px rgba(0,0,0,0.1);
+  }
+
+  .formContainer{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .addImage{
+    width: 7rem;
+    height: 2rem;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 0.5rem;
+    margin: 1rem 0 0 3rem;
+    cursor: pointer;
+    box-shadow: 5px 5px 5px 2px rgba(0,0,0,0.1);
+
+  }
+
+  .menu {
+    margin-left: 2rem;
+  }
+  
+  .item {
+    margin-left: 2rem;
+  }
+  
+  .relatorio {
+    margin-left: 2rem;
+  }
+  
+  .addInput{
+    width: 7rem;
+    height: 2rem;
+    border: 1px solid gray;
+    border-radius: 5px;
+    padding: 0.5rem;
+    margin: 2rem 0 0 3rem;
+    cursor: pointer;
+    box-shadow: 5px 5px 5px 2px rgba(0,0,0,0.1);
+  }
+  .addInputMenu{
+    width: 7rem;
+    height: 2rem;
+    border: 1px solid #1BC5BD;
+    border-radius: 5px;
+    padding: 0.5rem;
+    margin: 2rem 0 0 3rem;
+    color: #1BC5BD;
+    background-color: #C9F7F5;
+    cursor: pointer;
+  }

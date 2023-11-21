@@ -39,8 +39,6 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
     async function handleMenuClick (route: String) {
         router.push('/'+route + '/' + props.empresa);
     }
-    // const {empresa} = props;
-    // const {user, setUser} = useUserContext();
 
     const[user,setUser] = useState<userProps>();
     const [menus, setMenus] = useState<MenuItemProps[]>();
@@ -111,7 +109,10 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                   </MenuItem>
 
                   {empresa == 's3curity' && (
+                    <>
                   <MenuItem icon={<Buildings/>} onClick={() => handleMenuClick('enterprises')}>Empresas</MenuItem>
+                  <MenuItem icon={<Buildings/>} onClick={() => handleMenuClick('itens')}>Itens</MenuItem>
+                  </>
                   )}
                   {user?.acesso_admin == true && (
                    <MenuItem icon={<User/>} onClick={() => handleMenuClick('users')}>Usuários</MenuItem>
