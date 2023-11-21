@@ -25,8 +25,8 @@
 .button {
   width: 100%;
   padding: 10px;
-  background-color: #fff;
-  color: #000000;
+  background-color: #000000;
+  color: #fff;
   border: none;
   border-radius: 5px;
   cursor: pointer;
