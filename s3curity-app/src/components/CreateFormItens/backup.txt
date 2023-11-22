@@ -7,9 +7,6 @@ import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
 import {MenuData } from "@/types/types";
-import { Button, TextField } from "@mui/material";
-import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
-import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 // Validação do formulário
 const registerFormShceme = z.object({
@@ -100,26 +97,13 @@ export default function CreateForm() {
       <form className={styles.form} onSubmit={handleSubmit(handleRegister)}>
         {/* FORMS DOS MENUS -------------------------------------------------------> */}
 
-        <div style={{flexDirection: 'row', display: 'flex'}}>
+        <div>
           {Array.from({ length: numMenuInputs }).map((_, menuIndex) => (
             <div key={menuIndex} className={styles.menu}>
               <div className={styles.inputWithContents}>
-                {/* <input
+                <input
                   className={styles.inputForMenu}
                   placeholder={`Nome do Menu ${menuIndex + 1}`}
-                  onChange={(e) => {
-                    const newMenus = [...menus];
-                    newMenus[menuIndex] = {
-                      ...newMenus[menuIndex],
-                      nomeMenu: e.target.value,
-                    };
-                    setMenus(newMenus);
-                  }}
-                  
-                /> */}
-                <TextField
-                  id="outlined-error"
-                  label="Menu"
                   onChange={(e) => {
                     const newMenus = [...menus];
                     newMenus[menuIndex] = {
@@ -134,7 +118,7 @@ export default function CreateForm() {
               {menus[menuIndex] && menus[menuIndex]?.itens && menus[menuIndex]?.itens.map((item, itemIndex) => (
                 <div key={itemIndex} className={styles.item}>
                   <div className={styles.inputWithContents}>
-                    {/* <input
+                    <input
                       className={styles.inputForMenu}
                       placeholder={`Nome do Item ${itemIndex + 1}`}
                       onChange={(e) => {
@@ -145,24 +129,13 @@ export default function CreateForm() {
                         };
                         setMenus(newMenus);
                       }}
-                    /> */}
-                    <TextField
-                    placeholder={`Nome do Item ${itemIndex + 1}`}
-                    onChange={(e) => {
-                      const newMenus = [...menus];
-                      newMenus[menuIndex].itens[itemIndex] = {
-                        ...newMenus[menuIndex].itens[itemIndex],
-                        nomeItem: e.target.value,
-                      };
-                      setMenus(newMenus);
-                    }}
                     />
                   </div>
 
                   {item.relatorios.map((relatorio, relatorioIndex) => (
                     <div key={relatorioIndex} className={styles.relatorio}>
                       <div className={styles.inputWithContents}>
-                        {/* <input
+                        <input
                           className={styles.inputForMenu}
                           placeholder={`Nome do Relatório ${relatorioIndex + 1}`}
                           onChange={(e) => {
@@ -171,20 +144,10 @@ export default function CreateForm() {
                             newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].relatorio = e.target.value;
                             setMenus(newMenus);
                           }}
-                        /> */}
-                          <TextField
-                          placeholder={`Nome do Relatório ${relatorioIndex + 1}`}
-                          onChange={(e) => {
-                            const newMenus = [...menus];
-                            newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].nome = e.target.value;
-                            newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].relatorio = e.target.value;
-                            setMenus(newMenus);
-                          }}
-                          />
-
+                        />
                       </div>
                       <div className={styles.inputWithContents}>
-                        {/* <input
+                        <input
                           className={styles.inputForMenu}
                           placeholder={`Relatório ${relatorioIndex + 1}`}
                           onChange={(e) => {
@@ -192,14 +155,6 @@ export default function CreateForm() {
                             newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].relatorio = e.target.value;
                             setMenus(newMenus);
                           }}
-                        /> */}
-                        <TextField
-                        placeholder={`Relatório ${relatorioIndex + 1}`}
-                        onChange={(e) => {
-                          const newMenus = [...menus];
-                          newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].relatorio = e.target.value;
-                          setMenus(newMenus);
-                        }}
                         />
                       </div>
                     </div>
@@ -224,15 +179,13 @@ export default function CreateForm() {
           ))}
         </div>
 
-        <Button
-        variant="contained"
-        onClick={addMenuInput}
-        size="small"
-        className={styles.addMenuInput}
-        endIcon={<AddCircleIcon />}
+        <button
+          className={styles.addInput}
+          type="button"
+          onClick={addMenuInput}
         >
-          Menu
-        </Button>
+          Adicionar Menu
+        </button>
 
         <button className={styles.createUserButton} type="submit">
           Salvar

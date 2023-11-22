@@ -138,6 +138,7 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
         height: '10vh',
         }}>
           <TableRow>
+            <TableCell></TableCell>
             <TableCell>Nome</TableCell>
             <TableCell>Empresa</TableCell>
             <TableCell>Operacional</TableCell>
@@ -153,6 +154,10 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
             : dataArray
           ).map((row) => (
             <TableRow key={row.id}>
+                <TableCell>
+                <Checkbox
+                />
+              </TableCell>
               <TableCell>{row.nome}</TableCell>
               <TableCell>{row.funcionario.empresa.nome}</TableCell>
               <TableCell>

@@ -53,9 +53,6 @@ export default function Enterprise(){
                     <div className={styles.formHeader}>
                         Empresas
                         <div className={styles.headerButtonContainer}>
-                            <button className={styles.headerButton}>
-                            Copiar
-                            </button>
                             <button className={styles.headerButton} onClick={ () => handleShowCreateForm(true)}>
                             Criar
                             </button>
