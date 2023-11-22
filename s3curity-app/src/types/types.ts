@@ -105,6 +105,6 @@ export interface MenuItem {
 export interface MenuData {
     nomeMenu: string;
     empresa_id: number;
-    modulo_id: number;
+    modulo_id: number | string;
     itens: MenuItem[];
 }

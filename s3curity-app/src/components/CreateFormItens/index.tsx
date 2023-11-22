@@ -7,7 +7,7 @@ import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
 import {MenuData } from "@/types/types";
-import { Button, TextField } from "@mui/material";
+import { Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 
@@ -32,6 +32,8 @@ export default function CreateForm() {
   });
 
   const { back } = useRouter();
+
+  const[modulo, setModulo] = useState([]);
 
   //Bloco de código refrente a criação de menus --------------------------------------->
   const [numMenuInputs, setNumMenuInputs] = useState(1);
@@ -81,13 +83,8 @@ export default function CreateForm() {
   async function handleRegister(data: RegisterFormData) {
     console.log("entrou aq");
     try {
-    const menuData: MenuData[] = menus.map((menu) => ({
-      ...menu,
-      modulo_id: 1,
-    }));
-
     const menuResponses = await Promise.all(
-      menuData.map((menu) => api.post("menu/create", menu))
+      menus.map((menu) => api.post("menu/create", menu))
     );
       back();
     } catch (e) {
@@ -104,19 +101,7 @@ export default function CreateForm() {
           {Array.from({ length: numMenuInputs }).map((_, menuIndex) => (
             <div key={menuIndex} className={styles.menu}>
               <div className={styles.inputWithContents}>
-                {/* <input
-                  className={styles.inputForMenu}
-                  placeholder={`Nome do Menu ${menuIndex + 1}`}
-                  onChange={(e) => {
-                    const newMenus = [...menus];
-                    newMenus[menuIndex] = {
-                      ...newMenus[menuIndex],
-                      nomeMenu: e.target.value,
-                    };
-                    setMenus(newMenus);
-                  }}
-                  
-                /> */}
+            
                 <TextField
                   id="outlined-error"
                   label="Menu"
@@ -131,21 +116,35 @@ export default function CreateForm() {
                 />
               </div>
 
+              <FormControl sx={{ m: 1, minWidth: 120 }}>
+              <InputLabel id="demo-simple-select-helper-label">Módulo</InputLabel>
+              <Select
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={menus[menuIndex]?.modulo_id ? menus[menuIndex]?.modulo_id : 0} 
+                label="Modulo"
+                onChange={(e) => {
+                  console.log(e.target.value);
+                  const newMenus = [...menus];
+                  newMenus[menuIndex] = {
+                    ...newMenus[menuIndex],
+                    modulo_id: e.target.value,
+                  };
+                  setMenus(newMenus);
+                }}
+              >
+                <MenuItem value={1}>Operacional</MenuItem>
+                <MenuItem value={2}>Estratégico</MenuItem>
+                <MenuItem value={3}>Gerencial</MenuItem>
+              </Select>
+              <FormHelperText>Selecione o módulo</FormHelperText>
+            </FormControl>
+
+
               {menus[menuIndex] && menus[menuIndex]?.itens && menus[menuIndex]?.itens.map((item, itemIndex) => (
                 <div key={itemIndex} className={styles.item}>
                   <div className={styles.inputWithContents}>
-                    {/* <input
-                      className={styles.inputForMenu}
-                      placeholder={`Nome do Item ${itemIndex + 1}`}
-                      onChange={(e) => {
-                        const newMenus = [...menus];
-                        newMenus[menuIndex].itens[itemIndex] = {
-                          ...newMenus[menuIndex].itens[itemIndex],
-                          nomeItem: e.target.value,
-                        };
-                        setMenus(newMenus);
-                      }}
-                    /> */}
+                    
                     <TextField
                     placeholder={`Nome do Item ${itemIndex + 1}`}
                     onChange={(e) => {
@@ -162,16 +161,7 @@ export default function CreateForm() {
                   {item.relatorios.map((relatorio, relatorioIndex) => (
                     <div key={relatorioIndex} className={styles.relatorio}>
                       <div className={styles.inputWithContents}>
-                        {/* <input
-                          className={styles.inputForMenu}
-                          placeholder={`Nome do Relatório ${relatorioIndex + 1}`}
-                          onChange={(e) => {
-                            const newMenus = [...menus];
-                            newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].nome = e.target.value;
-                            newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].relatorio = e.target.value;
-                            setMenus(newMenus);
-                          }}
-                        /> */}
+                       
                           <TextField
                           placeholder={`Nome do Relatório ${relatorioIndex + 1}`}
                           onChange={(e) => {
@@ -184,15 +174,7 @@ export default function CreateForm() {
 
                       </div>
                       <div className={styles.inputWithContents}>
-                        {/* <input
-                          className={styles.inputForMenu}
-                          placeholder={`Relatório ${relatorioIndex + 1}`}
-                          onChange={(e) => {
-                            const newMenus = [...menus];
-                            newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].relatorio = e.target.value;
-                            setMenus(newMenus);
-                          }}
-                        /> */}
+                       
                         <TextField
                         placeholder={`Relatório ${relatorioIndex + 1}`}
                         onChange={(e) => {
