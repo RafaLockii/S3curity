@@ -43,6 +43,19 @@ interface MenuProps {
   modulo: string;
 }
 
+interface ItemProps{
+  id: number;
+  nome: string;
+  menus_id: number;
+}
+
+interface RelatorioProps{
+  id: number;
+  nome: string;
+  relatorio: string;
+  itens_id: number;
+}
+
 export default function CreateUserForm(empresa: CreateUserformProps) {
 
     // Propriedades do zod
@@ -61,20 +74,32 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
 
 
 //Bloco de itens arrastáveis ------------------------------------->
- const [draggableItens, setDraggableItens] = useState<MenuProps[] | ModuloProps[]>([]);
+ const [draggableItens, setDraggableItens] = useState<MenuProps[] | ModuloProps[] | ItemProps[] | RelatorioProps[]>([]);
+ const [droppedItems, setDroppedItems] = useState<MenuProps[] | ModuloProps[] | ItemProps[] | RelatorioProps[]>([]);
  const [modulosSelected, setModulosSelected] = useState<ModuloProps[]>([]);
-const [droppedItems, setDroppedItems] = useState<MenuProps[] | ModuloProps[]>([]);
+ const [itensSelected, setItensSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
+ const [menusSelected, setMenusSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
+ const [relatoriosSelected, setRelatoriosSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
 
-function handleDragStart(e: React.DragEvent, itemType: MenuProps | ModuloProps) {
+function handleDragStart(e: React.DragEvent, itemType: MenuProps | ModuloProps | ItemProps) {
   e.dataTransfer.setData("itemType", JSON.stringify(itemType));
 }
 
 function handleDrop(e: React.DragEvent) {
   e.preventDefault();
-  const item = JSON.parse(e.dataTransfer.getData("itemType")) as MenuProps | ModuloProps;
+  const item = JSON.parse(e.dataTransfer.getData("itemType")) as MenuProps | ModuloProps | ItemProps;
   setDroppedItems([...droppedItems, item]);
   if(!item.hasOwnProperty("modulo")){
     setModulosSelected([...modulosSelected, item]);
+  }
+  if(item.hasOwnProperty("modulo")){
+    setMenusSelected([...menusSelected, item]);
+  }
+  if(item.hasOwnProperty("menus_id")){
+    setItensSelected([...itensSelected, item]);
+  }
+  if(item.hasOwnProperty("itens_id")){
+    setRelatoriosSelected([...relatoriosSelected, item]);
   }
   console.log(item)
   console.log(droppedItems);
@@ -131,6 +156,25 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
           setDraggableItens((prev) => [...prev, {
             id: item.id,
             nome: item.nome,
+          }]);
+        })
+
+        const responseItens = await api.get(`itens`);
+        responseItens.data.itens.map((item: any) => {
+          setDraggableItens((prev) => [...prev, {
+            id: item.id,
+            nome: item.nome,
+            menus_id: item.menus_id,
+          }]);
+        })
+
+        const responseRelatorios = await api.get(`relatorios`);
+        responseRelatorios.data.relatorios.map((item: any) => {
+          setDraggableItens((prev) => [...prev, {
+            id: item.id,
+            nome: item.nome,
+            relatorio: item.relatorio,
+            itens_id: item.itens_id,
           }]);
         })
 
@@ -294,7 +338,7 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
           <div className={styles.draggableBoxOutput}>
             <h4>Modulos</h4>
             {draggableItens.map((item) => {
-              if(!item.hasOwnProperty("modulo")){
+              if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
                 return(
                   <div 
                   key={item.id}
@@ -315,9 +359,9 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
             onDrop={handleDrop}
             onDragOver={handleDragOver}
           >
-            {droppedItems.length === 0 && <h4>Arraste os itens aqui</h4>}
+            {droppedItems.length === 0 && <h4>Arraste os Modulos aqui</h4>}
             {droppedItems.map((item, index) => {
-              if(!item.hasOwnProperty("modulo")){
+              if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
                 return (
                   <div 
                   key={item.id}
@@ -363,7 +407,7 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
             onDrop={handleDrop}
             onDragOver={handleDragOver}
           >
-            {droppedItems.length === 0 && <h4>Arraste os itens aqui</h4>}
+            {menusSelected.length === 0 && <h4>Arraste os Menus aqui</h4>}
             {droppedItems.map((item, index) => {
               if(item.hasOwnProperty("modulo")){
                 return (
@@ -382,7 +426,104 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
         </div>
         )}
         {/* Fim do Bloco 02 -------------------------------------> */}
+
+        {/* Bloco 03 --------------------------------------------> */}
+        {menusSelected.length > 0 && (
+          <div style={{display: "flex", flexDirection: "row"}}>
+          <div className={styles.draggableBoxOutput}>
+            <h4>Itens</h4>
+            {draggableItens.map((item) => {
+              if(item.hasOwnProperty("menus_id")){
+                const found = menusSelected.find(menu => menu.id === (item as ItemProps).menus_id);
+                if (found) {
+                  return(
+                    <div 
+                    key={item.id}
+                    className={styles.draggableItens}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, item)}
+                    onDragEnd={() => handleRemoveItem(item)}>
+                      {item.nome}
+                    </div>
+                  )
+                }
+              }
+            })}
+          </div>
+          
+          <div
+            className={styles.draggableBoxInput}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+          >
+            {droppedItems.length === 0 && <h4>Arraste os itens aqui</h4>}
+            {droppedItems.map((item, index) => {
+              if(item.hasOwnProperty("menus_id")){
+                return (
+                  <div 
+                  key={item.id}
+                  className={styles.draggableItens}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, item)}
+                  onDragEnd={() => handleRemoveItem(item)}>
+                    <div>{item.nome}</div>
+                  </div>
+                )
+              }
+            })}
+          </div>
+        </div>
+        )}
+        {/* Fim do Bloco 03 -------------------------------------> */}
       </div>
+      {/* Bloco 04 --------------------------------------------> */}
+      {itensSelected.length > 0 && (
+          <div style={{display: "flex", flexDirection: "row"}}>
+          <div className={styles.draggableBoxOutput}>
+            <h4>Relatorios</h4>
+            {draggableItens.map((item) => {
+              if(item.hasOwnProperty("itens_id")){
+                const found = itensSelected.find(itensArray => itensArray.id === (item as RelatorioProps).itens_id);
+                if (found) {
+                  return(
+                    <div 
+                    key={item.id}
+                    className={styles.draggableItens}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, item)}
+                    onDragEnd={() => handleRemoveItem(item)}>
+                      {item.nome}
+                    </div>
+                  )
+                }
+              }
+            })}
+          </div>
+          
+          <div
+            className={styles.draggableBoxInput}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+          >
+            {relatoriosSelected.length === 0 && <h4>Arraste os itens aqui</h4>}
+            {droppedItems.map((item, index) => {
+              if(item.hasOwnProperty("itens_id")){
+                return (
+                  <div 
+                  key={item.id}
+                  className={styles.draggableItens}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, item)}
+                  onDragEnd={() => handleRemoveItem(item)}>
+                    <div>{item.nome}</div>
+                  </div>
+                )
+              }
+            })}
+          </div>
+        </div>
+        )}
+        {/* Fim do Bloco 04 -------------------------------------> */}
     </div>
   );
 }

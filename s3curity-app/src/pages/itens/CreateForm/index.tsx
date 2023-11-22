@@ -80,7 +80,6 @@ export default function CreateForm() {
     try {
     const menuData: MenuData[] = menus.map((menu) => ({
       ...menu,
-      empresa_id: 1,
       modulo_id: 1,
     }));
 
