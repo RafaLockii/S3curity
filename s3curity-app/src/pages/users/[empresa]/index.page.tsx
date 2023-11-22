@@ -1,11 +1,11 @@
 import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
-import CreateUserForm from "../components/createUserForm";
+import CreateUserForm from "../../../components/createUserForm";
 import styles from './styles.module.css';
-import UpdateForm from "../components/updateForm";
+import UpdateForm from "../../../components/updateForm";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "phosphor-react";
-import TableComponent from "../components/table";
+import TableComponent from "../../../components/tableUser";
 import  useRouter from "next/router";
 import { api } from "@/lib/axios";
 import { EmpresaData } from "@/types/types";

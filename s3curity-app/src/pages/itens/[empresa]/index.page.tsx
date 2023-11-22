@@ -1,7 +1,7 @@
 import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
 import styles from './styles.module.css';
-import CreateForm from "../CreateForm";
+import CreateForm from "../../../components/CreateFormItens";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "phosphor-react";
 import useRouter from "next/router";

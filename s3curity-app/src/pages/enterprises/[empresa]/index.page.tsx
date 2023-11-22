@@ -1,10 +1,10 @@
 import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
 import styles from './styles.module.css';
-import CreateForm from "../components/createForm";
+import CreateForm from "../../../components/createFormEmpresa";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "phosphor-react";
-import TableComponent from "../components/table";
+import TableComponent from "../../../components/tableEmpresa";
 import useRouter from "next/router";
 import { api } from "@/lib/axios";
 
