@@ -316,16 +316,20 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
             onDragOver={handleDragOver}
           >
             {droppedItems.length === 0 && <h4>Arraste os itens aqui</h4>}
-            {droppedItems.map((item, index) => (
-              <div 
-              key={item.id}
-              className={styles.draggableItens}
-              draggable
-              onDragStart={(e) => handleDragStart(e, item)}
-              onDragEnd={() => handleRemoveItem(item)}>
-                <div>{item.nome}</div>
-              </div>
-            ))}
+            {droppedItems.map((item, index) => {
+              if(!item.hasOwnProperty("modulo")){
+                return (
+                  <div 
+                  key={item.id}
+                  className={styles.draggableItens}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, item)}
+                  onDragEnd={() => handleRemoveItem(item)}>
+                    <div>{item.nome}</div>
+                  </div>
+                )
+              }
+            })}
           </div>
         </div>
         {/* Fim do Bloco 01 -------------------------------------> */}
@@ -352,21 +356,6 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
                 }
               }
             })}
-            {/* {draggableItens.map((item) => {
-              if(item.hasOwnProperty("modulo")){
-                return(
-                  <div 
-                  key={item.id}
-                  className={styles.draggableItens}
-                  draggable
-                  onDragStart={(e) => handleDragStart(e, item)}
-                  onDragEnd={() => handleRemoveItem(item)}>
-                    {item.nome}
-                  </div>
-                )
-              }
-            })} */}
-              
           </div>
           
           <div
@@ -375,16 +364,20 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
             onDragOver={handleDragOver}
           >
             {droppedItems.length === 0 && <h4>Arraste os itens aqui</h4>}
-            {droppedItems.map((item, index) => (
-              <div 
-              key={item.id}
-              className={styles.draggableItens}
-              draggable
-              onDragStart={(e) => handleDragStart(e, item)}
-              onDragEnd={() => handleRemoveItem(item)}>
-                <div>{item.nome}</div>
-              </div>
-            ))}
+            {droppedItems.map((item, index) => {
+              if(item.hasOwnProperty("modulo")){
+                return (
+                  <div 
+                  key={item.id}
+                  className={styles.draggableItens}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, item)}
+                  onDragEnd={() => handleRemoveItem(item)}>
+                    <div>{item.nome}</div>
+                  </div>
+                )
+              }
+            })}
           </div>
         </div>
         )}
