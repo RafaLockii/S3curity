@@ -50,6 +50,7 @@ export default function SignIn() {
     const isClientSide = typeof window !== 'undefined';
     if(isClientSide){
     window.localStorage.setItem('images', JSON.stringify(images));
+    window.localStorage.setItem('logo', JSON.stringify(logo));
     }
     
     return(

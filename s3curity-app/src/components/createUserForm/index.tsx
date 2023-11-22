@@ -3,13 +3,15 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import styles from "./styles.module.css";
 import Image from "next/image";
-import { ArrowLeft, CloudArrowUp } from "phosphor-react";
+import { ArrowLeft, Check, CloudArrowUp } from "phosphor-react";
 import Select from "react-select";
 import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
 import { CreateUserformProps} from "@/types/types";
+import { Checkbox, FormControl, FormControlLabel, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField } from "@mui/material";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 //Validação do formulário
 const registerFormShceme = z.object({
@@ -80,6 +82,14 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
  const [itensSelected, setItensSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
  const [menusSelected, setMenusSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
  const [relatoriosSelected, setRelatoriosSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
+ const [showPassword, setShowPassword] = useState(false);
+ const[laodingRequest, setLoadingRequest] = useState(false); // Crie um estado para o carregamento da requisição [loadingRequest]
+
+ const handleClickShowPassword = () => setShowPassword((show) => !show);   
+
+ const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+     event.preventDefault();
+ };   
 
 function handleDragStart(e: React.DragEvent, itemType: MenuProps | ModuloProps | ItemProps) {
   e.dataTransfer.setData("itemType", JSON.stringify(itemType));
@@ -225,61 +235,68 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
   return (
     <div className={styles.formContainer}>
       <form  className={styles.form} onSubmit={handleSubmit(handleRegister)}>
-        <div className={styles.inputWithContents}>
-            <input
-            className={styles.input}
-            placeholder="Nome"
-            {...register("nome")}
-            ></input>
-            {errors.nome &&(
-                <div className={styles.formAnnotation}>
-                {errors.nome ? errors.nome.message : ''}
-            </div>
-            )}
-        </div>
-        <div className={styles.inputWithContents}>
-            <input
-            type="password"
-            id="senha"
-            placeholder="Senha"
-            {...register("senha")}
-            className={styles.input}
-            />
-            {errors.senha &&(
-                <div className={styles.formAnnotation}>
-                {errors.senha ? errors.senha.message : ''}
-            </div>
-            )}
-        </div>
-        <div className={styles.inputWithContents}>
-            <input
-            type="email"
-            id="email"
-            placeholder="E-mail"
-            {...register("email")}
-            className={styles.input}
-            />
-            {errors.email &&(
-                <div className={styles.formAnnotation}>
-                {errors.email ? errors.email.message : ''}
-            </div>
-            )}
-        </div>
-        <div className={styles.inputWithContents}>
+       
+        <TextField
+          id="nome"
+          label="Nome"
+          variant="outlined"
+          {...register('nome')}
+          sx={{ m: 1, width: '27ch',  }}
+          error={errors.nome ? true : false}
+          helperText={errors.nome ? errors.nome.message : ''}
+        />
+        
+        <FormControl sx={{ m: 1, width: '27ch' }} variant="outlined">
+          <InputLabel htmlFor="senha">Senha</InputLabel>
+          <OutlinedInput
+              id="senha"
+              type={showPassword ? 'text' : 'password'}
+              error={errors.senha ? true : false}
+              endAdornment={
+              <InputAdornment position="end">
+                  <IconButton
+                  aria-label="toggle password visibility"
+                  onClick={handleClickShowPassword}
+                  onMouseDown={handleMouseDownPassword}
+                  edge="end"
+                  >
+                  {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
+              </InputAdornment>
+              }
+              label="Senha"
+              {...register('senha')}
+          />
+        </FormControl>
+        <TextField
+          id="email"
+          label="E-mail"
+          variant="outlined"
+          {...register('email')}
+          sx={{ m: 1, width: '27ch',  }}
+          error={errors.email ? true : false}
+          helperText={errors.email ? errors.email.message : ''}
+        />
 
-            <input
-            type="text"
-            id="telefone"
-            placeholder="Telefone"
-            {...register("telefone")}
-            className={styles.input}
-            />
-            {errors.telefone &&(
-                <div className={styles.formAnnotation}>
-                {errors.telefone ? errors.telefone.message : ''}
-            </div>
-            )}
-        </div>
+        <TextField
+          id="telefone"
+          label="Telefone"
+          variant="outlined"
+          {...register('telefone')}
+          sx={{ m: 1, width: '27ch',  }}
+          error={errors.telefone ? true : false}
+          helperText={errors.telefone ? errors.telefone.message : ''}
+        />
+
+        <TextField
+          id="img_url"
+          placeholder="Imagem Url"
+          {...register("img_url")}
+          sx={{ m: 1, width: '27ch',  }}
+          error={errors.img_url ? true : false}
+          helperText={errors.img_url ? errors.img_url.message : ''}
+        />
+        
         <Select
           options={options}
           className={styles.input}
@@ -296,39 +313,21 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
           placeholder="Empresa do usuário"
         />
         )}
-        <div className={styles.inputWithContents}>
-            <input
-            type="text"
-            id="img_url"
-            placeholder="Imagem Url"
-            {...register("img_url")}
-            className={styles.input}
-            />
-          <CloudArrowUp />
-          {errors.img_url &&(
-                <div className={styles.formAnnotation}>
-                {errors.img_url ? errors.img_url.message : ''}
-            </div>
-            )}
-        </div>
-        <div className={styles.inputWithContents}>
-          <div className={styles.input}>Ativo</div>
-          <input
-            type="checkbox"
-            id="ativo"
-            {...register("ativo")}
-            className={styles.checkbox}
-          />
-        </div>
-        <div className={styles.inputWithContents}>
-          <div className={styles.input}>Administrador</div>
-          <input
-            type="checkbox"
-            id="admin"
-            {...register("admin")}
-            className={styles.checkbox}
-          />
-        </div>
+        <FormControlLabel
+          value="start"
+          control={<Checkbox id="ativo" {...register("ativo")} />}
+          label="Ativo"
+          sx={{ m: 1, width: '27ch', justifyContent: "space-between" }}
+          labelPlacement="start"
+        />
+        <FormControlLabel
+          value="start"
+          control={<Checkbox id="admin" {...register("admin")} />}
+          label="Administrador"
+          sx={{ m: 1, width: '27ch', justifyContent: "space-between" }}
+          labelPlacement="start"
+        />
+       
         <button className={styles.createUserButton} type="submit">
             Salvar
         </button>

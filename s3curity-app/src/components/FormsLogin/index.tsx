@@ -77,8 +77,9 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
                     nome: response.data.nome,
                     acesso_admin: response.data.isAdmin,
                 }));
-                setLoadingRequest(false); // Quando a requisição terminar, sete o estado para false
                 await router.push(`/home/${empresa}`);
+                setLoadingRequest(false); // Quando a requisição terminar, sete o estado para false
+
             } else if (response.status === 404) {
                 setErrorMessage("Credenciais inválidas");
             }
@@ -95,7 +96,7 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
     return (
         <div className={styles.formContainer}>
             <img src={logoUrl} alt='' className={styles.logo} />
-            <form onSubmit={handleSubmit(handleRegister)}>
+            <form onSubmit={handleSubmit(handleRegister)} autoComplete="off">
                 <FormControl sx={{ m: 1, width: '27ch',  }} variant="outlined">
                 <InputLabel htmlFor="outlined-adornment-password">Email</InputLabel>
                 <OutlinedInput

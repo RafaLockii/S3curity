@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
-import { CreateUserformProps, MenuProps } from "@/types/types";
+import { CreateUserformProps} from "@/types/types";
 
 //Validação do formulário
 const registerFormShceme = z.object({
@@ -32,6 +32,30 @@ admin: z.boolean(),
 
 type RegisterFormData = z.infer<typeof registerFormShceme>;
 
+interface ModuloProps {
+id: number;
+nome: string;
+}
+
+interface MenuProps {
+id: number;
+nome: string;
+modulo: string;
+}
+
+interface ItemProps{
+id: number;
+nome: string;
+menus_id: number;
+}
+
+interface RelatorioProps{
+id: number;
+nome: string;
+relatorio: string;
+itens_id: number;
+}
+
 export default function CreateUserForm(empresa: CreateUserformProps) {
 
     // Propriedades do zod
@@ -50,27 +74,33 @@ const showEmpresaSelect = empresa.empresa === 's3curity';
 const {user} = useUserContext();
 
 //Bloco de itens arrastáveis ------------------------------------->
-const [draggableItens, setDraggableItens] = useState<MenuProps[]>([
-// {
-// label: "Contas",
-// type: "Menu",
-// },
-// {
-// label: "Conta 01",
-// type: "Item",
-// }
-]);
+const [draggableItens, setDraggableItens] = useState<MenuProps[] | ModuloProps[] | ItemProps[] | RelatorioProps[]>([]);
+const [droppedItems, setDroppedItems] = useState<MenuProps[] | ModuloProps[] | ItemProps[] | RelatorioProps[]>([]);
+const [modulosSelected, setModulosSelected] = useState<ModuloProps[]>([]);
+const [itensSelected, setItensSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
+const [menusSelected, setMenusSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
+const [relatoriosSelected, setRelatoriosSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
 
-const [droppedItems, setDroppedItems] = useState<MenuProps[]>([]);
-
-function handleDragStart(e: React.DragEvent, itemType: MenuProps) {
+function handleDragStart(e: React.DragEvent, itemType: MenuProps | ModuloProps | ItemProps) {
 e.dataTransfer.setData("itemType", JSON.stringify(itemType));
 }
 
 function handleDrop(e: React.DragEvent) {
 e.preventDefault();
-const item = JSON.parse(e.dataTransfer.getData("itemType")) as MenuProps;
+const item = JSON.parse(e.dataTransfer.getData("itemType")) as MenuProps | ModuloProps | ItemProps;
 setDroppedItems([...droppedItems, item]);
+if(!item.hasOwnProperty("modulo")){
+setModulosSelected([...modulosSelected, item]);
+}
+if(item.hasOwnProperty("modulo")){
+setMenusSelected([...menusSelected, item]);
+}
+if(item.hasOwnProperty("menus_id")){
+setItensSelected([...itensSelected, item]);
+}
+if(item.hasOwnProperty("itens_id")){
+setRelatoriosSelected([...relatoriosSelected, item]);
+}
 console.log(item)
 console.log(droppedItems);
 }
@@ -79,7 +109,7 @@ function handleDragOver(e: React.DragEvent) {
 e.preventDefault();
 }
 
-function handleRemoveItem(item: MenuProps) {
+function handleRemoveItem(item: MenuProps | ModuloProps) {
 const updatedDroppedItems = droppedItems.filter((i) => i !== item);
 setDroppedItems(updatedDroppedItems);
 }
@@ -108,20 +138,51 @@ setValue('empresa_id', empresa.empresaid);
 const fetchData = async () => {
 console.log("Entrou no fetch data")
 try{
-const response = await api.get(`menu/${empresa.empresaid}/1`);
-response.data.map((item: any) => {
+const response = await api.get(`menus_front`);
+console.log(response.data.menus)
+response.data.menus.map((item: any) => {
 setDraggableItens((prev) => [...prev, {
 id: item.id,
 nome: item.nome,
-itens: item.itens.map((item: any) => item.nome)
+modulo: item.modulo,
 }]);
 })
+
+        const responseModulos = await api.get(`modulos`);
+        responseModulos.data.modulos.map((item: any) => {
+          setDraggableItens((prev) => [...prev, {
+            id: item.id,
+            nome: item.nome,
+          }]);
+        })
+
+        const responseItens = await api.get(`itens`);
+        responseItens.data.itens.map((item: any) => {
+          setDraggableItens((prev) => [...prev, {
+            id: item.id,
+            nome: item.nome,
+            menus_id: item.menus_id,
+          }]);
+        })
+
+        const responseRelatorios = await api.get(`relatorios`);
+        responseRelatorios.data.relatorios.map((item: any) => {
+          setDraggableItens((prev) => [...prev, {
+            id: item.id,
+            nome: item.nome,
+            relatorio: item.relatorio,
+            itens_id: item.itens_id,
+          }]);
+        })
+
 
       } catch(e){
         console.log(`Erro ao chamar a api: ${e}`);
       }
     }
     fetchData();
+    console.log("DraggableItens");
+    console.log(draggableItens);
 
 }, []);
 
@@ -140,7 +201,9 @@ acesso_admin: data.admin,
 cargo_id: data.modulo,
 empresa_id: data.empresa_id,
 imagem_perfil_url: data.img_url,
-menus_ids: droppedItems.map((item) => item.id)
+menus_ids: menusSelected.map((item) => item.id),
+itens_ids: itensSelected.map((item) => item.id),
+relatorios_ids: relatoriosSelected.map((item) => item.id),
 });
 back();
 }catch(e){
@@ -267,49 +330,198 @@ className={styles.input}
         </button>
 
       </form>
+      <div style={{display: "flex", flexDirection: "column"}}>
+        {/* Bloco 01 --------------------------------------------> */}
+        <div style={{display: "flex", flexDirection: "row"}}>
+          <div className={styles.draggableBoxOutput}>
+            <h4>Modulos</h4>
+            {draggableItens.map((item) => {
+              if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
+                return(
+                  <div
+                  key={item.id}
+                  className={styles.draggableItens}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, item)}
+                  onDragEnd={() => handleRemoveItem(item)}>
+                    {item.nome}
+                  </div>
+                )
+              }
+            })}
 
-      <div className={styles.draggableBoxOutput}>
-        <h4>Escolha Suas opções</h4>
-        {draggableItens.map((item) => (
+          </div>
+
           <div
-            key={item.id}
-            className={styles.draggableItens}
-            draggable
-            onDragStart={(e) => handleDragStart(e, item)}
+            className={styles.draggableBoxInput}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
           >
-            <div>{item.nome}</div>
-            <div>{item.itens.map((item)=>{
-              return(
-                <div>{item}</div>
-              )
-            })}</div>
+            {droppedItems.length === 0 && <h4>Arraste os Modulos aqui</h4>}
+            {droppedItems.map((item, index) => {
+              if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
+                return (
+                  <div
+                  key={item.id}
+                  className={styles.draggableItens}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, item)}
+                  onDragEnd={() => handleRemoveItem(item)}>
+                    <div>{item.nome}</div>
+                  </div>
+                )
+              }
+            })}
           </div>
-        ))}
-      </div>
+        </div>
+        {/* Fim do Bloco 01 -------------------------------------> */}
 
-      <div
-        className={styles.draggableBoxInput}
-        onDrop={handleDrop}
-        onDragOver={handleDragOver}
-      >
-        {droppedItems.length === 0 && <h4>Arraste os itens aqui</h4>}
-        {droppedItems.map((item, index) => (
+        {/* Bloco 02 --------------------------------------------> */}
+        {droppedItems.length > 0 && (
+          <div style={{display: "flex", flexDirection: "row"}}>
+          <div className={styles.draggableBoxOutput}>
+            <h4>Menus</h4>
+            {draggableItens.map((item) => {
+              if(item.hasOwnProperty("modulo")){
+                const modulo = modulosSelected.find(modulo => modulo.nome === (item as MenuProps).modulo);
+                if (modulo) {
+                  return(
+                    <div
+                    key={item.id}
+                    className={styles.draggableItens}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, item)}
+                    onDragEnd={() => handleRemoveItem(item)}>
+                      {item.nome}
+                    </div>
+                  )
+                }
+              }
+            })}
+          </div>
+
           <div
-          key={item.id}
-          className={styles.draggableItens}
-          draggable
-          onDragStart={(e) => handleDragStart(e, item)}
-          onDragEnd={() => handleRemoveItem(item)}>
-            <div>{item.nome}</div>
-            <div>{item.itens.map((item)=>{
-              return(
-                <div>{item}</div>
-              )
-            })}</div>
+            className={styles.draggableBoxInput}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+          >
+            {menusSelected.length === 0 && <h4>Arraste os Menus aqui</h4>}
+            {droppedItems.map((item, index) => {
+              if(item.hasOwnProperty("modulo")){
+                return (
+                  <div
+                  key={item.id}
+                  className={styles.draggableItens}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, item)}
+                  onDragEnd={() => handleRemoveItem(item)}>
+                    <div>{item.nome}</div>
+                  </div>
+                )
+              }
+            })}
           </div>
-        ))}
-      </div>
+        </div>
+        )}
+        {/* Fim do Bloco 02 -------------------------------------> */}
 
+        {/* Bloco 03 --------------------------------------------> */}
+        {menusSelected.length > 0 && (
+          <div style={{display: "flex", flexDirection: "row"}}>
+          <div className={styles.draggableBoxOutput}>
+            <h4>Itens</h4>
+            {draggableItens.map((item) => {
+              if(item.hasOwnProperty("menus_id")){
+                const found = menusSelected.find(menu => menu.id === (item as ItemProps).menus_id);
+                if (found) {
+                  return(
+                    <div
+                    key={item.id}
+                    className={styles.draggableItens}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, item)}
+                    onDragEnd={() => handleRemoveItem(item)}>
+                      {item.nome}
+                    </div>
+                  )
+                }
+              }
+            })}
+          </div>
+
+          <div
+            className={styles.draggableBoxInput}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+          >
+            {droppedItems.length === 0 && <h4>Arraste os itens aqui</h4>}
+            {droppedItems.map((item, index) => {
+              if(item.hasOwnProperty("menus_id")){
+                return (
+                  <div
+                  key={item.id}
+                  className={styles.draggableItens}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, item)}
+                  onDragEnd={() => handleRemoveItem(item)}>
+                    <div>{item.nome}</div>
+                  </div>
+                )
+              }
+            })}
+          </div>
+        </div>
+        )}
+        {/* Fim do Bloco 03 -------------------------------------> */}
+      </div>
+      {/* Bloco 04 --------------------------------------------> */}
+      {itensSelected.length > 0 && (
+          <div style={{display: "flex", flexDirection: "row"}}>
+          <div className={styles.draggableBoxOutput}>
+            <h4>Relatorios</h4>
+            {draggableItens.map((item) => {
+              if(item.hasOwnProperty("itens_id")){
+                const found = itensSelected.find(itensArray => itensArray.id === (item as RelatorioProps).itens_id);
+                if (found) {
+                  return(
+                    <div
+                    key={item.id}
+                    className={styles.draggableItens}
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, item)}
+                    onDragEnd={() => handleRemoveItem(item)}>
+                      {item.nome}
+                    </div>
+                  )
+                }
+              }
+            })}
+          </div>
+
+          <div
+            className={styles.draggableBoxInput}
+            onDrop={handleDrop}
+            onDragOver={handleDragOver}
+          >
+            {relatoriosSelected.length === 0 && <h4>Arraste os itens aqui</h4>}
+            {droppedItems.map((item, index) => {
+              if(item.hasOwnProperty("itens_id")){
+                return (
+                  <div
+                  key={item.id}
+                  className={styles.draggableItens}
+                  draggable
+                  onDragStart={(e) => handleDragStart(e, item)}
+                  onDragEnd={() => handleRemoveItem(item)}>
+                    <div>{item.nome}</div>
+                  </div>
+                )
+              }
+            })}
+          </div>
+        </div>
+        )}
+        {/* Fim do Bloco 04 -------------------------------------> */}
     </div>
 
 );
