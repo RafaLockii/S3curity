@@ -9,6 +9,9 @@
 }
 
 body{
+  overflow-y: hidden; /* Hide vertical scrollbar */
+  overflow-x: hidden; /* Hide horizontal scrollbar */
+ 
   background: linear-gradient(113.77deg, rgba(255, 153, 0, 0.3) 13.89%, rgba(255, 255, 255, 0) 92.58%), linear-gradient(0deg, #FFFFFF, #FFFFFF);
 }
 
