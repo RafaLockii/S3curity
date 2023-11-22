@@ -1,6 +1,7 @@
 .swiper{
     padding: 32px;
     margin-top: 2rem;
+    width: 100%;
 }
 
 .swiper-slide{

@@ -5,6 +5,8 @@ import CarouselComponent from "@/components/Carousel";
 import { useUserContext } from "@/context/UserContext";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
+import { Slide, Slider, SliderProps } from '@/components/commons/Slider';
+import { Card, CardMedia } from '@mui/material';
 
 export default function Home() {
     const[empresa, setEmpresa] = useState<string>();
@@ -14,13 +16,22 @@ export default function Home() {
 
     const [images, setImages] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);
+    const [hoveredCard, setHoveredCard] = useState<number | null>(null);
+    const settings: SliderProps = {
+        slidesPerView: 2.5,
+        spaceBetween: 1,
+        loop: true,
+        loopAddBlankSlides: true,
+        
+        
+    };
 
     useEffect(() => {
         async function fetchData() {
             try {
                 setEmpresa(JSON.parse(window.localStorage.getItem('empresa') || '{}').empresa || '');
                 if (empresa) {
-                    const response = await api.get(`empresa_nome/${empresa}`);
+                    const response = await api.get(`empresa_name/${empresa}`);
                     console.log("Imagens da api: " + response.data.formattedEmpresa.carrosseis);
 
                     const imageNames = response.data.formattedEmpresa.carrosseis.map((item: any) => item.nome);
@@ -47,12 +58,38 @@ export default function Home() {
                 <div className={styles.header}>
                     <Header/>
                 </div>
+                
                 <div className={styles.container}>
-                    <div className={styles.containerHeader}>
+                <div className={styles.containerHeader}>
                         <p>Home</p>
                     </div>
                         {images && (
-                            <CarouselComponent empresa={empresa as string} images={images}/>
+                            // <CarouselComponent empresa={empresa as string} images={images}/>
+                            <Slider settings={settings}>
+                                {images.map((image, index) => (
+                                    <Slide key={index}>
+                                        <CardMedia
+                                        component="img"
+                                        alt="green iguana"
+                                        height="140"
+                                        image={image}
+                                        key={index}
+                                        sx={{
+                                        minWidth: 225,
+                                        maxWidth: 750,
+                                        minHeight: 450,
+                                        maxHeight: 550,
+                                        borderRadius: 2,
+                                        transition: 'transform 0.3s',
+                                        cursor: 'pointer',
+                                        transform: hoveredCard === index ? 'scale(1)' : 'scale(0.8)',
+                                        }}
+                                        onMouseEnter={() => setHoveredCard(index)}
+                                        onMouseLeave={() => setHoveredCard(null)}
+                                        />
+                                    </Slide>
+                                ))}
+                            </Slider>
                         )}
                     <div className={styles.textContainer}>
                         <div className={styles.mainText}>
