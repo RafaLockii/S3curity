@@ -50,8 +50,8 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
           setEmpresa(JSON.parse(window.localStorage.getItem('empresa') || '{}').empresa || '');
           setUser(JSON.parse(window.localStorage.getItem('user') || '') as userProps);
           // if(user){
-            const response = await api.get(`user/${(JSON.parse(window.localStorage.getItem('user') || '') as userProps).id}/menus`);
-            const menus = response.data.funcionario.menus;
+            const response = await api.get(`user/${(JSON.parse(window.localStorage.getItem('user') || '') as userProps).id}`);
+            const menus = response.data.menus;
             console.log(menus)
             setMenus(menus.map((menu: any) =>{
               return {
