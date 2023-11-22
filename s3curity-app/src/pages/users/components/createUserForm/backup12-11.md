@@ -9,6 +9,7 @@ import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
+import { CreateUserformProps, MenuProps } from "@/types/types";
 
 //Validação do formulário
 const registerFormShceme = z.object({
@@ -28,30 +29,6 @@ return urlPattern.test(value);
 ativo: z.boolean(),
 admin: z.boolean(),
 });
-
-interface EmpresaData {
-id: number;
-nome: string;
-cnpj: string;
-logo: string;
-data_alt: any;
-data_criacao: string;
-imagem_fundo: string;
-usuario_criacao: string;
-usuario_cad_alt: any;
-}
-
-//Propriedades recebidas da rota
-interface CreateUserformProps {
-empresa: string;
-empresaid: number;
-empresas: EmpresaData[];
-}
-
-interface draggableItensProps{
-label: string;
-type: string;
-}
 
 type RegisterFormData = z.infer<typeof registerFormShceme>;
 
@@ -73,34 +50,36 @@ const showEmpresaSelect = empresa.empresa === 's3curity';
 const {user} = useUserContext();
 
 //Bloco de itens arrastáveis ------------------------------------->
-const [draggableItens, setDraggableItens] = useState<draggableItensProps[]>([
-{
-label: "Contas",
-type: "Menu",
-},
-{
-label: "Conta 01",
-type: "Item",
-}
+const [draggableItens, setDraggableItens] = useState<MenuProps[]>([
+// {
+// label: "Contas",
+// type: "Menu",
+// },
+// {
+// label: "Conta 01",
+// type: "Item",
+// }
 ]);
 
-const [droppedItems, setDroppedItems] = useState<draggableItensProps[]>([]);
+const [droppedItems, setDroppedItems] = useState<MenuProps[]>([]);
 
-function handleDragStart(e: React.DragEvent, itemType: draggableItensProps) {
+function handleDragStart(e: React.DragEvent, itemType: MenuProps) {
 e.dataTransfer.setData("itemType", JSON.stringify(itemType));
 }
 
 function handleDrop(e: React.DragEvent) {
 e.preventDefault();
-const item = JSON.parse(e.dataTransfer.getData("itemType")) as draggableItensProps;
+const item = JSON.parse(e.dataTransfer.getData("itemType")) as MenuProps;
 setDroppedItems([...droppedItems, item]);
+console.log(item)
+console.log(droppedItems);
 }
 
 function handleDragOver(e: React.DragEvent) {
 e.preventDefault();
 }
 
-function handleRemoveItem(item: draggableItensProps) {
+function handleRemoveItem(item: MenuProps) {
 const updatedDroppedItems = droppedItems.filter((i) => i !== item);
 setDroppedItems(updatedDroppedItems);
 }
@@ -120,13 +99,33 @@ label: empresaData.nome,
 }));
 
 const {back} = useRouter();
+console.log("Id da empresa :" + empresa.empresaid)
 
 useEffect(() => {
 if (!showEmpresaSelect) {
 setValue('empresa_id', empresa.empresaid);
 }
-}, [showEmpresaSelect, empresa.empresaid]);
+const fetchData = async () => {
+console.log("Entrou no fetch data")
+try{
+const response = await api.get(`menu/${empresa.empresaid}/1`);
+response.data.map((item: any) => {
+setDraggableItens((prev) => [...prev, {
+id: item.id,
+nome: item.nome,
+itens: item.itens.map((item: any) => item.nome)
+}]);
+})
 
+      } catch(e){
+        console.log(`Erro ao chamar a api: ${e}`);
+      }
+    }
+    fetchData();
+
+}, []);
+
+//Dentro do array do useeffect tinha sses itens : showEmpresaSelect, empresa.empresaid
 async function handleRegister(data: RegisterFormData) {
 console.log("entrou aq")
 try{
@@ -135,15 +134,13 @@ nome: data.nome,
 senha: data.senha,
 email: data.email,
 telefone: data.telefone,
-//Valores estáticos que precisam ser mudados
 usuario_criacao: user?.email || "Não idnetificado",
 modulo_default: "default",
-//Fim dos valores estáticos
 acesso_admin: data.admin,
 cargo_id: data.modulo,
 empresa_id: data.empresa_id,
 imagem_perfil_url: data.img_url,
-// FALTA IMPLEMENTAR NO BACKEND A OPPÇÃO DE CRIAR COMO ATIVO OU INATIVO ativo: data.ativo,
+menus_ids: droppedItems.map((item) => item.id)
 });
 back();
 }catch(e){
@@ -275,13 +272,17 @@ className={styles.input}
         <h4>Escolha Suas opções</h4>
         {draggableItens.map((item) => (
           <div
-            key={item.label}
+            key={item.id}
             className={styles.draggableItens}
             draggable
             onDragStart={(e) => handleDragStart(e, item)}
           >
-            <div>{item.label}</div>
-            <div>{item.type}</div>
+            <div>{item.nome}</div>
+            <div>{item.itens.map((item)=>{
+              return(
+                <div>{item}</div>
+              )
+            })}</div>
           </div>
         ))}
       </div>
@@ -294,13 +295,17 @@ className={styles.input}
         {droppedItems.length === 0 && <h4>Arraste os itens aqui</h4>}
         {droppedItems.map((item, index) => (
           <div
-          key={index}
+          key={item.id}
           className={styles.draggableItens}
           draggable
           onDragStart={(e) => handleDragStart(e, item)}
           onDragEnd={() => handleRemoveItem(item)}>
-            <div>{item.label}</div>
-            <div>{item.type}</div>
+            <div>{item.nome}</div>
+            <div>{item.itens.map((item)=>{
+              return(
+                <div>{item}</div>
+              )
+            })}</div>
           </div>
         ))}
       </div>

@@ -24,7 +24,7 @@ export interface draggableItensProps{
 export interface MenuProps{
     id: number;
     nome: string;
-    itens: string[];
+    modulo: string;
 }
 
 export interface TableData {

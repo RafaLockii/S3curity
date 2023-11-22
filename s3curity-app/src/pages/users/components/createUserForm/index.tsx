@@ -9,7 +9,7 @@ import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
-import { CreateUserformProps, MenuProps  } from "@/types/types";
+import { CreateUserformProps} from "@/types/types";
 
 //Validação do formulário
 const registerFormShceme = z.object({
@@ -32,6 +32,17 @@ const registerFormShceme = z.object({
 
 type RegisterFormData = z.infer<typeof registerFormShceme>;
 
+interface ModuloProps {
+  id: number;
+  nome: string;
+}
+
+interface MenuProps {
+  id: number;
+  nome: string;
+  modulo: string;
+}
+
 export default function CreateUserForm(empresa: CreateUserformProps) {
 
     // Propriedades do zod
@@ -50,20 +61,11 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
 
 
 //Bloco de itens arrastáveis ------------------------------------->
- const [draggableItens, setDraggableItens] = useState<MenuProps[]>([
-//   {
-//     label: "Contas",
-//     type: "Menu",
-//  },
-//   {
-//     label: "Conta 01",
-//     type: "Item",
-//  }
-]);
+ const [draggableItens, setDraggableItens] = useState<MenuProps[] | ModuloProps[]>([]);
 
 const [droppedItems, setDroppedItems] = useState<MenuProps[]>([]);
 
-function handleDragStart(e: React.DragEvent, itemType: MenuProps) {
+function handleDragStart(e: React.DragEvent, itemType: MenuProps | ModuloProps) {
   e.dataTransfer.setData("itemType", JSON.stringify(itemType));
 }
 
@@ -111,12 +113,21 @@ function handleRemoveItem(item: MenuProps) {
     const fetchData = async () => {
       console.log("Entrou no fetch data")
       try{
-        const response = await api.get(`menu/${empresa.empresaid}/1`);
-        response.data.map((item: any) => {
+        const response = await api.get(`menus_front`);
+        console.log(response.data.menus)
+        response.data.menus.map((item: any) => {
           setDraggableItens((prev) => [...prev, {
             id: item.id,
             nome: item.nome,
-            itens: item.itens.map((item: any) => item.nome)
+            modulo: item.modulo,
+          }]);
+        })
+
+        const responseModulos = await api.get(`modulos`);
+        responseModulos.data.modulos.map((item: any) => {
+          setDraggableItens((prev) => [...prev, {
+            id: item.id,
+            nome: item.nome,
           }]);
         })
 
@@ -126,7 +137,8 @@ function handleRemoveItem(item: MenuProps) {
       }
     }
     fetchData();
-
+    console.log("DraggableItens");
+    console.log(draggableItens);
   }, []);
   
   //Dentro do array do useeffect tinha sses itens : showEmpresaSelect, empresa.empresaid
@@ -274,7 +286,7 @@ function handleRemoveItem(item: MenuProps) {
         
       </form>
 
-      <div className={styles.draggableBoxOutput}>
+      {/* <div className={styles.draggableBoxOutput}>
         <h4>Escolha Suas opções</h4>
         {draggableItens.map((item) => (
           <div
@@ -314,7 +326,7 @@ function handleRemoveItem(item: MenuProps) {
             })}</div>
           </div>
         ))}
-      </div>
+      </div> */}
       
     </div>
   );
