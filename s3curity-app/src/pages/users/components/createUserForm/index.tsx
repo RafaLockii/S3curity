@@ -203,7 +203,9 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
         cargo_id: data.modulo,
         empresa_id: data.empresa_id,
         imagem_perfil_url: data.img_url,
-        menus_ids: droppedItems.map((item) => item.id)
+        menus_ids: menusSelected.map((item) => item.id),
+        itens_ids: itensSelected.map((item) => item.id),
+        relatorios_ids: relatoriosSelected.map((item) => item.id),
       });
       back();
     }catch(e){
