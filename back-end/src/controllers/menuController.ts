@@ -289,3 +289,100 @@ export const getAllMenus = async (req: Request, res: Response) => {
         res.status(500).json({ error: "Failed to get menus" });
     }
 };
+
+export const getMenus = async (req: Request, res: Response) => {
+
+    try {
+        const menus = await prisma.menus.findMany({
+            include: {
+                modulos: true,
+            },
+        });
+
+        const formattedMenus = menus.map(menu => ({
+            id: menu.id,
+            nome: menu.nome,
+            modulo: menu.modulos.nome,
+        }));
+
+        res.status(200).json({ menus: formattedMenus });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to get menus" });
+    }
+};
+export const getItens = async (req: Request, res: Response) => {
+
+    try {
+        const menus = await prisma.menus.findMany({
+            include: {
+                modulos: true,
+                itens: { include: { relatorios: true } },
+            },
+        });
+ 
+        const itens = menus.flatMap(menu => {
+            return menu.itens.map(item => {
+                return {
+                   id: item.id,
+                   nome: item.nome,
+                   menus_id: menu.id,
+                }
+            })
+        });
+ 
+        res.status(200).json({ itens: itens });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to get menus" });
+    }
+ };
+export const getRelatorio = async (req: Request, res: Response) => {
+
+    try {
+        const menus = await prisma.menus.findMany({
+            include: {
+                modulos: true,
+                itens: { include: { relatorios: true } },
+            },
+        });
+ 
+        const itens = menus.flatMap(menu => {
+            return menu.itens.map(item => {
+                return {
+                   id: item.id,
+                   nome: item.nome,
+                   menus_id: menu.id,
+                   relatorios: item.relatorios
+                }
+            })
+        });
+
+        const relatorios = itens.flatMap(item => {
+            return item.relatorios.map(relatorio => {
+                return {
+                     id: relatorio.id,
+                        nome: relatorio.nome,
+                        relatorio: relatorio.relatorio,
+                        itens_id: item.id,
+                }
+            })
+        });
+ 
+        res.status(200).json({ relatorios: relatorios });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Failed to get menus" });
+    }
+};
+
+export const getAllModulos = async (req: Request, res: Response) => {
+    try {
+      const modulos = await prisma.modulos.findMany();
+  
+      res.json({ modulos });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Falha ao buscar módulos" });
+    }
+  };

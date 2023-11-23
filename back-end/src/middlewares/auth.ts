@@ -52,6 +52,10 @@ export const login = async (req: Request, res: Response) => {
             where: {usuario_id: user.id}
         })
 
+        if (!Admin) {
+            return res.status(404).json({ error: 'Admin not found' });
+        }
+
         const isCargo = await prisma.cargos.findFirstOrThrow({
             where: {
                 cargo_id: Admin?.cargo_id ?? { equals: 0 }
@@ -65,27 +69,31 @@ export const login = async (req: Request, res: Response) => {
             email: user.email,
             nome: user.nome,
             cargo: isCargo.cargo_id,
-            isAdmin: Admin?.acesso_admin,
+            isAdmin: Admin.acesso_admin,
         });
     } catch (error) {
         return res.status(404).json({ error: 'Ocorreu um erro ao atualizar o usuário.' });
     }
 };
 
-export const adminAuthMiddleware = async (req: any, res: any, next: any) => {
+export const funcionarioAdminAuthMiddleware = async (req: any, res: any, next: any) => {
     try {
         const User = req.usuario;
 
         const Verified = await prisma.user.findUnique({
-            where: { email: User.email }
+          where: { email: User.email, verified: true }
         });
 
+        if (!Verified) {
+            return res.status(404).json({ error: 'User not found' });
+        }
+
         const ADMIN = await prisma.funcionario.findUnique({
-            where: { usuario_id: Verified?.id }
+          where: { usuario_id: Verified.id, acesso_admin: true }
         });
 
         if (ADMIN && ADMIN.acesso_admin) {
-        return next();
+          return next();
         }
 
         const error = {
@@ -99,4 +107,99 @@ export const adminAuthMiddleware = async (req: any, res: any, next: any) => {
     } catch (error) {
         res.status(401).send({ error: 'Ocorreu erro ao verificar permissão ADMIN'});
     }
+};
+
+export const adminAuthMiddlewareS3curity = async (req: any, res: any, next: any) => {
+  try {
+    const User = req.usuario;
+
+    const UserExisting = await prisma.user.findUnique({
+      where: { email: User.email }
+    });
+
+    if (!UserExisting) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const ExistingFuncionario = await prisma.funcionario.findUnique({
+      where: { usuario_id: UserExisting.id }
+    });
+
+    if (!ExistingFuncionario) {
+      return res.status(404).json({ error: "Funcionario S3curity not found" });
+    }
+
+    const BuscaEmpresa = await prisma.empresa.findUnique({
+      where: { id: ExistingFuncionario.empresa_id, nome: "sec3rity" }
+    });
+
+    if (!BuscaEmpresa) {
+      return res.status(404).json({ error: "Empresa not found" });
+    }
+
+    if (ExistingFuncionario && BuscaEmpresa) {
+      return next();
+    }
+
+    const error = {
+      error: {
+        message: "Não autorizado.",
+        stack:
+          "Não pode acessar a rota devido à falta de permissões de administrador s3curity.",
+        status: 401
+      }
+    };
+    throw error;
+  } catch (error) {
+    res
+      .status(401)
+      .send({ error: "Ocorreu erro ao verificar permissão ADMIN" });
+  }
+};
+
+export const adminEmpresaOrS3curity = async (req: any, res: any, next: any) => {
+  const User = req.usuario;
+  try{
+    const UserExisting = await prisma.user.findUnique({
+      where: { email: User.email }
+    });
+
+    if (!UserExisting) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const ExistingFuncionario = await prisma.funcionario.findUnique({
+      where: { usuario_id: UserExisting.id, acesso_admin: true }
+    });
+
+    if (!ExistingFuncionario) {
+      return res.status(404).json({ error: "Funcionario not found" });
+    }
+
+    const BuscaEmpresa = await prisma.empresa.findUnique({
+      where: { id: ExistingFuncionario.empresa_id }
+    });
+
+    if (!BuscaEmpresa) {
+      return res.status(404).json({ error: "Empresa not found" });
+    }
+
+    if (ExistingFuncionario && BuscaEmpresa) {
+      return next();
+    }
+
+    const error = {
+        error: {
+          message: "Não autorizado.",
+          stack:
+            "Não pode acessar a rota devido à falta de permissões de administrador s3curity.",
+          status: 401
+        }
+      };
+      throw error;
+  } catch (error) {
+    res
+      .status(401)
+      .send({ error: "Ocorreu erro ao verificar permissão ADMIN" });
+  }
 };

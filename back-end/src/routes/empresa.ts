@@ -5,7 +5,7 @@ const empresaRouter = express.Router();
 
 empresaRouter.get('/empresas', EmpresaController.listEmpresas);
 empresaRouter.get('/empresa/:id', EmpresaController.getEmpresa);
-empresaRouter.get('/empresa', EmpresaController.getEmpresaByName);
+empresaRouter.get('/empresa_name/:nome', EmpresaController.getEmpresaByName);
 empresaRouter.post('/empresa/create', EmpresaController.createEmpresa);
 empresaRouter.put('/empresa/edit/:id', EmpresaController.editEmpresa);
 empresaRouter.delete('/empresa/:id', EmpresaController.deleteEmpresa);

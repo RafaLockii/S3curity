@@ -203,7 +203,7 @@ export const getEmpresa = async (req: Request, res: Response) => {
 };
 
 export const getEmpresaByName = async (req: Request, res: Response) => {
-    const { nome } = req.body;
+    const  nome  = req.params.nome;
 
     try {
         const empresa = await prisma.empresa.findUnique({
