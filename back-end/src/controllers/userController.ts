@@ -173,7 +173,6 @@ export const editUser = async (req: Request, res: Response) => {
         telefone,
         modulo_default,
         acesso_admin,
-        ativo,
         cargo_id,
         empresa_id,
         imagem_perfil_url,

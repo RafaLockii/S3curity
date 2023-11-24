@@ -39,7 +39,6 @@ export const activate_2fa = async (req: Request, res: Response) => {
 
             transporter.sendMail(
                 {
-                    from: 'jocyannovittor@hotmail.com',
                     to: email,
                     subject: 'Código de Autenticação 2FA',
                     text: `Sua chave secreta 2FA é: ${code}`,
