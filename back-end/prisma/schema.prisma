@@ -36,20 +36,19 @@ model TwoFactorAuth {
 
 model Funcionario {
   id                Int      @id @default(autoincrement())
-  modulo_default    String
+  modulo_default    Int
   acesso_admin      Boolean
-  ativo             Boolean  @default(true)
+  ativo             Boolean  @default(false)
   cadastro_alterado DateTime @updatedAt
   usuario_cad_alt   String
-  cargo_id          Int?
   usuario_id        Int      @unique
-  empresa_id        Int?
+  empresa_id        Int
   imagem_perfil_id  Int?
 
+  modulos    Modulos[]    @relation("FuncionarioModulos")
   imagem     Imagem?
-  user       User        @relation(fields: [usuario_id], references: [id])
-  empresa    Empresa?    @relation(fields: [empresa_id], references: [id])
-  cargo      Cargos?     @relation(fields: [cargo_id], references: [cargo_id])
+  user       User         @relation(fields: [usuario_id], references: [id])
+  empresa    Empresa      @relation(fields: [empresa_id], references: [id])
   menus      Menus[]      @relation("FuncionarioMenus")
   itens      Itens[]      @relation("FuncionarioItens")
   relatorios Relatorios[] @relation("FuncionarioRelatorios")
@@ -78,22 +77,16 @@ model Imagem {
   funcionario    Funcionario @relation(fields: [funcionario_id], references: [id])
 }
 
-model Cargos {
-  cargo_id     Int           @id @default(autoincrement())
-  nome_cargo   String
-  permissoes   String
-  funcionarios Funcionario[]
-}
-
 model Modulos {
   id   Int    @id @default(autoincrement())
   nome String
 
-  Menus Menus[]
+  Menus    Menus[]
+  usuarios Funcionario[] @relation("FuncionarioModulos")
 }
 
 model Menus {
-  id         Int       @id @default(autoincrement())
+  id         Int           @id @default(autoincrement())
   nome       String
   modulos_id Int
   usuarios   Funcionario[] @relation("FuncionarioMenus")
@@ -103,7 +96,7 @@ model Menus {
 }
 
 model Itens {
-  id       Int       @id @default(autoincrement())
+  id       Int           @id @default(autoincrement())
   nome     String
   menus_id Int
   usuarios Funcionario[] @relation("FuncionarioItens")
@@ -113,7 +106,7 @@ model Itens {
 }
 
 model Relatorios {
-  id        Int       @id @default(autoincrement())
+  id        Int           @id @default(autoincrement())
   nome      String
   relatorio String
   itens_id  Int

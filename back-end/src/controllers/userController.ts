@@ -13,10 +13,9 @@ export const createUser = async (req: Request, res: Response) => {
     usuario_criacao,
     modulo_default,
     acesso_admin,
-    cargo_id,
     empresa_id,
     imagem_perfil_url,
-    usuario_id,
+    modulos_id,
     menus_ids,
     itens_ids,
     relatorios_ids
@@ -45,6 +44,10 @@ export const createUser = async (req: Request, res: Response) => {
             .json({ message: "A empresa especificada não foi encontrada." });
     }
 
+    const modulos = await prisma.modulos.findMany({
+        where: { id: { in: modulos_id } }
+    });
+
     const menus = await prisma.menus.findMany({
       where: { id: { in: menus_ids } }
     });
@@ -58,13 +61,14 @@ export const createUser = async (req: Request, res: Response) => {
     });
 
     if (
+      modulos.length !== modulos_id.length ||
       menus.length !== menus_ids.length ||
       itens.length !== itens_ids.length ||
       relatorios.length !== relatorios_ids.length
     ) {
       return res
         .status(404)
-        .json({ error: "One or more menus, items or reports not found" });
+        .json({ error: "One or more modulos, menus, items or reports not found" });
     }
 
     const hashedPassword = await bcrypt.hash(senha, 10);
@@ -84,13 +88,15 @@ export const createUser = async (req: Request, res: Response) => {
           token: code,
           funcionario: {
             create: {
-              ativo: true,
+              //ativo: true,
               cadastro_alterado: currentDatetime,
               usuario_cad_alt: usuario_criacao,
               modulo_default,
               acesso_admin,
               empresa: { connect: { id: empresa_id } },
-              cargo: { connect: { cargo_id: cargo_id } },
+              modulos: {
+                connect: modulos_id.map((id: any) => ({ id }))
+              },
               menus: {
                 connect: menus_ids.map((id: any) => ({ id }))
               },
@@ -138,7 +144,6 @@ export const createUser = async (req: Request, res: Response) => {
         if (user[0].token) {
         transporter.sendMail(
             {
-            from: "jocyannovittor@hotmail.com",
             to: email,
             subject: "Código de Ativação de Usuário",
             text: `Seu Token de Ativação é: ${code}`
@@ -173,9 +178,9 @@ export const editUser = async (req: Request, res: Response) => {
         telefone,
         modulo_default,
         acesso_admin,
-        cargo_id,
         empresa_id,
         imagem_perfil_url,
+        modulos_id,
         menus_ids,
         itens_ids,
         relatorios_ids
@@ -204,21 +209,24 @@ export const editUser = async (req: Request, res: Response) => {
         return res.status(400).json({ message: "Email já está em uso." });
       }
 
-      const hashedPassword = await bcrypt.hash(senha, 10);
+      let updateData: any = {};
+
+      if (nome) updateData.nome = nome;
+      if (senha) {
+        const hashedPassword = await bcrypt.hash(senha, 10);
+        updateData.senha = hashedPassword;
+      }
+      if (email) updateData.email = email;
+      if (telefone) updateData.telefone = telefone;
 
       const updatedUser = await prisma.user.update({
         where: {
           id: userId
         },
-        data: {
-          nome,
-          senha: hashedPassword,
-          email,
-          telefone
-        }
+        data: updateData
       });
 
-      if (empresa_id && cargo_id) {
+      if (empresa_id) {
         const existingEmpresa = await prisma.empresa.findUnique({
           where: {
             id: empresa_id
@@ -240,7 +248,9 @@ export const editUser = async (req: Request, res: Response) => {
                 modulo_default,
                 acesso_admin,
                 empresa: { connect: { id: empresa_id } },
-                cargo: { connect: { cargo_id: cargo_id } },
+                modulos: {
+                  set: modulos_id.map((id: any) => ({ id }))
+                },
                 menus: {
                   set: menus_ids.map((id: any) => ({ id }))
                 },
@@ -329,7 +339,6 @@ export const getUser = async (req: Request, res: Response) => {
       ativo: user.ativo,
       cadastro_alterado: user.cadastro_alterado,
       usuario_cad_alt: user.usuario_cad_alt,
-      cargo_id: user.cargo_id,
       usuario_id: user.usuario_id,
       empresa_id: user.empresa_id,
       imagem_perfil_id: user.imagem_perfil_id,
@@ -371,8 +380,8 @@ export const listUsers = async (req: Request, res: Response) => {
           funcionario: {
             include: {
               imagem: true,
-              cargo: true,
-              empresa: true
+              empresa: true,
+              modulos: true,
             }
           }
         }
@@ -414,7 +423,6 @@ export const listUsers = async (req: Request, res: Response) => {
           funcionario: {
             include: {
               imagem: true,
-              cargo: true,
               empresa: true
             }
           }
@@ -453,6 +461,7 @@ export const deleteUser = async (req: Request, res: Response) => {
         funcionario: {
           include: {
             imagem: true,
+            modulos: true,
             menus: true,
             itens: true,
             relatorios: true

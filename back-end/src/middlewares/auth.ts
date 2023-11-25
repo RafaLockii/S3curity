@@ -58,11 +58,6 @@ export const login = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Admin not found" });
     }
 
-    const isCargo = await prisma.cargos.findFirstOrThrow({
-      where: {
-        cargo_id: Admin?.cargo_id ?? { equals: 0 }
-      }
-    });
     const token = jwt.sign({ email }, chaveSecreta);
     // console.log('Token gerado:', token);
     return res.status(200).json({
@@ -70,7 +65,6 @@ export const login = async (req: Request, res: Response) => {
       id: user.id,
       email: user.email,
       nome: user.nome,
-      cargo: isCargo.cargo_id,
       isAdmin: Admin.acesso_admin
     });
   } catch (error) {
@@ -144,16 +138,18 @@ export const adminAuthMiddlewareS3curity = async (
       return res.status(404).json({ error: "Funcionario S3curity not found" });
     }
 
-    const BuscaEmpresa = await prisma.empresa.findUnique({
-      where: { id: ExistingFuncionario.empresa_id, nome: "sec3rity" }
-    });
+    if (ExistingFuncionario.empresa_id){
+      const BuscaEmpresa = await prisma.empresa.findUnique({
+        where: { id: ExistingFuncionario.empresa_id, nome: "sec3rity" }
+      });
 
-    if (!BuscaEmpresa) {
-      return res.status(404).json({ error: "Empresa S3curity not found" });
-    }
+      if (!BuscaEmpresa) {
+        return res.status(404).json({ error: "Empresa S3curity not found" });
+      }
 
-    if (ExistingFuncionario && BuscaEmpresa) {
-      return next();
+      if (ExistingFuncionario && BuscaEmpresa) {
+        return next();
+      }
     }
 
     const error = {
@@ -191,16 +187,18 @@ export const adminEmpresaOrS3curity = async (req: any, res: any, next: any) => {
       return res.status(404).json({ error: "Funcionario not found" });
     }
 
-    const BuscaEmpresa = await prisma.empresa.findUnique({
-      where: { id: ExistingFuncionario.empresa_id }
-    });
+    if (ExistingFuncionario.empresa_id){
+      const BuscaEmpresa = await prisma.empresa.findUnique({
+        where: { id: ExistingFuncionario.empresa_id }
+      });
 
-    if (!BuscaEmpresa) {
-      return res.status(404).json({ error: "Empresa not found" });
-    }
+      if (!BuscaEmpresa) {
+        return res.status(404).json({ error: "Empresa not found" });
+      }
 
-    if (ExistingFuncionario && BuscaEmpresa) {
-      return next();
+      if (ExistingFuncionario && BuscaEmpresa) {
+        return next();
+      }
     }
 
     const error = {

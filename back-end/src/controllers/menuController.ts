@@ -63,74 +63,6 @@ export const createMenu = async (req: Request, res: Response) => {
     }
 };
 
-// export const createMenuUser = async (req: Request, res: Response) => {
-//   const { usuario_id, menus_ids, itens_ids, relatorios_ids } = req.body;
-
-//   try {
-//     const usuario = await prisma.funcionario.findUnique({
-//       where: { usuario_id: usuario_id }
-//     });
-
-//     if (!usuario) {
-//       return res.status(404).json({ error: "Usuario not found" });
-//     }
-
-//     const menus = await prisma.menus.findMany({
-//       where: { id: { in: menus_ids } },
-//     });
-
-//     const itens = await prisma.itens.findMany({
-//       where: { id: { in: itens_ids } },
-//     });
-
-//     const relatorios = await prisma.relatorios.findMany({
-//       where: { id: { in: relatorios_ids } },
-//     });
-
-//     if (menus.length !== menus_ids.length || itens.length !== itens_ids.length || relatorios.length !== relatorios_ids.length) {
-//       return res.status(404).json({ error: "One or more menus, items or reports not found" });
-//     }
-
-//     // await prisma.funcionario.create({
-//     //   where: { usuario_id: usuario_id },
-//     //   data: {
-
-//     //     menus: {
-//     //       connect: menus_ids.map((id: any) => ({ id }))
-//     //     },
-//     //     itens: {
-//     //       connect: itens_ids.map((id: any) => ({ id }))
-//     //     },
-//     //     relatorios: {
-//     //       connect: relatorios_ids.map((id: any) => ({ id }))
-//     //     }
-//     //   }
-//     // });
-
-//     // await prisma.funcionario.update({
-//     //   where: { usuario_id: usuario_id },
-//     //   data: {
-//     //     menus: {
-//     //       connect: menus_ids.map((id: any) => ({ id }))
-//     //     },
-//     //     itens: {
-//     //       connect: itens_ids.map((id: any) => ({ id }))
-//     //     },
-//     //     relatorios: {
-//     //       connect: relatorios_ids.map((id: any) => ({ id }))
-//     //     }
-//     //   }
-//     // });
-
-//     return res.status(200).json({ message: "Menus, items and reports successfully associated with the user" });
-//   } catch (error) {
-//     if (error instanceof Error) {
-//         return res.status(500).json({ error: error.message });
-//     } else {
-//         return res.status(500).json({ error: "An unknown error occurred" });
-//     }
-// }}
-
 export const editMenu = async (req: Request, res: Response) => {
     try {
         const { id } = req.params;
@@ -311,6 +243,7 @@ export const getMenus = async (req: Request, res: Response) => {
         res.status(500).json({ error: "Failed to get menus" });
     }
 };
+
 export const getItens = async (req: Request, res: Response) => {
 
     try {
@@ -336,7 +269,8 @@ export const getItens = async (req: Request, res: Response) => {
         console.error(error);
         res.status(500).json({ error: "Failed to get menus" });
     }
- };
+};
+
 export const getRelatorio = async (req: Request, res: Response) => {
 
     try {
@@ -385,4 +319,4 @@ export const getAllModulos = async (req: Request, res: Response) => {
       console.error(error);
       res.status(500).json({ error: "Falha ao buscar módulos" });
     }
-  };
+};

@@ -68,24 +68,24 @@ export const editEmpresa = async (req: Request, res: Response) => {
         carrosselImagens
     } = req.body;
 
-    if (!nome || !razao_s || !logo || !imagem_fundo || !usuario_criacao) {
-        return res.status(400).json({ message: 'Dados de entrada inválidos.' });
-    }
+    let updateData: any = {};
+
+    if (nome) updateData.nome = nome;
+    if (razao_s) updateData.razao_s = razao_s;
+    if (logo) updateData.logo = logo;
+    if (imagem_fundo) updateData.imagem_fundo = imagem_fundo;
+    if (usuario_criacao) updateData.usuario_criacao = usuario_criacao;
+    
+    const currentDatetime = new Date();
+    currentDatetime.setHours(currentDatetime.getHours() - 3);
+    updateData.data_alt = currentDatetime;
 
     try {
-        const currentDatetime = new Date();
-        currentDatetime.setHours(currentDatetime.getHours() - 3);
-    
+        
+
         const empresa = await prisma.empresa.update({
             where: { id: Number(id) },
-            data: {
-                nome,
-                razao_s,
-                logo,
-                imagem_fundo,
-                data_alt: currentDatetime, 
-                usuario_cad_alt: usuario_criacao,
-            },
+            data: updateData
         });
     
         if(carrosselImagens.length > 0){
