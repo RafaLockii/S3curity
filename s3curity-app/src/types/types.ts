@@ -133,9 +133,13 @@ export interface MenuItem {
     relatorios: { nome: string; relatorio: string }[];
 }
   
-// export interface MenuData {
-//     nomeMenu: string;
-//     empresa_id: number;
-//     modulo_id: number | string;
-//     itens: MenuItem[];
-// }
+export interface MenuData {
+    nomeMenu: string;
+    empresa_id: number;
+    modulo_id: number | string;
+    itens: MenuItem[];
+}
+
+export interface UpdateMenuProps{
+    menu: MenusData; 
+}

@@ -172,7 +172,7 @@ return (
             <TableCell>{row.itens.length}</TableCell>
             <TableCell>{row.itens.reduce((accumulator, currentItem) => accumulator + currentItem.relatorios.length, 0)}</TableCell>
             <TableCell>
-            <button className={styles.button} onClick={() => { router.push(`editUser/${row.id}/${empresa}`)}}>Editar</button>
+            <button className={styles.button} onClick={() => { router.push(`editMenu/${row.id}/${empresa}`)}}>Editar</button>
             </TableCell>
         </TableRow>
         ))}
