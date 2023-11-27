@@ -48,6 +48,37 @@ export interface TableComponentProps {
     empresa: string;
 }
 
+// Blocod e tipagem dos dados de menu
+
+export interface MenusData{
+    id: number;
+    nome: string;
+    modulo: string;
+    itens: itens[];
+}
+
+interface itens{
+    id: number;
+    nome: string;
+    menus_id: number;
+    relatorios: relatorios[];
+
+}
+
+interface relatorios{
+    id: number;
+    nome: string;
+    relatorio: string;
+    itens_id: number;
+}
+
+export interface MenuTableComponentProps{
+    data: MenusData[] | {datas: MenusData[]};
+    empresa: string;
+}
+
+//---------------------------------------------->
+
 export interface EmpresaTableData {
     id: number;
     nome: string;
@@ -102,9 +133,9 @@ export interface MenuItem {
     relatorios: { nome: string; relatorio: string }[];
 }
   
-export interface MenuData {
-    nomeMenu: string;
-    empresa_id: number;
-    modulo_id: number | string;
-    itens: MenuItem[];
-}
+// export interface MenuData {
+//     nomeMenu: string;
+//     empresa_id: number;
+//     modulo_id: number | string;
+//     itens: MenuItem[];
+// }

@@ -6,13 +6,12 @@ import { useEffect, useState } from "react";
 import { ArrowLeft } from "phosphor-react";
 import useRouter from "next/router";
 import { api } from "@/lib/axios";
-import TableComponent from "@/components/TableMenus"
 
 export default function Enterprise(){
 
     const[showCreateForm, setShowCreateForm] = useState(false);
     const[showUpdateForm, setShowUpdateForm] = useState(false);
-    const[menusData, setMenusData] = useState([]);
+    const[empresaData, setEmpresaData] = useState([]);
     // const {query} = useRouter;
     // const empresa = typeof query.empresa == 'string' ? query.empresa : "";
     const[empresa, setEmpresa] = useState<string>();
@@ -34,8 +33,8 @@ export default function Enterprise(){
     const fetchData = async () =>{
         try{
             setEmpresa(JSON.parse(window.localStorage.getItem('empresa') || '{}').empresa || '');
-            const response = await api.get('menus')
-            setMenusData(response.data.menus);
+            const response = await api.get('empresas')
+            setEmpresaData(response.data);
         } catch(e){
             console.error(e)
         }
@@ -48,32 +47,10 @@ export default function Enterprise(){
         <div className={styles.pageContainer}>
             <SidebarMenu empresa={empresa as string}/>
             <div className={styles.createFormContainer}>
-                {/* <div className={styles.formHeader}>
+                <div className={styles.formHeader}>
                     <p>Cadastro de itens</p>
                 </div>
-                <CreateForm/> */}
-                {!showCreateForm && !showUpdateForm && (
-                    <>
-                    <div className={styles.formHeader}>
-                        Empresas
-                        <div className={styles.headerButtonContainer}>
-                            <button className={styles.headerButton} onClick={ () => handleShowCreateForm(true)}>
-                            Criar
-                            </button>
-                        </div>
-                    </div>
-                    <TableComponent data={menusData} empresa={empresa as string}/>
-                    </>
-                ) }
-                {showCreateForm && (
-                    <>
-                        <div className={styles.formHeader}>
-                            <p>Cadastro</p>
-                            <ArrowLeft className={styles.arrowLeft} onClick={()  => handleShowCreateForm(false)}/>
-                        </div>
-                        <CreateForm/>
-                    </>
-                )}
+                <CreateForm/>
             </div>
             <div className={styles.header}>
                 <Header/>

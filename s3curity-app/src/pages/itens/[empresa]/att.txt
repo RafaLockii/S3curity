@@ -1,18 +1,18 @@
 import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
 import styles from './styles.module.css';
-import CreateForm from "../../../components/CreateFormItens";
+import CreateForm from "../../../components/createFormEmpresa";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "phosphor-react";
+import TableComponent from "../../../components/tableEmpresa";
 import useRouter from "next/router";
 import { api } from "@/lib/axios";
-import TableComponent from "@/components/TableMenus"
 
 export default function Enterprise(){
 
     const[showCreateForm, setShowCreateForm] = useState(false);
     const[showUpdateForm, setShowUpdateForm] = useState(false);
-    const[menusData, setMenusData] = useState([]);
+    const[empresaData, setEmpresaData] = useState([]);
     // const {query} = useRouter;
     // const empresa = typeof query.empresa == 'string' ? query.empresa : "";
     const[empresa, setEmpresa] = useState<string>();
@@ -34,8 +34,8 @@ export default function Enterprise(){
     const fetchData = async () =>{
         try{
             setEmpresa(JSON.parse(window.localStorage.getItem('empresa') || '{}').empresa || '');
-            const response = await api.get('menus')
-            setMenusData(response.data.menus);
+            const response = await api.get('empresas')
+            setEmpresaData(response.data);
         } catch(e){
             console.error(e)
         }
@@ -48,10 +48,6 @@ export default function Enterprise(){
         <div className={styles.pageContainer}>
             <SidebarMenu empresa={empresa as string}/>
             <div className={styles.createFormContainer}>
-                {/* <div className={styles.formHeader}>
-                    <p>Cadastro de itens</p>
-                </div>
-                <CreateForm/> */}
                 {!showCreateForm && !showUpdateForm && (
                     <>
                     <div className={styles.formHeader}>
@@ -62,7 +58,7 @@ export default function Enterprise(){
                             </button>
                         </div>
                     </div>
-                    <TableComponent data={menusData} empresa={empresa as string}/>
+                    <TableComponent data={empresaData} empresa={empresa as string}/>
                     </>
                 ) }
                 {showCreateForm && (
