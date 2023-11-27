@@ -167,19 +167,19 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
               <TableCell>{row.funcionario.empresa.nome}</TableCell>
               <TableCell>
                 <Checkbox
-                  checked={row.funcionario.cargo.nome_cargo == "Operacional"}
+                  checked={row.funcionario.modulos.some(modulo => modulo.nome === "OPERACIONAL")}
                   disabled
                 />
               </TableCell>
                 <TableCell>
                 <Checkbox
-                  checked={row.funcionario.cargo.nome_cargo == "Estratégico"}
+                  checked={row.funcionario.modulos.some(modulo => modulo.nome === "ESTRATEGICO")}
                   disabled
                 />
                 </TableCell>
                 <TableCell>
                 <Checkbox
-                  checked={row.funcionario.cargo.nome_cargo == "Gerencial"}
+                  checked={row.funcionario.modulos.some(modulo => modulo.nome === "GERENCIAL")}
                   disabled
                 />
                 </TableCell>

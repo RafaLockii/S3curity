@@ -197,6 +197,10 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
           }]);
         })
 
+        if(storedUser){
+          const response = await api.get(`data/user/${storedUser.id}`);
+          setDroppedItems((prev) => [...prev, response.data.modulos]);
+        }
   
       } catch(e){
         console.log(`Erro ao chamar a api: ${e}`);

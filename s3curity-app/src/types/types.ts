@@ -40,7 +40,14 @@ export interface TableData {
       imagem: { url: string };
       cargo: { nome_cargo: string; permissoes: string };
       empresa: { nome: string };
+      modulo_default: number;
+      modulos: UserModules[];
     }
+}
+
+interface UserModules{
+    id: number;
+    nome: string;
 }
   
 export interface TableComponentProps {

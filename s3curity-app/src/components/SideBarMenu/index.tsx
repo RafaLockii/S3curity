@@ -114,7 +114,7 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                   <MenuItem icon={<Buildings/>} onClick={() => handleMenuClick('itens')}>Itens</MenuItem>
                   </>
                   )}
-                  {user?.acesso_admin == true && (
+                  {user?.acesso_admin == false && (
                    <MenuItem icon={<User/>} onClick={() => handleMenuClick('users')}>Usuários</MenuItem>
                   )}
                   {menus && (
