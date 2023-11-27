@@ -51,6 +51,7 @@ export interface TableComponentProps {
 // Blocod e tipagem dos dados de menu
 
 export interface MenusData{
+    [x: string]: any;
     id: number;
     nome: string;
     modulo: string;
@@ -129,7 +130,7 @@ export interface UserData {
 }
 
 export interface MenuItem {
-    nomeItem: string;
+    nome: string;
     relatorios: { nome: string; relatorio: string }[];
 }
   

@@ -50,7 +50,7 @@ const transformMenu = (menuData: { menu: MenusData }): MenuData => {
         modulo_id: menu.menu.modulo,
         itens: menu.menu.itens
         // items: menuData.menu.itens.map(item => ({
-        //     nomeItem: item.nome,
+        //     nome: item.nome,
         //     relatorios: item.relatorios.map(relatorio => ({
         //         nome: relatorio.nome,
         //         relatorio: relatorio.relatorio
@@ -65,7 +65,7 @@ const [numMenuInputs, setNumMenuInputs] = useState(1);
 const [menus, setMenus] = useState<MenuData[]>([transformMenu(props)]);
 
 console.log("Menu transformado: ")
-console.log(menus[0].nomeMenu)
+console.log(menus[0].itens[0].relatorios)
 
 const addMenuInput = () => {
 setNumMenuInputs(numMenuInputs + 1);
@@ -91,7 +91,7 @@ if (!newMenus[menuIndex].itens) {
 
 // Adicione um novo item ao array
 newMenus[menuIndex].itens.push({
-    nomeItem: "",
+    nome: "",
     relatorios: [],
 });
 
@@ -110,10 +110,23 @@ setMenus(newMenus);
 //FIm do bloco ------------------------------------------------------------------------>
 async function handleRegister(data: RegisterFormData) {
 console.log("entrou aq");
+console.log("entrou aq");
+console.log("entrou aq");
+console.log("entrou aq");
+
 try {
-const menuResponses = await Promise.all(
-    menus.map((menu) => api.post("menu/create", menu))
-);
+    const updatedMenu = menus[0];
+    console.log(updatedMenu.itens)
+
+    const requestBody = {
+        nomeMenu: updatedMenu.nomeMenu,
+        itens: updatedMenu.itens.map(item => ({
+        ...item,
+        nomeItem: item.nome,
+        })),
+    };
+
+    const response = await api.put(`menu/edit/${props.menu.menu.id}`, requestBody)
     back();
 } catch (e) {
     console.log(e);
@@ -175,15 +188,16 @@ return (
                 <div className={styles.inputWithContents}>
                 
                 <TextField
-                placeholder={`Nome do Item ${itemIndex + 1}`}
+                placeholder={item.nome}
                 onChange={(e) => {
                     const newMenus = [...menus];
                     newMenus[menuIndex].itens[itemIndex] = {
                     ...newMenus[menuIndex].itens[itemIndex],
-                    nomeItem: e.target.value,
+                    nome: e.target.value,
                     };
                     setMenus(newMenus);
                 }}
+                defaultValue={item.nome}
                 />
                 </div>
 
@@ -192,25 +206,27 @@ return (
                     <div className={styles.inputWithContents}>
                     
                         <TextField
-                        placeholder={`Nome do Relatório ${relatorioIndex + 1}`}
+                        placeholder={relatorio.nome}
                         onChange={(e) => {
                         const newMenus = [...menus];
                         newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].nome = e.target.value;
-                        newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].relatorio = e.target.value;
+                        // newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].relatorio = e.target.value;
                         setMenus(newMenus);
                         }}
+                        defaultValue={relatorio.nome}
                         />
 
                     </div>
                     <div className={styles.inputWithContents}>
                     
                     <TextField
-                    placeholder={`Relatório ${relatorioIndex + 1}`}
+                    placeholder={relatorio.relatorio}
                     onChange={(e) => {
                         const newMenus = [...menus];
                         newMenus[menuIndex].itens[itemIndex].relatorios[relatorioIndex].relatorio = e.target.value;
                         setMenus(newMenus);
                     }}
+                    defaultValue={relatorio.relatorio}
                     />
                     </div>
                 </div>
