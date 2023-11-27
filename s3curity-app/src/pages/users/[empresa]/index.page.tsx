@@ -65,10 +65,10 @@ export default function Users(){
                 <div className={styles.formHeader}>
                     Usuários
                     <div className={styles.headerButtonContainer}>
-                        <button className={styles.headerButton}>
+                        <button className={styles.headerButton} onClick={ () => handleShowCreateUserForm(true)}>
                         Copiar
                         </button>
-                        <button className={styles.headerButton} onClick={ () => handleShowCreateUserForm(true)}>
+                        <button className={styles.headerButton} onClick={ () => {sessionStorage.removeItem('selectedUser');handleShowCreateUserForm(true)}}>
                         Criar
                         </button>
                     </div>

@@ -5,7 +5,7 @@ import UpdateForm from "../../../components/UpdateFormEmpresa";
 import { useEffect, useState } from "react";
 import { ArrowLeft } from "phosphor-react";
 import  useRouter from "next/router";
-import { api } from "@/lib/axios";
+import  api  from "@/lib/axios";
 import { EmpresaData } from "@/types/types";
 
 export default function editUsers(){

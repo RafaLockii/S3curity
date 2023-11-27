@@ -128,6 +128,10 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
     setPage(0);
   };
 
+  const handleCheckbox = (user: TableData) => {
+    sessionStorage.setItem('selectedUser', JSON.stringify(user));
+  };
+
   return (
     <div className={styles.tableContainer}>
     <TableContainer component={Paper}  >
@@ -156,6 +160,7 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
             <TableRow key={row.id}>
                 <TableCell>
                 <Checkbox
+                onChange={() => handleCheckbox(row)}
                 />
               </TableCell>
               <TableCell>{row.nome}</TableCell>

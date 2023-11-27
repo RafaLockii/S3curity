@@ -4,7 +4,7 @@ import styles from "./styles.module.css";
 import { ArrowLeft, CloudArrowUp } from "phosphor-react";
 import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { useRouter } from "next/router";
-import { api } from "@/lib/axios";
+import  api  from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
 import { EmpresaData } from "@/types/types";

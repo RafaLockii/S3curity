@@ -6,30 +6,31 @@ import Image from "next/image";
 import { ArrowLeft, Check, CloudArrowUp } from "phosphor-react";
 import Select from "react-select";
 import { useRouter } from "next/router";
-import { api } from "@/lib/axios";
+import  api  from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
 import { CreateUserformProps} from "@/types/types";
 import { Checkbox, FormControl, FormControlLabel, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField } from "@mui/material";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { TableData } from "@/types/types";
 
 //Validação do formulário
 const registerFormShceme = z.object({
-  nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
-  senha: z.string().min(8, {message: 'A senha precisa ter ao menos 8 caracteres'}),
-  email: z.string().email( {message: 'E-mail inválido'}),
-  telefone: z.string().refine((value) => {
+  nome: z.optional(z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase())),
+  senha: z.optional(z.string().min(8, {message: 'A senha precisa ter ao menos 8 caracteres'})),
+  email: z.optional(z.string().email( {message: 'E-mail inválido'})),
+  telefone: z.optional(z.string().refine((value) => {
     return /^\d+$/.test(value) && value.length >= 8;
-  }, { message: 'Telefone inválido' }),
-  modulo: z.number(),
-  empresa_id: z.number(),
-  img_url: z.string().refine((value) => {
+  }, { message: 'Telefone inválido' })),
+  modulo: z.optional(z.number()),
+  empresa_id: z.optional(z.number()),
+  img_url: z.optional(z.string().refine((value) => {
     // Verifica se a img_url é uma URL válida (formato básico)
     const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
     return urlPattern.test(value);
-  }, { message: 'URL da imagem inválida' }),
-  ativo: z.boolean(),
-  admin: z.boolean(),
+  }, { message: 'URL da imagem inválida' })),
+  // ativo: z.optional(z.boolean()),
+  admin: z.optional(z.boolean()),
 });
 
 type RegisterFormData = z.infer<typeof registerFormShceme>;
@@ -66,13 +67,19 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
-  } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerFormShceme),
-  });
+  } = useForm<RegisterFormData>()
+  // {
+  //   resolver: zodResolver(registerFormShceme),
+  // }
 
  const showEmpresaSelect = empresa.empresa === 's3curity';
  //pega informação do usuário logado
  const {user} = useUserContext();
+
+ const storedUser = JSON.parse(window.sessionStorage.getItem('selectedUser') || 'null');
+
+ console.log("USUÁRIO ARMAZENADO")
+ console.log(storedUser);
 
 
 //Bloco de itens arrastáveis ------------------------------------->
@@ -83,7 +90,8 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
  const [menusSelected, setMenusSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
  const [relatoriosSelected, setRelatoriosSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
  const [showPassword, setShowPassword] = useState(false);
- const[laodingRequest, setLoadingRequest] = useState(false); // Crie um estado para o carregamento da requisição [loadingRequest]
+ const[laodingRequest, setLoadingRequest] = useState(false);
+  // Crie um estado para o carregamento da requisição [loadingRequest]
 
  const handleClickShowPassword = () => setShowPassword((show) => !show);   
 
@@ -127,7 +135,8 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
 //Fim do bloco de itens arrastáveis ------------------------------------->
 
 
-  
+  const[isAdmin, setIsAdmin] = useState(false);
+
   //Opções do select
   const options = [
     { value: 1, label: "Operacional" },
@@ -208,8 +217,9 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
         email: data.email,
         telefone: data.telefone,
         usuario_criacao: user?.email || "Não idnetificado",
-        modulo_default: "default",
+        modulo_default: "Operacional",
         acesso_admin: data.admin,
+        // acesso_admin: isAdmin,
         cargo_id: data.modulo,
         empresa_id: data.empresa_id,
         imagem_perfil_url: data.img_url,
@@ -225,9 +235,11 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
 
   // Função de manipulação para o evento onChange do Select
   const handleSelectChange = (selectedOption: any) => {
+    console.log(selectedOption.value);
       setValue("modulo", selectedOption.value); // Atualiza o valor no registro
   };
   const handleSelectChangeEmpresa = (selectedOption: any) => {
+    console.log(selectedOption.value);
       setValue("empresa_id", selectedOption.value); // Atualiza o valor no registro
   };
 
@@ -303,31 +315,35 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
           // Adicione o evento onChange
           onChange={handleSelectChange}
           placeholder="Modulo Default"
+
         />
         {showEmpresaSelect && (
           <Select
-          options={empresaOptions}
-          className={styles.input}
-          // Adicione o evento onChange
-          onChange={handleSelectChangeEmpresa}
-          placeholder="Empresa do usuário"
-        />
+            options={empresaOptions}
+            className={styles.input}
+            onChange={handleSelectChangeEmpresa}
+            placeholder="Empresa do usuário"
+            defaultValue={storedUser != null ? (empresaOptions.find(empresa => empresa.value === storedUser.funcionario.empresa_id)) : null}
+          />
         )}
-        <FormControlLabel
+        {/* <FormControlLabel
           value="start"
-          control={<Checkbox id="ativo" {...register("ativo")} />}
+          control={<Checkbox id="ativo" {...register("ativo")} checked={storedUser != null ? (storedUser.funcionario.ativo) : false}/>}
           label="Ativo"
           sx={{ m: 1, width: '27ch', justifyContent: "space-between" }}
           labelPlacement="start"
-        />
+        /> */}
         <FormControlLabel
-          value="start"
-          control={<Checkbox id="admin" {...register("admin")} />}
+          value={storedUser != null ?  (storedUser.funcionario.acesso_admin) : isAdmin}
+          control={<Checkbox id="admin" checked={storedUser != null ?  (storedUser.funcionario.acesso_admin) : isAdmin} onChange={(e) =>{
+
+            setIsAdmin(e.target.checked);
+            setValue("admin", e.target.checked);
+          }} />}
           label="Administrador"
           sx={{ m: 1, width: '27ch', justifyContent: "space-between" }}
           labelPlacement="start"
         />
-       
         <button className={styles.createUserButton} type="submit">
             Salvar
         </button>
