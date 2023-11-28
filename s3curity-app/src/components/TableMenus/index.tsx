@@ -20,6 +20,11 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
+import { useState, useEffect } from 'react';
+import api from '@/lib/axios';
+import { Alert, Button } from '@mui/material';
+import DeleteIcon from '@mui/icons-material/Delete';
+
 
 
 interface TablePaginationActionsProps {
@@ -89,14 +94,38 @@ return (
 }
 
 export default function CustomPaginationActionsTable({ data, empresa }: MenuTableComponentProps) {
-let dataArray: MenusData[];
-console.log(data);
-// Verifique se data é um objeto com uma propriedade "datas"
-if ('datas' in data) {
-dataArray = data.datas;
-} else {
-dataArray = data as MenusData[];
-}
+// let dataArray: MenusData[];
+// console.log(data);
+// // Verifique se data é um objeto com uma propriedade "datas"
+// if ('datas' in data) {
+// dataArray = data.datas;
+// } else {
+// dataArray = data as MenusData[];
+// }
+
+const [dataArray, setDataArray] = useState<MenusData[]>([]);
+const [showAlert, setShowAlert] = useState(false);
+
+useEffect(() => {
+    let dataToSet: MenusData[] = [];
+    // Assuming data is updated externally (props) and used to update dataArray state
+    if ('datas' in data) {
+    dataToSet = data.datas;
+    } else {
+    dataToSet = data as MenusData[];
+    }
+    setDataArray(dataToSet);
+}, [data]);
+
+const deleteMenu = async (id: number) => {
+    try {
+    await api.delete(`menu/delete/${id}`);
+    const updatedDataArray = dataArray.filter((menu) => menu.id !== id);
+      setDataArray(updatedDataArray); // Update dataArray state to reflect the deletion immediately
+    } catch (e) {
+    console.log(e);
+    }
+};
 
 if (!Array.isArray(dataArray)) {
 // Verifique se data não é uma matriz e, se não for, retorne uma mensagem de erro ou um componente alternativo.
@@ -131,17 +160,6 @@ setPage(0);
 const handleCheckbox = (user: MenusData) => {
 sessionStorage.setItem('selectedUser', JSON.stringify(user));
 };
-// console.log("Estrutura Menu");
-// console.log(dataArray[0].itens.map((item)=>{
-//     return item;
-// }))
-// console.log(dataArray[0].itens.map((item)=>{
-//     return item.relatorios.map((relatorio)=>{
-//         return relatorio.nome
-//     });
-// }))
-
-
 
 return (
 <div className={styles.tableContainer}>
@@ -157,6 +175,7 @@ return (
         <TableCell>Modulo</TableCell>
         <TableCell>Quantidade itens</TableCell>
         <TableCell>Quantidade relatórios</TableCell>
+        <TableCell></TableCell>
         <TableCell></TableCell>
         </TableRow>
     </TableHead>
@@ -174,6 +193,53 @@ return (
             <TableCell>
             <button className={styles.button} onClick={() => { router.push(`editMenu/${row.id}/${empresa}`)}}>Editar</button>
             </TableCell>
+            <TableCell>
+                <IconButton aria-label="delete" onClick={()=>{setShowAlert(true)}}>
+                  <DeleteIcon color='error' />
+                </IconButton>
+                <div className={styles.alertWrapper}>
+                  {showAlert && (
+                    <Alert
+                      className={styles.alert}
+                      onClose={() => {
+                        setShowAlert(false);
+                      }}
+                      severity="error"
+                      action={
+                        <div>
+                          <Button
+                            color="inherit"
+                            size="small"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              console.log("MENU SELECIONADO")
+                              console.log("MENU SELECIONADO")
+                              console.log("MENU SELECIONADO")
+                              console.log("MENU SELECIONADO")
+                              console.log(row.id)
+                              deleteMenu(row.id); // Call deleteMenu function passing the ID
+                              setShowAlert(false);
+                            }}
+                          >
+                            Deletar
+                          </Button>
+                          <Button
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                              setShowAlert(false); // Close the alert without deleting
+                            }}
+                          >
+                            Cancelar
+                          </Button>
+                        </div>
+                      }
+                    >
+                      Tem certeza que deseja deletar este usuário?
+                    </Alert>
+                  )}
+                </div>
+                </TableCell>
         </TableRow>
         ))}
         {emptyRows > 0 && (

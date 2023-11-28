@@ -57,4 +57,16 @@
     background-color: #1BC5BD;
     border-color: #1BC5BD;
   }
+  .alertWrapper {
+    position: fixed;
+    top: 20px; /* Adjust as needed */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: 80%; /* Adjust width as needed */
+    max-width: 400px; /* Adjust max width as needed */
+  }
   
+  .alert {
+    width: 100%;
+  }

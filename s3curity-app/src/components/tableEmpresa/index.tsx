@@ -21,6 +21,10 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
+import { useState, useEffect } from 'react';
+import api from '@/lib/axios';
+import DeleteIcon from '@mui/icons-material/Delete';
+import { Alert, Button } from '@mui/material';
 
 
 interface TablePaginationActionsProps {
@@ -90,19 +94,44 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 }
 
 export default function CustomPaginationActionsTable({ data, empresa }: EmpresaTableComponentProps) {
-    let dataArray: EmpresaTableData[];
-  console.log(data);
-  // Verifique se data é um objeto com uma propriedade "datas"
-  if ('datas' in data) {
-    dataArray = data.datas;
-  } else {
-    dataArray = data as EmpresaTableData[];
-  }
+  const [dataArray, setDataArray] = useState<EmpresaTableData[]>([]);
+  const [showAlert, setShowAlert] = useState(false);
+  //   let dataArray: EmpresaTableData[];
+  // console.log(data);
+  // // Verifique se data é um objeto com uma propriedade "datas"
+  // if ('datas' in data) {
+  //   dataArray = data.datas;
+  // } else {
+  //   dataArray = data as EmpresaTableData[];
+  // }
+
+  useEffect(() => {
+    let dataToSet: EmpresaTableData[] = [];
+    // Assuming data is updated externally (props) and used to update dataArray state
+    if ('datas' in data) {
+      dataToSet = data.datas;
+    } else {
+      dataToSet = data as EmpresaTableData[];
+    }
+    setDataArray(dataToSet);
+  }, [data]);
 
   if (!Array.isArray(dataArray)) {
     // Verifique se data não é uma matriz e, se não for, retorne uma mensagem de erro ou um componente alternativo.
     return <div>Os dados não são uma matriz válida.</div>;
   }
+
+
+  const deleteUser = async (id: number) => {
+    try {
+      await api.delete(`empresa/${id}`);
+      const updatedDataArray = dataArray.filter((user) => user.id !== id);
+      setDataArray(updatedDataArray); // Update dataArray state to reflect the deletion immediately
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
 
   const router = useRouter();
   function handleEditUser() {
@@ -144,6 +173,7 @@ export default function CustomPaginationActionsTable({ data, empresa }: EmpresaT
             <TableCell>Usuário criação</TableCell>
             <TableCell>Data de Criação</TableCell>
             <TableCell></TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -158,6 +188,48 @@ export default function CustomPaginationActionsTable({ data, empresa }: EmpresaT
               <TableCell>{row.data_criacao}</TableCell>
                 <TableCell>
                 <button className={styles.button} onClick={() => { router.push(`editEmpresa/${row.id}/${empresa}`)}}>Editar</button>
+                </TableCell>
+                <TableCell>
+                <IconButton aria-label="delete" onClick={()=>{setShowAlert(true)}}>
+                  <DeleteIcon color='error' />
+                </IconButton>
+                <div className={styles.alertWrapper}>
+                  {showAlert && (
+                    <Alert
+                      className={styles.alert}
+                      onClose={() => {
+                        setShowAlert(false);
+                      }}
+                      severity="error"
+                      action={
+                        <div>
+                          <Button
+                            color="inherit"
+                            size="small"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              deleteUser(row.id); // Call deleteUser function passing the ID
+                              setShowAlert(false);
+                            }}
+                          >
+                            Deletar
+                          </Button>
+                          <Button
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                              setShowAlert(false); // Close the alert without deleting
+                            }}
+                          >
+                            Cancelar
+                          </Button>
+                        </div>
+                      }
+                    >
+                      Tem certeza que deseja deletar este usuário?
+                    </Alert>
+                  )}
+                </div>
                 </TableCell>
             </TableRow>
           ))}
