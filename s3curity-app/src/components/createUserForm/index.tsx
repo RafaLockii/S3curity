@@ -106,9 +106,9 @@ function handleDragStart(e: React.DragEvent, itemType: MenuProps | ModuloProps |
 
 function handleDrop(e: React.DragEvent) {
   e.preventDefault();
-  const item = JSON.parse(e.dataTransfer.getData("itemType")) as MenuProps | ModuloProps | ItemProps;
+  const item = JSON.parse(e.dataTransfer.getData("itemType")) as MenuProps | ModuloProps | ItemProps | RelatorioProps;
   setDroppedItems([...droppedItems, item]);
-  if(!item.hasOwnProperty("modulo")){
+  if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
     setModulosSelected([...modulosSelected, item]);
   }
   if(item.hasOwnProperty("modulo")){
@@ -120,7 +120,7 @@ function handleDrop(e: React.DragEvent) {
   if(item.hasOwnProperty("itens_id")){
     setRelatoriosSelected([...relatoriosSelected, item]);
   }
-
+  
   //-------------------------------------------------------->
 }
 
@@ -133,17 +133,34 @@ function handleDragOver(e: React.DragEvent) {
   e.preventDefault();
 }
 
-function handleRemoveItem(item: MenuProps | ModuloProps) {
-  const updatedDroppedItems = droppedItems.filter((i) => i !== item);
-  setDroppedItems(updatedDroppedItems);
+function handleRemoveItem(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
+  // const updatedDroppedItems = droppedItems.filter((i) => i !== item);
+  // setDroppedItems(updatedDroppedItems);
   const updatedDraggableItens = draggableItens.filter((i)=>i !== item);
   setDraggableItens(updatedDraggableItens);
   // setDraggableItens((prev)=>[...prev, item])
 }
-function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps) {
+function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
   const updatedDroppedItems = droppedItems.filter((i) => i !== item);
   setDroppedItems(updatedDroppedItems);
   setDraggableItens((prev)=>[...prev, item])
+
+  if(!item.hasOwnProperty("modulo")){
+    const updatedItems = modulosSelected.filter((i) => i !== item);
+    setModulosSelected(updatedItems);
+  }
+  if(item.hasOwnProperty("modulo")){
+    const updatedItems = menusSelected.filter((i) => i !== item);
+    setMenusSelected(updatedItems);
+  }
+  if(item.hasOwnProperty("menus_id")){
+    const updatedItems = itensSelected.filter((i) => i !== item);
+    setItensSelected(updatedItems);
+  }
+  if(item.hasOwnProperty("itens_id")){
+    const updatedItems = relatoriosSelected.filter((i) => i !== item);
+    setRelatoriosSelected(updatedItems);
+  }
 }
 
 //Fim do bloco de itens arrastáveis ------------------------------------->
@@ -154,8 +171,8 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps) {
   //Opções do select
   const options = [
     { value: 1, label: "Operacional" },
-    { value: 2, label: "Gerencial" },
-    { value: 3, label: "Estratégico" },
+    { value: 2, label: "Estratégico" },
+    { value: 3, label: "Gerencial" },
   ];
 
   const empresaOptions = empresa.empresas.map((empresaData) => ({
@@ -271,7 +288,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps) {
         email: data.email,
         telefone: data.telefone,
         usuario_criacao: user?.email || "Não idnetificado",
-        modulo_default: "Operacional",
+        modulo_default: data.modulo,
         acesso_admin: data.admin,
         // acesso_admin: isAdmin,
         cargo_id: data.modulo,
@@ -280,6 +297,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps) {
         menus_ids: menusSelected.map((item) => item.id),
         itens_ids: itensSelected.map((item) => item.id),
         relatorios_ids: relatoriosSelected.map((item) => item.id),
+        modulos_ids: modulosSelected.map((item) => item.id),
       });
       back();
     }catch(e){
@@ -452,7 +470,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps) {
         {/* Fim do Bloco 01 -------------------------------------> */}
 
         {/* Bloco 02 --------------------------------------------> */}
-        {droppedItems.length > 0 && (
+        {modulosSelected.length > 0 && (
           <div style={{display: "flex", flexDirection: "row"}}>
           <div className={styles.draggableBoxOutput}>
             <h4>Menus</h4>

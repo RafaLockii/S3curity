@@ -20,6 +20,8 @@ import TableContainer from '@mui/material/TableContainer';
 import TablePagination from '@mui/material/TablePagination';
 import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import api from '@/lib/axios';
 
 
 interface TablePaginationActionsProps {
@@ -132,6 +134,17 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
     sessionStorage.setItem('selectedUser', JSON.stringify(user));
   };
 
+  const handleDeleteButtonClicked = (id: number) =>{
+    const deleteUser = async ()=>{
+      try{
+        const response = await api.delete(`user/${id}`);
+
+      }catch(e){
+        console.log(e)
+      }
+    }
+  }
+
   return (
     <div className={styles.tableContainer}>
     <TableContainer component={Paper}  >
@@ -191,6 +204,11 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
                 </TableCell>
                 <TableCell>
                 <button className={styles.button} onClick={() => { router.push(`editUser/${row.id}/${empresa}`)}}>Editar</button>
+                </TableCell>
+                <TableCell>
+                <IconButton aria-label="delete" onClick={()=> { handleDeleteButtonClicked(row.id)}}>
+                  <DeleteIcon color='error' />
+                </IconButton>
                 </TableCell>
             </TableRow>
           ))}
