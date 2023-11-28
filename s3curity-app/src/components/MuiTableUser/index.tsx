@@ -22,6 +22,8 @@ import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import api from '@/lib/axios';
+import { Alert, Button } from '@mui/material';
+import { useState, useEffect } from 'react';
 
 
 interface TablePaginationActionsProps {
@@ -91,26 +93,44 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 }
 
 export default function CustomPaginationActionsTable({ data, empresa }: TableComponentProps) {
-    let dataArray: TableData[];
-  console.log(data);
-  // Verifique se data é um objeto com uma propriedade "datas"
-  if ('datas' in data) {
-    dataArray = data.datas;
-  } else {
-    dataArray = data as TableData[];
-  }
+  const [dataArray, setDataArray] = useState<TableData[]>([]);
+  const[requestApi, setRequestApi] = useState(false);
+  const [showAlert, setShowAlert] = useState(false);
+
+  //   let dataArray: TableData[];
+  // console.log(data);
+  // // Verifique se data é um objeto com uma propriedade "datas"
+  // if ('datas' in data) {
+  //   dataArray = data.datas;
+  // } else {
+  //   dataArray = data as TableData[];
+  // }
 
   if (!Array.isArray(dataArray)) {
     // Verifique se data não é uma matriz e, se não for, retorne uma mensagem de erro ou um componente alternativo.
     return <div>Os dados não são uma matriz válida.</div>;
   }
 
+  useEffect(() => {
+    let dataToSet: TableData[] = [];
+    // Assuming data is updated externally (props) and used to update dataArray state
+    if ('datas' in data) {
+      dataToSet = data.datas;
+    } else {
+      dataToSet = data as TableData[];
+    }
+    setDataArray(dataToSet);
+  }, [data]);
+
+
+
   const router = useRouter;
   function handleEditUser() {
     router.push('/user/editUser');
   }
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const[newRender, setNewRender] = useState(false);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -122,7 +142,6 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
   ) => {
     setPage(newPage);
   };
-
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
@@ -134,19 +153,30 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
     sessionStorage.setItem('selectedUser', JSON.stringify(user));
   };
 
-  const handleDeleteButtonClicked = (id: number) =>{
-    const deleteUser = async ()=>{
-      try{
-        const response = await api.delete(`user/${id}`);
 
-      }catch(e){
-        console.log(e)
-      }
+  const deleteUser = async (id: number) => {
+    try {
+      await api.delete(`user/${id}`);
+      // Remove the user from the dataArray after successful deletion
+      const updatedDataArray = dataArray.filter((user) => user.id !== id);
+      setDataArray(updatedDataArray); // Update dataArray state to reflect the deletion immediately
+    } catch (e) {
+      console.log(e);
     }
-  }
+  };
+  // const deleteUser = async (id: number)=>{
+  //   try{
+  //     const response = await api.delete(`user/${id}`);
+  //     const updatedDataArray = dataArray.filter((user) => user.id !== id);
+  //     dataArray = updatedDataArray;
+  //   }catch(e){
+  //     console.log(e)
+  //   }
+  // }
 
   return (
     <div className={styles.tableContainer}>
+      {dataArray && (
     <TableContainer component={Paper}  >
       <Table sx={{ minWidth: 400 }} aria-label="custom pagination table">
         <TableHead sx={{
@@ -163,6 +193,7 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
             <TableCell>Gerencial</TableCell>
             <TableCell>Ativo</TableCell>
             <TableCell></TableCell>
+            <TableCell></TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -170,6 +201,7 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
             ? dataArray.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
             : dataArray
           ).map((row) => (
+            
             <TableRow key={row.id}>
                 <TableCell>
                 <Checkbox
@@ -206,9 +238,47 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
                 <button className={styles.button} onClick={() => { router.push(`editUser/${row.id}/${empresa}`)}}>Editar</button>
                 </TableCell>
                 <TableCell>
-                <IconButton aria-label="delete" onClick={()=> { handleDeleteButtonClicked(row.id)}}>
+                <IconButton aria-label="delete" onClick={()=>{setShowAlert(true)}}>
                   <DeleteIcon color='error' />
                 </IconButton>
+                <div className={styles.alertWrapper}>
+                  {showAlert && (
+                    <Alert
+                      className={styles.alert}
+                      onClose={() => {
+                        setShowAlert(false);
+                      }}
+                      severity="warning"
+                      action={
+                        <div>
+                          <Button
+                            color="inherit"
+                            size="small"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              deleteUser(row.id); // Call deleteUser function passing the ID
+                              setShowAlert(false);
+                              setNewRender(true); // Close the alert after deletion
+                            }}
+                          >
+                            Deletar
+                          </Button>
+                          <Button
+                            color="inherit"
+                            size="small"
+                            onClick={() => {
+                              setShowAlert(false); // Close the alert without deleting
+                            }}
+                          >
+                            Cancelar
+                          </Button>
+                        </div>
+                      }
+                    >
+                      Tem certeza que deseja deletar este usuário?
+                    </Alert>
+                  )}
+                </div>
                 </TableCell>
             </TableRow>
           ))}
@@ -240,6 +310,7 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
         </TableFooter>
       </Table>
     </TableContainer>
+    )}
     </div>
   );
 }

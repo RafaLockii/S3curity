@@ -297,7 +297,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         menus_ids: menusSelected.map((item) => item.id),
         itens_ids: itensSelected.map((item) => item.id),
         relatorios_ids: relatoriosSelected.map((item) => item.id),
-        modulos_ids: modulosSelected.map((item) => item.id),
+        modulos_id: modulosSelected.map((item) => item.id),
       });
       back();
     }catch(e){
