@@ -120,9 +120,14 @@ function handleDrop(e: React.DragEvent) {
   if(item.hasOwnProperty("itens_id")){
     setRelatoriosSelected([...relatoriosSelected, item]);
   }
-  console.log(item)
-  console.log(droppedItems);
+
+  //-------------------------------------------------------->
 }
+
+// const updatedDraggableItems = draggableItens.filter(
+//   (item) => !modulosSelected.find((data) => data.id === item.id)
+// );
+// setDraggableItens(updatedDraggableItems);
 
 function handleDragOver(e: React.DragEvent) {
   e.preventDefault();
@@ -131,6 +136,14 @@ function handleDragOver(e: React.DragEvent) {
 function handleRemoveItem(item: MenuProps | ModuloProps) {
   const updatedDroppedItems = droppedItems.filter((i) => i !== item);
   setDroppedItems(updatedDroppedItems);
+  const updatedDraggableItens = draggableItens.filter((i)=>i !== item);
+  setDraggableItens(updatedDraggableItens);
+  // setDraggableItens((prev)=>[...prev, item])
+}
+function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps) {
+  const updatedDroppedItems = droppedItems.filter((i) => i !== item);
+  setDroppedItems(updatedDroppedItems);
+  setDraggableItens((prev)=>[...prev, item])
 }
 
 //Fim do bloco de itens arrastáveis ------------------------------------->
@@ -244,6 +257,7 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
   useEffect(()=>{
     fetchDefaultValues();
   }, [laodingRequest])
+
 
   
 
@@ -427,7 +441,7 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
                   className={styles.draggableItens}
                   draggable
                   onDragStart={(e) => handleDragStart(e, item)}
-                  onDragEnd={() => handleRemoveItem(item)}>
+                  onDragEnd={() => handleRemoveItemFromOutputBox(item)}>
                     <div>{item.nome}</div>
                   </div>
                 )
@@ -475,7 +489,7 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
                   className={styles.draggableItens}
                   draggable
                   onDragStart={(e) => handleDragStart(e, item)}
-                  onDragEnd={() => handleRemoveItem(item)}>
+                  onDragEnd={() => handleRemoveItemFromOutputBox(item)}>
                     <div>{item.nome}</div>
                   </div>
                 )
@@ -524,7 +538,7 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
                   className={styles.draggableItens}
                   draggable
                   onDragStart={(e) => handleDragStart(e, item)}
-                  onDragEnd={() => handleRemoveItem(item)}>
+                  onDragEnd={() => handleRemoveItemFromOutputBox(item)}>
                     <div>{item.nome}</div>
                   </div>
                 )
@@ -573,7 +587,7 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
                   className={styles.draggableItens}
                   draggable
                   onDragStart={(e) => handleDragStart(e, item)}
-                  onDragEnd={() => handleRemoveItem(item)}>
+                  onDragEnd={() => handleRemoveItemFromOutputBox(item)}>
                     <div>{item.nome}</div>
                   </div>
                 )
