@@ -11,7 +11,7 @@ import { useEffect, useState } from "react";
 import { useUserContext } from "@/context/UserContext";
 import { CreateUserformProps} from "@/types/types";
 import { Checkbox, FormControl, FormControlLabel, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField } from "@mui/material";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { ContactlessOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import { TableData } from "@/types/types";
 
 //Validação do formulário
@@ -91,6 +91,7 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
  const [relatoriosSelected, setRelatoriosSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
  const [showPassword, setShowPassword] = useState(false);
  const[laodingRequest, setLoadingRequest] = useState(false);
+ const[defaultValuesLoaded, setDefaultValuesLoaded] = useState(false);
   // Crie um estado para o carregamento da requisição [loadingRequest]
 
  const handleClickShowPassword = () => setShowPassword((show) => !show);   
@@ -151,14 +152,25 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
 
 
   const {back} = useRouter();
-  console.log("Id da empresa :" + empresa.empresaid)
+  const fetchDefaultValues = () => {
+    if (storedUser) {
+      try {
+        const updatedDraggableItems = draggableItens.filter(
+          (item) => !modulosSelected.find((data) => data.id === item.id)
+        );
+        setDraggableItens(updatedDraggableItems);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    setDefaultValuesLoaded(true);
+  };
 
   useEffect(() => {
     if (!showEmpresaSelect) {
       setValue('empresa_id', empresa.empresaid);
     }
     const fetchData = async () => {
-      console.log("Entrou no fetch data")
       try{
         const response = await api.get(`menus_front`);
         console.log(response.data.menus)
@@ -196,21 +208,45 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
             itens_id: item.itens_id,
           }]);
         })
-
         if(storedUser){
-          const response = await api.get(`data/user/${storedUser.id}`);
-          setDroppedItems((prev) => [...prev, response.data.modulos]);
-        }
+            try{
+            const response = await api.get(`data/user/${storedUser.id}`);
+            response.data.modulos.map((data: ModuloProps)=>{
+              setDroppedItems((prev)=> [...prev, data])
+              setModulosSelected((prev)=>[...prev, data])
+            });
+            response.data.menus.map((data: MenuProps)=>{
+              setDroppedItems((prev)=> [...prev, data])
+              setMenusSelected((prev)=>[...prev, data])
+            });
+            response.data.itens.map((data: ItemProps)=>{
+              setDroppedItems((prev)=> [...prev, data])
+              setItensSelected((prev)=>[...prev, data])
+            });
+            response.data.relatorios.map((data: RelatorioProps)=>{
+              setDroppedItems((prev)=> [...prev, data])
+              setRelatoriosSelected((prev)=>[...prev, data])
+            });
+          }catch(e){
+            console.log(e)
+          }
+          }
+        
   
       } catch(e){
         console.log(`Erro ao chamar a api: ${e}`);
       }
+      setLoadingRequest(true);
     }
     fetchData();
-    console.log("DraggableItens");
-    console.log(draggableItens);
   }, []);
+
+  useEffect(()=>{
+    fetchDefaultValues();
+  }, [laodingRequest])
+
   
+
   //Dentro do array do useeffect tinha sses itens : showEmpresaSelect, empresa.empresaid
   async function handleRegister(data: RegisterFormData) {
     console.log("entrou aq")
@@ -249,6 +285,8 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
 
 
   return (
+    <>
+    {defaultValuesLoaded && (
     <div className={styles.formContainer}>
       <form  className={styles.form} onSubmit={handleSubmit(handleRegister)}>
        
@@ -447,7 +485,7 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
         </div>
         )}
         {/* Fim do Bloco 02 -------------------------------------> */}
-
+        {/* menusSelected.length > 0 */}
         {/* Bloco 03 --------------------------------------------> */}
         {menusSelected.length > 0 && (
           <div style={{display: "flex", flexDirection: "row"}}>
@@ -546,5 +584,7 @@ function handleRemoveItem(item: MenuProps | ModuloProps) {
         )}
         {/* Fim do Bloco 04 -------------------------------------> */}
     </div>
+    )}
+    </>
   );
 }
