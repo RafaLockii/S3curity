@@ -163,41 +163,6 @@ export const getMenu = async (req: Request, res: Response) => {
     }
 };
 
-// export const getMenusByEmpresaAndModulo = async (req: Request, res: Response) => {
-//     const { empresa_id, modulo_id } = req.params;
-
-//     if (!empresa_id || !modulo_id) {
-//         return res.status(400).json({ error: "Empresa ID and Modulo ID are required" });
-//     }
-
-//     try {
-//         const menus = await prisma.menus.findMany({
-//             where: {
-//                 modulos_id: Number(modulo_id),
-//                 empresa_id: Number(empresa_id),
-//             },
-//             include: {
-//                 empresa: true,
-//                 modulos: true,
-//                 itens: {
-//                     include: {
-//                         relatorios: true,
-//                     },
-//                 },
-//             },
-//         });
-
-//         if (!menus.length) {
-//             return res.status(404).json({ error: "Menus not found for this company and module" });
-//         }
-
-//         res.status(200).json(menus);
-//     } catch (error) {
-//         console.error(error);
-//         res.status(500).json({ error: "Failed to get menus" });
-//     }
-// };
-
 export const getAllMenus = async (req: Request, res: Response) => {
 
     try {
