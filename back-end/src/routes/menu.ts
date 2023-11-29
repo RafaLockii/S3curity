@@ -4,16 +4,16 @@ import { autenticarToken } from '../middlewares/auth';
 
 const menuRoutes = express.Router();
 
-menuRoutes.post("/createmodulo", autenticarToken, MenuController.createModulos);
-menuRoutes.post("/menu/create", autenticarToken, MenuController.createMenu);
+menuRoutes.post("/createmodulo", MenuController.createModulos);
+menuRoutes.post("/menu/create", MenuController.createMenu);
 // menuRoutes.post('/menu/create-user', MenuController.createMenuUser);
-menuRoutes.put("/menu/edit/:id", autenticarToken, MenuController.editMenu);
-menuRoutes.delete("/menu/delete/:id", autenticarToken, MenuController.deleteMenu);
-menuRoutes.get("/menu/:id", autenticarToken, MenuController.getMenu);
-menuRoutes.get("/menus", autenticarToken, MenuController.getAllMenus);
-menuRoutes.get("/menus_front", autenticarToken, MenuController.getMenus);
-menuRoutes.get("/itens", autenticarToken, MenuController.getItens);
-menuRoutes.get("/relatorios", autenticarToken, MenuController.getRelatorio);
-menuRoutes.get("/modulos", autenticarToken, MenuController.getAllModulos);
+menuRoutes.put("/menu/edit/:id", MenuController.editMenu);
+menuRoutes.delete("/menu/delete/:id", MenuController.deleteMenu);
+menuRoutes.get("/menu/:id", MenuController.getMenu);
+menuRoutes.get("/menus", MenuController.getAllMenus);
+menuRoutes.get("/menus_front", MenuController.getMenus);
+menuRoutes.get("/itens", MenuController.getItens);
+menuRoutes.get("/relatorios", MenuController.getRelatorio);
+menuRoutes.get("/modulos", MenuController.getAllModulos);
 
 export default menuRoutes;

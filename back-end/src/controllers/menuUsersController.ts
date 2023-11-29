@@ -150,7 +150,11 @@ export const getModulosByUserId = async (req: Request, res: Response) => {
 export const getAllSeparatedData = async (req: Request, res: Response) => {
   try {
     const modulos = await prisma.modulos.findMany();
-    const menus = await prisma.menus.findMany();
+    const menus = await prisma.menus.findMany({
+      include:{
+        modulos: true
+      }
+    });
     const itens = await prisma.itens.findMany();
     const relatorios = await prisma.relatorios.findMany();
 
@@ -162,7 +166,8 @@ export const getAllSeparatedData = async (req: Request, res: Response) => {
       menus: menus.map((menu) => ({
         id: menu.id,
         nome: menu.nome,
-        modulos_id: menu.modulos_id
+        modulos_id: menu.modulos_id,
+        modulo: menu.modulos.nome
       })),
       itens: itens.map((item) => ({
         id: item.id,
@@ -210,9 +215,12 @@ export const getSeparatedDataByUserId = async (req: Request, res: Response) => {
       where: {
         usuarios: {
           some: {
-            usuario_id: funcionario.usuario_id
+            usuario_id: funcionario.usuario_id,
           }
         }
+      },
+      include:{
+        modulos: true
       }
     });
 
@@ -244,7 +252,8 @@ export const getSeparatedDataByUserId = async (req: Request, res: Response) => {
       menus: menus.map((menu) => ({
         id: menu.id,
         nome: menu.nome,
-        modulos_id: menu.modulos_id
+        modulos_id: menu.modulos_id,
+        modulo: menu.modulos.nome
       })),
       itens: itens.map((item) => ({
         id: item.id,

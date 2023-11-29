@@ -374,7 +374,7 @@ export const listUsers = async (req: Request, res: Response) => {
   const empresaNome = req.params.empresa;
 
   try {
-    if (empresaNome === "sec3rity") {
+    if (empresaNome === "s3curity") {
       const users = await prisma.user.findMany({
         include: {
           funcionario: {
