@@ -100,7 +100,7 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
      event.preventDefault();
  };   
 
-function handleDragStart(e: React.DragEvent, itemType: MenuProps | ModuloProps | ItemProps) {
+function handleDragStart(e: React.DragEvent, itemType: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
   e.dataTransfer.setData("itemType", JSON.stringify(itemType));
 }
 
@@ -120,7 +120,8 @@ function handleDrop(e: React.DragEvent) {
   if(item.hasOwnProperty("itens_id")){
     setRelatoriosSelected([...relatoriosSelected, item]);
   }
-  
+  const updatedDraggableItens = draggableItens.filter((i)=>i !== item);
+  setDraggableItens(updatedDraggableItens);
   //-------------------------------------------------------->
 }
 
@@ -133,21 +134,31 @@ function handleDragOver(e: React.DragEvent) {
   e.preventDefault();
 }
 
+
+// Bloco de remoção
 function handleRemoveItem(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
   // const updatedDroppedItems = droppedItems.filter((i) => i !== item);
   // setDroppedItems(updatedDroppedItems);
-  const updatedDraggableItens = draggableItens.filter((i)=>i !== item);
-  setDraggableItens(updatedDraggableItens);
+  // const updatedDraggableItens = draggableItens.filter((i)=>i !== item);
+  // setDraggableItens(updatedDraggableItens);
   // setDraggableItens((prev)=>[...prev, item])
 }
+
+
 function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
   const updatedDroppedItems = droppedItems.filter((i) => i !== item);
   setDroppedItems(updatedDroppedItems);
   setDraggableItens((prev)=>[...prev, item])
 
-  if(!item.hasOwnProperty("modulo")){
+  if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
     const updatedItems = modulosSelected.filter((i) => i !== item);
     setModulosSelected(updatedItems);
+    setMenusSelected([]);
+    setItensSelected([]);
+    setRelatoriosSelected([]);
+
+    const updatedDroppedItens = droppedItems.filter((i) => !i.hasOwnProperty("modulo") || !i.hasOwnProperty("menus_id") || !i.hasOwnProperty("itens_id"));
+    setDroppedItems([]);
   }
   if(item.hasOwnProperty("modulo")){
     const updatedItems = menusSelected.filter((i) => i !== item);
@@ -162,6 +173,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
     setRelatoriosSelected(updatedItems);
   }
 }
+//Fim do bloco ------------------------------------------------------>
 
 //Fim do bloco de itens arrastáveis ------------------------------------->
 
