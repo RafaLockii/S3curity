@@ -5,6 +5,8 @@ import {useRouter} from 'next/router'
 import { useUserContext } from '@/context/UserContext';
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/axios';
+import Link from 'next/link';
+import { useModuloContext } from '@/context/moduloContext';
 
 interface SidebarInfoProps{
   empresa: string;
@@ -12,6 +14,7 @@ interface SidebarInfoProps{
 
 interface MenuItemProps{
   nome: string;
+  modulos_id: number;
   itens: itemProps[];
 }
 
@@ -42,7 +45,10 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
 
     const[user,setUser] = useState<userProps>();
     const [menus, setMenus] = useState<MenuItemProps[]>();
+    const [filteredMenus, setFilteredMenus] = useState<MenuItemProps[]>();
     const[empresa, setEmpresa] = useState<string>();
+    const[moduloDefault, setModuloDefault] = useState();
+    const {modulo, setModulo} = useModuloContext();
 
     useEffect(() => {
       const fetchData = async () => {
@@ -52,10 +58,11 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
           // if(user){
             const response = await api.get(`user/${(JSON.parse(window.localStorage.getItem('user') || '') as userProps).id}`);
             const menus = response.data.menus;
-            console.log(menus)
+            setModuloDefault(response.data.modulo_default);
             setMenus(menus.map((menu: any) =>{
               return {
                 nome: menu.nome,
+                modulos_id: menu.modulos_id,
                 itens: menu.itens.map((item: any) => {
                   return {
                     nome: item.nome,
@@ -69,13 +76,16 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                 })
               }
             }));
+
+            setFilteredMenus(menus?.filter((menu: MenuItemProps) => menu.modulos_id === (modulo?.id !== 0 ? Number(modulo?.id) : moduloDefault)))
           // }
         } catch (e) {
           console.error(e);
         }
       }
       fetchData();
-    }, []);
+    }, [modulo]);
+
 
   return (
     <div className={styles.container}>
@@ -104,21 +114,29 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                         </div>
                         <ArrowDown className={styles.arrowDown}/>
                   </div>
+                  <Link href={`/home/${props.empresa}`}>
                   <MenuItem icon={<HouseSimple/>} onClick={()=> handleMenuClick('home')}>
                     Home
                   </MenuItem>
+                  </Link>
 
                   {empresa == 's3curity' && (
                     <>
-                  <MenuItem icon={<Buildings/>} onClick={() => handleMenuClick('enterprises')}>Empresas</MenuItem>
-                  <MenuItem icon={<Buildings/>} onClick={() => handleMenuClick('itens')}>Itens</MenuItem>
-                  </>
+                    <Link href={`/enterprises/${props.empresa}`}>
+                      <MenuItem icon={<Buildings/>}>Empresas</MenuItem>
+                    </Link>
+                    <Link href={`/itens/${props.empresa}`}>
+                      <MenuItem icon={<Buildings/>}>Itens</MenuItem>
+                    </Link>
+                    </>
                   )}
                   {user?.acesso_admin == true && (
-                   <MenuItem icon={<User/>} onClick={() => handleMenuClick('users')}>Usuários</MenuItem>
+                  <Link href={`/users/${props.empresa}`}>
+                  <MenuItem icon={<User/>}>Usuários</MenuItem>
+                  </Link>
                   )}
-                  {menus && (
-                    menus?.map((menu: MenuItemProps) => {
+                  {filteredMenus && (
+                    filteredMenus?.map((menu: MenuItemProps) => {
                       return (
                         <SubMenu label={menu.nome} icon={<ListDashes/>}>
                           {menu.itens.map((item: itemProps) => {
