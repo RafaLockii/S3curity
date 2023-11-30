@@ -107,22 +107,26 @@ function handleDragStart(e: React.DragEvent, itemType: MenuProps | ModuloProps |
 function handleDrop(e: React.DragEvent) {
   e.preventDefault();
   const item = JSON.parse(e.dataTransfer.getData("itemType")) as MenuProps | ModuloProps | ItemProps | RelatorioProps;
-  setDroppedItems([...droppedItems, item]);
-  if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
-    setModulosSelected([...modulosSelected, item]);
+
+  if (!droppedItems.some(droppedItem => droppedItem.id === item.id)) {
+    setDroppedItems(prev => [...prev, item]);
+
+    if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
+      setModulosSelected(prev => [...prev, item]);
+    }
+    if(item.hasOwnProperty("modulo")){
+      setMenusSelected(prev => [...prev, item]);
+    }
+    if(item.hasOwnProperty("menus_id")){
+      setItensSelected(prev => [...prev, item]);
+    }
+    if(item.hasOwnProperty("itens_id")){
+      setRelatoriosSelected(prev => [...prev, item]);
+    }
+
+    const updatedDraggableItens = draggableItens.filter((i)=>i.id !== item.id);
+    setDraggableItens(updatedDraggableItens);
   }
-  if(item.hasOwnProperty("modulo")){
-    setMenusSelected([...menusSelected, item]);
-  }
-  if(item.hasOwnProperty("menus_id")){
-    setItensSelected([...itensSelected, item]);
-  }
-  if(item.hasOwnProperty("itens_id")){
-    setRelatoriosSelected([...relatoriosSelected, item]);
-  }
-  const updatedDraggableItens = draggableItens.filter((i)=>i !== item);
-  setDraggableItens(updatedDraggableItens);
-  //-------------------------------------------------------->
 }
 
 // const updatedDraggableItems = draggableItens.filter(
@@ -136,41 +140,56 @@ function handleDragOver(e: React.DragEvent) {
 
 
 // Bloco de remoção
-function handleRemoveItem(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
+// function handleRemoveItem(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
   // const updatedDroppedItems = droppedItems.filter((i) => i !== item);
   // setDroppedItems(updatedDroppedItems);
   // const updatedDraggableItens = draggableItens.filter((i)=>i !== item);
   // setDraggableItens(updatedDraggableItens);
   // setDraggableItens((prev)=>[...prev, item])
+// }
+
+function handleRemoveItem(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
+  setDroppedItems(prev => prev.filter(i => i.id !== item.id));
+  
+  setDraggableItens(prev => prev.some(i => i.id === item.id) ? prev : [...prev, item]);
+
+  if(item.hasOwnProperty("modulo")){
+    setModulosSelected(prev => prev.filter(i => i.id !== item.id));
+    setItensSelected(prev => prev.filter(i => i.id !== item.id));
+    setMenusSelected(prev => prev.filter(i => i.id !== item.id));
+  }
+  if(item.hasOwnProperty("menus_id")){
+    setItensSelected(prev => prev.filter(i => i.id !== item.id));
+    if ('menus_id' in item) {
+      setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
+    }
+  }
+  if(item.hasOwnProperty("itens_id")){
+    setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
+  }
 }
 
 
 function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
-  const updatedDroppedItems = droppedItems.filter((i) => i !== item);
-  setDroppedItems(updatedDroppedItems);
-  setDraggableItens((prev)=>[...prev, item])
+  setDroppedItems(prev => prev.filter(i => i.id !== item.id));
+
+  setDraggableItens(prev => prev.some(i => i.id === item.id) ? prev : [...prev, item]);
 
   if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
-    const updatedItems = modulosSelected.filter((i) => i !== item);
-    setModulosSelected(updatedItems);
-    setMenusSelected([]);
-    setItensSelected([]);
-    setRelatoriosSelected([]);
+    setModulosSelected(prev => prev.filter(i => i.id !== item.id));
 
-    const updatedDroppedItens = droppedItems.filter((i) => !i.hasOwnProperty("modulo") || !i.hasOwnProperty("menus_id") || !i.hasOwnProperty("itens_id"));
-    setDroppedItems([]);
+    setMenusSelected(prev => prev.filter(i => i.id !== item.id));
+    setItensSelected(prev => prev.filter(i => i.id !== item.id));
+    setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
   }
   if(item.hasOwnProperty("modulo")){
-    const updatedItems = menusSelected.filter((i) => i !== item);
-    setMenusSelected(updatedItems);
+    setMenusSelected(prev => prev.filter(i => i.id !== item.id));
   }
   if(item.hasOwnProperty("menus_id")){
-    const updatedItems = itensSelected.filter((i) => i !== item);
-    setItensSelected(updatedItems);
+    setItensSelected(prev => prev.filter(i => i.id !== item.id));
   }
   if(item.hasOwnProperty("itens_id")){
-    const updatedItems = relatoriosSelected.filter((i) => i !== item);
-    setRelatoriosSelected(updatedItems);
+    setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
   }
 }
 //Fim do bloco ------------------------------------------------------>
