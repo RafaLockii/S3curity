@@ -8,7 +8,7 @@ import Select from "react-select";
 import { useRouter } from "next/router";
 import  api  from "@/lib/axios";
 import { useEffect, useState } from "react";
-import { useUserContext } from "@/context/UserContext";
+// import { useUserContext } from "@/context/UserContext";
 import { CreateUserformProps} from "@/types/types";
 import { Checkbox, FormControl, FormControlLabel, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField } from "@mui/material";
 import { ContactlessOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
@@ -74,7 +74,7 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
 
  const showEmpresaSelect = empresa.empresa === 's3curity';
  //pega informação do usuário logado
- const {user} = useUserContext();
+//  const {user} = useUserContext();
 
  const storedUser = JSON.parse(window.sessionStorage.getItem('selectedUser') || 'null');
 
@@ -307,6 +307,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
   }, [laodingRequest])
 
 
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
   
 
   //Dentro do array do useeffect tinha sses itens : showEmpresaSelect, empresa.empresaid
@@ -318,7 +319,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         senha: data.senha,
         email: data.email,
         telefone: data.telefone,
-        usuario_criacao: user?.email || "Não idnetificado",
+        usuario_criacao: user.email || "Não idnetificado",
         modulo_default: data.modulo,
         acesso_admin: data.admin,
         // acesso_admin: isAdmin,

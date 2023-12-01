@@ -28,6 +28,7 @@ export default function Users(){
     // const empresaParams = typeof query.empresa == 'string' ? query.empresa : "";
 
     const[empresaParams, setEmpresaParams] = useState<string>();
+    const storedUser = sessionStorage.getItem('selectedUser');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -56,6 +57,7 @@ export default function Users(){
     
 
     console.log("Id da empresa: "+empresaid)
+    console.log(storedUser)
     return(
         <div className={styles.pageContainer}>
             <SidebarMenu empresa={empresaParams as string}/>
@@ -82,7 +84,7 @@ export default function Users(){
                 <>
                     <div className={styles.formHeader}>
                         <p>Cadastro</p>
-                        <ArrowLeft className={styles.arrowLeft} onClick={ () =>handleShowCreateUserForm(false)} />
+                        <ArrowLeft className={styles.arrowLeft} onClick={ () => {sessionStorage.removeItem('selectedUser');handleShowCreateUserForm(false)}} />
                     </div>
 
                     {/* Aqui eu estou passando a epresa da url para o forms */}

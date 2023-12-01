@@ -22,7 +22,7 @@ import Paper from '@mui/material/Paper';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import api from '@/lib/axios';
-import { Alert, Button } from '@mui/material';
+import { Alert, Avatar, Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 
 
@@ -131,6 +131,7 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const[newRender, setNewRender] = useState(false);
+  const[boxChecked, setBoxChecked] = useState<number | null>();
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -149,8 +150,23 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
     setPage(0);
   };
 
-  const handleCheckbox = (user: TableData) => {
-    sessionStorage.setItem('selectedUser', JSON.stringify(user));
+  const isChecked = (id: number): boolean => {
+    if(boxChecked == null){
+      return false;
+    } else{
+      return id != boxChecked;
+    }
+  }
+
+  const handleCheckbox = (user: TableData, checked: boolean) => {
+    if(checked){
+      setBoxChecked(user.id);
+      sessionStorage.setItem('selectedUser', JSON.stringify(user));
+    } else if(!checked){
+      setBoxChecked(null);
+      sessionStorage.removeItem('selectedUser');
+    }
+    
   };
 
 
@@ -205,10 +221,14 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
             <TableRow key={row.id}>
                 <TableCell>
                 <Checkbox
-                onChange={() => handleCheckbox(row)}
+                disabled={isChecked(row.id)}
+                onChange={(e) => handleCheckbox(row, e.target.checked)}
                 />
               </TableCell>
-              <TableCell>{row.nome}</TableCell>
+              <TableCell >
+                <Avatar alt="U" src={row.funcionario.imagem.url}/>
+                {row.nome}
+              </TableCell>
               <TableCell>{row.funcionario.empresa.nome}</TableCell>
               <TableCell>
                 <Checkbox

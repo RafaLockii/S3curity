@@ -8,6 +8,7 @@ import { api } from '@/lib/axios';
 import Link from 'next/link';
 import { useModuloContext } from '@/context/moduloContext';
 import LogoutIcon from '@mui/icons-material/Logout';
+import Avatar from '@mui/material/Avatar';
 
 interface SidebarInfoProps{
   empresa: string;
@@ -35,6 +36,7 @@ interface userProps{
   email: string;
   nome: string;
   acesso_admin: boolean;
+  fotoPerfil: string;
 }
 
 export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
@@ -91,7 +93,7 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
       }
       fetchData();
       setLoading(false);
-    }, [modulo]);
+    }, []);
 
     useEffect(() => {
       if (menus && menus.length > 0) {
@@ -105,7 +107,7 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
 
   return (
     <div className={styles.container}>
-      {filteredMenus && (
+      
       <div>
         <Sidebar {...props} className={styles.sideBar}>
               <Menu menuItemStyles={{
@@ -120,7 +122,8 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
               },
               }}>
                   <div className={styles.userContainer}>
-                        <div className={styles.userImage}></div>
+                        {/* <div className={styles.userImage}></div> */}
+                        <Avatar alt="U" src={user?.fotoPerfil}></Avatar>
                         <div className={styles.userInfo}>
                             <div className={styles.userName}>
                                 {user?.nome}
@@ -178,7 +181,7 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
               </Menu>
               </Sidebar>
       </div> 
-      )}
+      
     </div>
   );
 }

@@ -35,13 +35,19 @@ export interface TableData {
     acesso_admin: boolean;
     ativo: boolean;
     funcionario: {
-      acesso_admin: boolean;
-      ativo: boolean;
-      imagem: { url: string };
-      cargo: { nome_cargo: string; permissoes: string };
-      empresa: { nome: string };
-      modulo_default: number;
-      modulos: UserModules[];
+        acesso_admin: boolean;
+        ativo: boolean;
+        imagem: {
+            id: number;
+            caminho: string;
+            nome: string;
+            url: string;
+            funcionario_id: number;
+        };
+        cargo: { nome_cargo: string; permissoes: string };
+        empresa: { nome: string };
+        modulo_default: number;
+        modulos: UserModules[];
     }
 }
 
