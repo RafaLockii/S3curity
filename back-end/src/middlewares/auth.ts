@@ -65,7 +65,8 @@ export const login = async (req: Request, res: Response) => {
       id: user.id,
       email: user.email,
       nome: user.nome,
-      isAdmin: Admin.acesso_admin
+      isAdmin: Admin.acesso_admin,
+      fotoPerfil: Admin.imagem_perfil_id
     });
   } catch (error) {
     return res

@@ -244,3 +244,29 @@ export const getEmpresaByName = async (req: Request, res: Response) => {
         res.status(500).json({ error: "Failed to get empresa" });
     }
 };
+
+export const getCarrosseisELogoEmpresa = async (req: Request, res: Response) => {
+  const  nome  = req.params.nome;
+
+  try {
+        const empresa = await prisma.empresa.findUnique({
+            where: {
+                nome: nome,
+            }, select: {
+              logo: true,
+              imagem_fundo: true,
+              carrosseis: true,
+            },
+        });
+
+        if (!empresa) {
+          res.status(404).json({ error: "Empresa not found" });
+          return;
+        }
+
+        res.status(200).json({ empresa });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Failed to get empresa" });
+  }
+}

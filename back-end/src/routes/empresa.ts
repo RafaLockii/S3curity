@@ -19,6 +19,10 @@ empresaRouter.get(
   "/empresa_name/:nome",
   EmpresaController.getEmpresaByName
 );
+empresaRouter.get(
+  "/empresa-carrossel-logo/:nome",
+  EmpresaController.getCarrosseisELogoEmpresa
+);
 empresaRouter.post(
   "/empresa/create",
   EmpresaController.createEmpresa
