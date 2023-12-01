@@ -83,12 +83,17 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
 
 
 //Bloco de itens arrastáveis ------------------------------------->
- const [draggableItens, setDraggableItens] = useState<MenuProps[] | ModuloProps[] | ItemProps[] | RelatorioProps[]>([]);
- const [droppedItems, setDroppedItems] = useState<MenuProps[] | ModuloProps[] | ItemProps[] | RelatorioProps[]>([]);
+//  const [draggableItens, setDraggableItens] = useState<MenuProps[] | ModuloProps[] | ItemProps[] | RelatorioProps[]>([]);
+//  const [droppedItems, setDroppedItems] = useState<MenuProps[] | ModuloProps[] | ItemProps[] | RelatorioProps[]>([]);
+ const [draggableModulos, setDraggableModulos] = useState<ModuloProps[]>([]);
+ const [draggableMenus, setDraggableMenus] = useState<MenuProps[]>([]);
+ const [draggableItens, setDraggableItens] = useState<ItemProps[]>([]);
+ const [draggableRelatorios, setDraggableRelatorios] = useState<RelatorioProps[]>([]);
+
  const [modulosSelected, setModulosSelected] = useState<ModuloProps[]>([]);
- const [itensSelected, setItensSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
- const [menusSelected, setMenusSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
- const [relatoriosSelected, setRelatoriosSelected] = useState<ItemProps[] | ModuloProps[] | MenuProps[] | RelatorioProps[]>([]);
+ const [itensSelected, setItensSelected] = useState<ItemProps[]>([]);
+ const [menusSelected, setMenusSelected] = useState<MenuProps[]>([]);
+ const [relatoriosSelected, setRelatoriosSelected] = useState<RelatorioProps[]>([]);
  const [showPassword, setShowPassword] = useState(false);
  const[laodingRequest, setLoadingRequest] = useState(false);
  const[defaultValuesLoaded, setDefaultValuesLoaded] = useState(false);
@@ -108,24 +113,25 @@ function handleDrop(e: React.DragEvent) {
   e.preventDefault();
   const item = JSON.parse(e.dataTransfer.getData("itemType")) as MenuProps | ModuloProps | ItemProps | RelatorioProps;
 
-  if (!droppedItems.some(droppedItem => droppedItem.id === item.id)) {
-    setDroppedItems(prev => [...prev, item]);
-
-    if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
-      setModulosSelected(prev => [...prev, item]);
-    }
-    if(item.hasOwnProperty("modulo")){
-      setMenusSelected(prev => [...prev, item]);
-    }
-    if(item.hasOwnProperty("menus_id")){
-      setItensSelected(prev => [...prev, item]);
-    }
-    if(item.hasOwnProperty("itens_id")){
-      setRelatoriosSelected(prev => [...prev, item]);
-    }
-
-    const updatedDraggableItens = draggableItens.filter((i)=>i.id !== item.id);
+  if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
+    const updatedDraggableModulo = draggableModulos.filter((modulos) => modulos.id !== item.id);
+    setDraggableModulos(updatedDraggableModulo);
+    setModulosSelected(prev => [...prev, item as ModuloProps]);
+  }
+  if(item.hasOwnProperty("modulo")){
+    const updatedDraggableMenus = draggableMenus.filter((menus) => menus.id !== (item as MenuProps).id)
+    setDraggableMenus(updatedDraggableMenus);
+    setMenusSelected(prev => [...prev, item as MenuProps]);
+  }
+  if(item.hasOwnProperty("menus_id")){
+    const updatedDraggableItens = draggableItens.filter((itens)=> itens.id != (item as ItemProps).id);
     setDraggableItens(updatedDraggableItens);
+    setItensSelected(prev => [...prev, item as ItemProps]);
+  }
+  if(item.hasOwnProperty("itens_id")){
+    const updatedDraggableRelatorios = draggableRelatorios.filter((relatorios)=> relatorios.id !== (item as RelatorioProps).id);
+    setDraggableRelatorios(updatedDraggableRelatorios);
+    setRelatoriosSelected(prev => [...prev, item as RelatorioProps]);
   }
 }
 
@@ -148,48 +154,93 @@ function handleDragOver(e: React.DragEvent) {
   // setDraggableItens((prev)=>[...prev, item])
 // }
 
-function handleRemoveItem(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
-  setDroppedItems(prev => prev.filter(i => i.id !== item.id));
-  
-  setDraggableItens(prev => prev.some(i => i.id === item.id) ? prev : [...prev, item]);
 
-  if(item.hasOwnProperty("modulo")){
-    setModulosSelected(prev => prev.filter(i => i.id !== item.id));
-    setItensSelected(prev => prev.filter(i => i.id !== item.id));
-    setMenusSelected(prev => prev.filter(i => i.id !== item.id));
-  }
-  if(item.hasOwnProperty("menus_id")){
-    setItensSelected(prev => prev.filter(i => i.id !== item.id));
-    if ('menus_id' in item) {
-      setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
-    }
-  }
-  if(item.hasOwnProperty("itens_id")){
-    setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
-  }
-}
+// function handleRemoveItem(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
+//   setDroppedItems(prev => prev.filter(i => i.id !== item.id));
+  
+//   setDraggableItens(prev => prev.some(i => i.id === item.id) ? prev : [...prev, item]);
+
+//   if(item.hasOwnProperty("modulo")){
+//     setModulosSelected(prev => prev.filter(i => i.id !== item.id));
+//     setItensSelected(prev => prev.filter(i => i.id !== item.id));
+//     setMenusSelected(prev => prev.filter(i => i.id !== item.id));
+//   }
+//   if(item.hasOwnProperty("menus_id")){
+//     setItensSelected(prev => prev.filter(i => i.id !== item.id));
+//     if ('menus_id' in item) {
+//       setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
+//     }
+//   }
+//   if(item.hasOwnProperty("itens_id")){
+//     setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
+//   }
+// }
+
+
+// function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
+//   if ('modulo' in item) {
+//     setDraggableModulos(prev => prev.some(i => i.id === item.id) ? prev : [...prev, item]);
+//     setModulosSelected(prev => prev.filter(i => i.id !== item.id));
+//   }
+//   if ('nome' in item && 'modulo' in item) {
+//     setDraggableMenus(prev => prev.some(i => i.id === item.id) ? prev : [...prev, item]);
+//     setMenusSelected(prev => prev.filter(i => i.id !== item.id));
+//   }
+//   if ('menus_id' in item) {
+//     setDraggableItens(prev => prev.some(i => i.id === item.id) ? prev : [...prev, item]);
+//     setItensSelected(prev => prev.filter(i => i.id !== item.id));
+//   }
+//   if ('itens_id' in item) {
+//     setDraggableRelatorios(prev => prev.some(i => i.id === item.id) ? prev : [...prev, item]);
+//     setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
+//   }
+// }
 
 
 function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
-  setDroppedItems(prev => prev.filter(i => i.id !== item.id));
-
-  setDraggableItens(prev => prev.some(i => i.id === item.id) ? prev : [...prev, item]);
-
+  
   if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
-    setModulosSelected(prev => prev.filter(i => i.id !== item.id));
+    const updatedModulosSelected = modulosSelected.filter((selectedModulos)=> selectedModulos.id !== (item as ModuloProps).id);
+    setModulosSelected(updatedModulosSelected);
+    setDraggableModulos((prev) => [...prev, item as ModuloProps]);
 
-    setMenusSelected(prev => prev.filter(i => i.id !== item.id));
-    setItensSelected(prev => prev.filter(i => i.id !== item.id));
-    setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
+    const updatedMenusSelected = menusSelected.filter(selectedMenus => selectedMenus.modulo !== (item as ModuloProps).nome);
+    setMenusSelected(updatedMenusSelected);
+    setDraggableMenus((prevMenus) => [...prevMenus, ...menusSelected.filter(selectedMenus => selectedMenus.modulo === (item as ModuloProps).nome)])
+
+    const updatedItensSelected = itensSelected.filter(selectedItens => updatedMenusSelected.some(menu => menu.id === selectedItens.menus_id));
+    setItensSelected(updatedItensSelected);
+    
+
+    const updatedRelatoriosSelected = relatoriosSelected.filter(selectedRelatorios => updatedItensSelected.some(item => item.id === selectedRelatorios.itens_id));
+    setRelatoriosSelected(updatedRelatoriosSelected);
   }
   if(item.hasOwnProperty("modulo")){
-    setMenusSelected(prev => prev.filter(i => i.id !== item.id));
+    const updateMenusSelected = menusSelected.filter((selectedMenus)=> selectedMenus.id !== (item as MenuProps).id);
+    setMenusSelected(updateMenusSelected);
+    setDraggableMenus((prev) => [...prev, item as MenuProps]);
+
+    const updatedItensSelected = itensSelected.filter(selectedItens => updateMenusSelected.some(menu => menu.id === selectedItens.menus_id));
+    setItensSelected(updatedItensSelected);
+    
+  
+
+    const updatedRelatoriosSelected = relatoriosSelected.filter(selectedRelatorios => updatedItensSelected.some(item => item.id === selectedRelatorios.itens_id));
+    setRelatoriosSelected(updatedRelatoriosSelected);
   }
   if(item.hasOwnProperty("menus_id")){
-    setItensSelected(prev => prev.filter(i => i.id !== item.id));
+    const updateItensSelected = itensSelected.filter((selectedItens)=> selectedItens.id !== (item as ItemProps).id);
+    setItensSelected(updateItensSelected);
+    setDraggableItens((prev) => [...prev, item as ItemProps]);
+    // setItensSelected(prev => prev.filter(i => i.id !== item.id));
+    const updatedRelatoriosSelected = relatoriosSelected.filter(selectedRelatorios => updateItensSelected.some(item => item.id === selectedRelatorios.itens_id));
+    setRelatoriosSelected(updatedRelatoriosSelected);
   }
   if(item.hasOwnProperty("itens_id")){
-    setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
+    const updateRelatoriosSelected = relatoriosSelected.filter((selectedRelatorios)=> selectedRelatorios.id !== (item as RelatorioProps).id);
+    setRelatoriosSelected(updateRelatoriosSelected);
+    setDraggableRelatorios((prev) => [...prev, item as RelatorioProps]);
+    // setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
   }
 }
 //Fim do bloco ------------------------------------------------------>
@@ -213,13 +264,34 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
 
 
   const {back} = useRouter();
+
   const fetchDefaultValues = () => {
     if (storedUser) {
       try {
-        const updatedDraggableItems = draggableItens.filter(
-          (item) => !modulosSelected.find((data) => data.id === item.id)
-        );
+        const updatedDraggableItems = draggableItens.filter((draggableItem) => {
+          const newValue = !itensSelected.some((droppedItem) => droppedItem.id === draggableItem.id);
+          console.log("Valor Item: ");
+          return newValue;
+        });
+
+        const updatedDraggableModulos = draggableModulos.filter((draggableModulos) => {
+          const newValue = !modulosSelected.some((selectedModulos) => selectedModulos.id === draggableModulos.id);
+          return newValue;
+        })
+
+        const updatedDraggableMenus = draggableMenus.filter((draggableMenus)=>{
+          const newValue = !menusSelected.some((selectedMenus) => selectedMenus.id === draggableMenus.id);
+          return newValue;
+        })
+
+        const updatedDraggableRelatorios = draggableRelatorios.filter((draggableRelatorios) => {
+          const newValue = !relatoriosSelected.some((selectedRelatorio) => selectedRelatorio.id === draggableRelatorios.id);
+        })
         setDraggableItens(updatedDraggableItems);
+        setDraggableMenus(updatedDraggableMenus);
+        setDraggableModulos(updatedDraggableModulos);
+        setDraggableRelatorios(updatedDraggableRelatorios);
+        
       } catch (e) {
         console.log(e);
       }
@@ -236,7 +308,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         const response = await api.get(`menus_front`);
         console.log(response.data.menus)
         response.data.menus.map((item: any) => {
-          setDraggableItens((prev) => [...prev, {
+          setDraggableMenus((prev) => [...prev, {
             id: item.id,
             nome: item.nome,
             modulo: item.modulo,
@@ -245,7 +317,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
 
         const responseModulos = await api.get(`modulos`);
         responseModulos.data.modulos.map((item: any) => {
-          setDraggableItens((prev) => [...prev, {
+          setDraggableModulos((prev) => [...prev, {
             id: item.id,
             nome: item.nome,
           }]);
@@ -262,7 +334,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
 
         const responseRelatorios = await api.get(`relatorios`);
         responseRelatorios.data.relatorios.map((item: any) => {
-          setDraggableItens((prev) => [...prev, {
+          setDraggableRelatorios((prev) => [...prev, {
             id: item.id,
             nome: item.nome,
             relatorio: item.relatorio,
@@ -273,19 +345,15 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
             try{
             const response = await api.get(`data/user/${storedUser.id}`);
             response.data.modulos.map((data: ModuloProps)=>{
-              setDroppedItems((prev)=> [...prev, data])
               setModulosSelected((prev)=>[...prev, data])
             });
             response.data.menus.map((data: MenuProps)=>{
-              setDroppedItems((prev)=> [...prev, data])
               setMenusSelected((prev)=>[...prev, data])
             });
             response.data.itens.map((data: ItemProps)=>{
-              setDroppedItems((prev)=> [...prev, data])
               setItensSelected((prev)=>[...prev, data])
             });
             response.data.relatorios.map((data: RelatorioProps)=>{
-              setDroppedItems((prev)=> [...prev, data])
               setRelatoriosSelected((prev)=>[...prev, data])
             });
           }catch(e){
@@ -307,7 +375,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
   }, [laodingRequest])
 
 
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const user = JSON.parse(localStorage.getItem('user') || '{}');
   
 
   //Dentro do array do useeffect tinha sses itens : showEmpresaSelect, empresa.empresaid
@@ -319,7 +387,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         senha: data.senha,
         email: data.email,
         telefone: data.telefone,
-        usuario_criacao: user.email || "Não idnetificado",
+        usuario_criacao: user?.email || "Não identificado",
         modulo_default: data.modulo,
         acesso_admin: data.admin,
         // acesso_admin: isAdmin,
@@ -460,19 +528,20 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         <div style={{display: "flex", flexDirection: "row"}}>
           <div className={styles.draggableBoxOutput}>
             <h4>Modulos</h4>
-            {draggableItens.map((item) => {
-              if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
+            {draggableModulos.map((item) => {
+              // if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
                 return(
                   <div 
                   key={item.id}
                   className={styles.draggableItens}
                   draggable
                   onDragStart={(e) => handleDragStart(e, item)}
-                  onDragEnd={() => handleRemoveItem(item)}>
+                  // onDragEnd={() => handleRemoveItem(item)}
+                  >
                     {item.nome}
                   </div>
                 )
-              }
+              // }
             })}
               
           </div>
@@ -482,9 +551,9 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
             onDrop={handleDrop}
             onDragOver={handleDragOver}
           >
-            {droppedItems.length === 0 && <h4>Arraste os Modulos aqui</h4>}
-            {droppedItems.map((item, index) => {
-              if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
+            {modulosSelected.length === 0 && <h4>Arraste os Modulos aqui</h4>}
+            {modulosSelected.map((item, index) => {
+              // if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
                 return (
                   <div 
                   key={item.id}
@@ -495,7 +564,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
                     <div>{item.nome}</div>
                   </div>
                 )
-              }
+              // }
             })}
           </div>
         </div>
@@ -506,8 +575,8 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
           <div style={{display: "flex", flexDirection: "row"}}>
           <div className={styles.draggableBoxOutput}>
             <h4>Menus</h4>
-            {draggableItens.map((item) => {
-              if(item.hasOwnProperty("modulo")){
+            {draggableMenus.map((item) => {
+              // if(item.hasOwnProperty("modulo")){
                 const modulo = modulosSelected.find(modulo => modulo.nome === (item as MenuProps).modulo);
                 if (modulo) {
                   return(
@@ -516,12 +585,13 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
                     className={styles.draggableItens}
                     draggable
                     onDragStart={(e) => handleDragStart(e, item)}
-                    onDragEnd={() => handleRemoveItem(item)}>
+                    // onDragEnd={() => handleRemoveItem(item)}
+                    >
                       {item.nome}
                     </div>
                   )
                 }
-              }
+              // }
             })}
           </div>
           
@@ -531,8 +601,8 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
             onDragOver={handleDragOver}
           >
             {menusSelected.length === 0 && <h4>Arraste os Menus aqui</h4>}
-            {droppedItems.map((item, index) => {
-              if(item.hasOwnProperty("modulo")){
+            {menusSelected.map((item, index) => {
+              // if(item.hasOwnProperty("modulo")){
                 return (
                   <div 
                   key={item.id}
@@ -543,7 +613,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
                     <div>{item.nome}</div>
                   </div>
                 )
-              }
+              // }
             })}
           </div>
         </div>
@@ -556,8 +626,8 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
           <div className={styles.draggableBoxOutput}>
             <h4>Itens</h4>
             {draggableItens.map((item) => {
-              if(item.hasOwnProperty("menus_id")){
-                const found = menusSelected.find(menu => menu.id === (item as ItemProps).menus_id);
+              // if(item.hasOwnProperty("menus_id")){
+                const found = menusSelected.find(menu => menu.id === item.menus_id);
                 if (found) {
                   return(
                     <div 
@@ -565,12 +635,13 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
                     className={styles.draggableItens}
                     draggable
                     onDragStart={(e) => handleDragStart(e, item)}
-                    onDragEnd={() => handleRemoveItem(item)}>
+                    // onDragEnd={() => handleRemoveItem(item)}
+                    >
                       {item.nome}
                     </div>
                   )
                 }
-              }
+              // }
             })}
           </div>
           
@@ -579,9 +650,9 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
             onDrop={handleDrop}
             onDragOver={handleDragOver}
           >
-            {droppedItems.length === 0 && <h4>Arraste os itens aqui</h4>}
-            {droppedItems.map((item, index) => {
-              if(item.hasOwnProperty("menus_id")){
+            {itensSelected.length === 0 && <h4>Arraste os itens aqui</h4>}
+            {itensSelected.map((item, index) => {
+              // if(item.hasOwnProperty("menus_id")){
                 return (
                   <div 
                   key={item.id}
@@ -592,7 +663,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
                     <div>{item.nome}</div>
                   </div>
                 )
-              }
+              // }
             })}
           </div>
         </div>
@@ -604,9 +675,9 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
           <div style={{display: "flex", flexDirection: "row"}}>
           <div className={styles.draggableBoxOutput}>
             <h4>Relatorios</h4>
-            {draggableItens.map((item) => {
-              if(item.hasOwnProperty("itens_id")){
-                const found = itensSelected.find(itensArray => itensArray.id === (item as RelatorioProps).itens_id);
+            {draggableRelatorios.map((item) => {
+              // if(item.hasOwnProperty("itens_id")){
+                const found = itensSelected.find(itensArray => itensArray.id === item.itens_id);
                 if (found) {
                   return(
                     <div 
@@ -614,12 +685,13 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
                     className={styles.draggableItens}
                     draggable
                     onDragStart={(e) => handleDragStart(e, item)}
-                    onDragEnd={() => handleRemoveItem(item)}>
+                    // onDragEnd={() => handleRemoveItem(item)}
+                    >
                       {item.nome}
                     </div>
                   )
                 }
-              }
+              // }
             })}
           </div>
           
@@ -628,9 +700,9 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
             onDrop={handleDrop}
             onDragOver={handleDragOver}
           >
-            {relatoriosSelected.length === 0 && <h4>Arraste os itens aqui</h4>}
-            {droppedItems.map((item, index) => {
-              if(item.hasOwnProperty("itens_id")){
+            {relatoriosSelected.length === 0 && <h4>Arraste os relatorios aqui</h4>}
+            {relatoriosSelected.map((item, index) => {
+              // if(item.hasOwnProperty("itens_id")){
                 return (
                   <div 
                   key={item.id}
@@ -641,7 +713,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
                     <div>{item.nome}</div>
                   </div>
                 )
-              }
+              // }
             })}
           </div>
         </div>
