@@ -25,6 +25,7 @@ export default function SignIn() {
     };
 
     useEffect(() => {
+        
         async function fetchData() {
             try {
                 if (empresa) {
@@ -39,6 +40,8 @@ export default function SignIn() {
                     window.localStorage.setItem('empresa', JSON.stringify({
                         empresa: empresa,
                     }));
+
+                    
                 }
             } catch (e) {
                 console.log("CATCH Empresa: " + empresa);
@@ -51,6 +54,11 @@ export default function SignIn() {
     if(isClientSide){
     window.localStorage.setItem('images', JSON.stringify(images));
     window.localStorage.setItem('logo', JSON.stringify(logo));
+    const storedUserData = window.localStorage.getItem('user');
+    const router = useRouter();
+    if(storedUserData){
+        router.push(`/home/${empresa}`)
+    }
     }
     
     return(

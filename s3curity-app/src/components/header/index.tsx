@@ -27,6 +27,7 @@ export function Header() {
     const[modulos, setModulos] = useState<ModuloProps[]>([]);
     const[moduloSelected, setModuloSelected] = useState<string | number>();
     const {modulo, setModulo} = useModuloContext();
+    const[loading, setLoading] = useState(true);
 
 
     // const handleSelectChange = (e: React.ChangeEvent<{ value: unknown }>) => {
@@ -50,15 +51,20 @@ export function Header() {
             const response = await api.get(`user/${(JSON.parse(window.localStorage.getItem('user') || '') as userProps).id}`);
             const modulos = response.data.modulos;
             setModuloDefault(response.data.modulo_default ? response.data.modulo_default : 1);
+
             setModulos(modulos);
         } catch (e) {
         alert(`Erro inesperado: ${e}`);
         }
+        setLoading(false);
     }
     fetchData();
     }, []);
-    console.log("LOGO NO HEADER: "+logo);
+
+
     return(
+        <>
+        {!loading && (
         <header>
             <div className={styles.Content}>
                 <section className={styles.sectionContent}>
@@ -99,5 +105,7 @@ export function Header() {
                 </section>
             </div>
         </header>
+        )}
+        </>
         )
 }

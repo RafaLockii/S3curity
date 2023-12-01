@@ -2,7 +2,7 @@ import SidebarMenu from "@/components/SideBarMenu";
 import styles from './styles.module.css';
 import { Header } from "@/components/header";
 import CarouselComponent from "@/components/Carousel";
-import { useUserContext } from "@/context/UserContext";
+// import { useUserContext } from "@/context/UserContext";
 import { useEffect, useState } from "react";
 import { api } from "@/lib/axios";
 import { Slide, Slider, SliderProps } from '@/components/commons/Slider';
@@ -12,7 +12,7 @@ export default function Home() {
     const[empresa, setEmpresa] = useState<string>();
     // const{query} = userRouter;
     // const empresa = typeof query.empresa == 'string' ? query.empresa : "";
-    const {user} = useUserContext();
+    // const {user} = useUserContext();
 
     const [images, setImages] = useState<string[]>([]);
     const [loading, setLoading] = useState(true);

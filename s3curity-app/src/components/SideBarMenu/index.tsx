@@ -2,11 +2,12 @@ import styles from './styles.module.css';
 import { Sidebar, Menu, MenuItem, SidebarProps, SubMenu} from 'react-pro-sidebar';
 import { HouseSimple, Buildings, User, ListDashes, ArrowDown, ChartLineUp } from 'phosphor-react';
 import {useRouter} from 'next/router'
-import { useUserContext } from '@/context/UserContext';
+// import { useUserContext } from '@/context/UserContext';
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/axios';
 import Link from 'next/link';
 import { useModuloContext } from '@/context/moduloContext';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 interface SidebarInfoProps{
   empresa: string;
@@ -49,6 +50,7 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
     const[empresa, setEmpresa] = useState<string>();
     const[moduloDefault, setModuloDefault] = useState();
     const {modulo, setModulo} = useModuloContext();
+    const[loading, setLoading] = useState(true);
 
     useEffect(() => {
       const fetchData = async () => {
@@ -57,9 +59,11 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
           setUser(JSON.parse(window.localStorage.getItem('user') || '') as userProps);
           // if(user){
             const response = await api.get(`user/${(JSON.parse(window.localStorage.getItem('user') || '') as userProps).id}`);
-            const menus = response.data.menus;
+            const menusFromApi = response.data.menus;
+            console.log("MOdulo default From Api")
+            console.log(response.data.modulo_default);
             setModuloDefault(response.data.modulo_default);
-            setMenus(menus.map((menu: any) =>{
+            setMenus(menusFromApi.map((menu: any) =>{
               return {
                 nome: menu.nome,
                 modulos_id: menu.modulos_id,
@@ -76,19 +80,32 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                 })
               }
             }));
+            
 
-            setFilteredMenus(menus?.filter((menu: MenuItemProps) => menu.modulos_id === (modulo?.id !== 0 ? Number(modulo?.id) : moduloDefault)))
           // }
         } catch (e) {
           console.error(e);
+          alert(`Ocorreu um erro: ${e}`);
+          setLoading(false);
         }
       }
       fetchData();
+      setLoading(false);
     }, [modulo]);
+
+    useEffect(() => {
+      if (menus && menus.length > 0) {
+        setFilteredMenus(
+          menus.filter((menu: MenuItemProps) => menu.modulos_id === (modulo?.id !== 0 ? Number(modulo?.id) : moduloDefault))
+        );
+      }
+    }, [menus, modulo, moduloDefault]);
+    
 
 
   return (
     <div className={styles.container}>
+      {filteredMenus && (
       <div>
         <Sidebar {...props} className={styles.sideBar}>
               <Menu menuItemStyles={{
@@ -114,25 +131,25 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                         </div>
                         <ArrowDown className={styles.arrowDown}/>
                   </div>
-                  <Link href={`/home/${props.empresa}`}>
-                  <MenuItem icon={<HouseSimple/>} onClick={()=> handleMenuClick('home')}>
+                  <Link href={`/home/${props.empresa}`} style={{textDecoration: 'none', color: 'black'}}>
+                  <MenuItem icon={<HouseSimple/>}>
                     Home
                   </MenuItem>
                   </Link>
 
                   {empresa == 's3curity' && (
                     <>
-                    <Link href={`/enterprises/${props.empresa}`}>
+                    <Link href={`/enterprises/${props.empresa}`} style={{textDecoration: 'none', color: 'black'}}>
                       <MenuItem icon={<Buildings/>}>Empresas</MenuItem>
                     </Link>
-                    <Link href={`/itens/${props.empresa}`}>
-                      <MenuItem icon={<Buildings/>}>Itens</MenuItem>
+                    <Link href={`/itens/${props.empresa}`} style={{textDecoration: 'none', color: 'black'}}>
+                      <MenuItem icon={<Buildings/>} >Itens</MenuItem>
                     </Link>
                     </>
                   )}
                   {user?.acesso_admin == true && (
-                  <Link href={`/users/${props.empresa}`}>
-                  <MenuItem icon={<User/>}>Usuários</MenuItem>
+                  <Link href={`/users/${props.empresa}`} style={{textDecoration: 'none', color: 'black'}}>
+                  <MenuItem icon={<User/>}  >Usuários</MenuItem>
                   </Link>
                   )}
                   {filteredMenus && (
@@ -155,9 +172,13 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                     })
                     
                   )}
+              <Link href={`/login/${props.empresa}`} style={{textDecoration: 'none'}} onClick={()=>{localStorage.removeItem('user')}}>
+              <MenuItem icon={<LogoutIcon/>}style={{color: 'red'}}>Logout</MenuItem>
+              </Link>
               </Menu>
               </Sidebar>
       </div> 
+      )}
     </div>
   );
 }

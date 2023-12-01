@@ -8,7 +8,7 @@ import logo from '../../../public/images/logo.png';
 import { useRouter } from "next/router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { api } from "@/lib/axios";
-import { useUserContext } from '@/context/UserContext'; // Importe o UserContext com a tipagem
+// import { useUserContext } from '@/context/UserContext'; // Importe o UserContext com a tipagem
 import { useImageContext } from '@/context/imagesContext'; // Importe o ImageContext com a tipagem
 import { FormControl, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField } from "@mui/material";
 import Visibility from '@mui/icons-material/Visibility';
@@ -40,7 +40,7 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
     const router = useRouter();
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
     //Utilização do contexto
-    const { user, setUser } = useUserContext();
+    // const { user, setUser } = useUserContext();
     const [userLocalStorage, setUserLocalStorage] = useState(); // Crie um estado para o usuário logado [userLocalStorage]
     const { image, setImage } = useImageContext();
     const [showPassword, setShowPassword] = React.useState(false);
@@ -62,13 +62,13 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
 
             if (response.status === 200) {
                 console.log(response.data);
-                setUser({
-                    id: response.data.id,
-                    token: response.data.token,
-                    email: response.data.email,
-                    nome: response.data.nome,
-                    acesso_admin: response.data.isAdmin,
-                });
+                // setUser({
+                //     id: response.data.id,
+                //     token: response.data.token,
+                //     email: response.data.email,
+                //     nome: response.data.nome,
+                //     acesso_admin: response.data.isAdmin,
+                // });
 
                 localStorage.setItem('user', JSON.stringify({
                     id: response.data.id,
@@ -86,6 +86,7 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
         } catch (error) {
             console.error("Erro ao fazer login:", error);
             setErrorMessage("Credenciais inválidas");
+            setLoadingRequest(false);
         }
     }
 
