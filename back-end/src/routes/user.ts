@@ -20,7 +20,8 @@ userRoutes.post("/user/ativar", UserController.ativarUser);
 userRoutes.put(
   "/user/edit/:id",
   // autenticarToken,
-  // adminEmpresaOrS3curity, UserController.editUser
+  // adminEmpresaOrS3curity, 
+  UserController.editUser
 );
 userRoutes.delete(
   "/user/:id",

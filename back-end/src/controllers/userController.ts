@@ -148,15 +148,15 @@ export const createUser = async (req: Request, res: Response) => {
             subject: "Código de Ativação de Usuário",
             text: `Seu Token de Ativação é: ${code}`
             },
-            (error: Error, info: any) => {
-            if (error) {
-                console.error(error);
-            } else {
-                console.log(
-                "Chave secreta 2FA enviada com sucesso: " + info.response
-                );
-            }
-            }
+            // (error: Error, info: any) => {
+            // if (error) {
+            //     console.error(error);
+            // } else {
+            //     console.log(
+            //     "Chave secreta 2FA enviada com sucesso: " + info.response
+            //     );
+            // }
+            // }
         );
         }
 
