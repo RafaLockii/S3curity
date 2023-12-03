@@ -324,7 +324,8 @@ export const getUser = async (req: Request, res: Response) => {
               }
             }
           }
-        }
+        },
+        modulos: {}
       }
     });
 
@@ -341,6 +342,10 @@ export const getUser = async (req: Request, res: Response) => {
       usuario_cad_alt: user.usuario_cad_alt,
       usuario_id: user.usuario_id,
       empresa_id: user.empresa_id,
+      modulos: user.modulos.map((modulo) => ({
+        id: modulo.id,
+        nome: modulo.nome
+      })),
       imagem_perfil_id: user.imagem_perfil_id,
       menus: user.menus.map((menu) => ({
         id: menu.id,
