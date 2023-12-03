@@ -169,6 +169,11 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
     
   };
 
+  const handleEdit = (user: TableData) =>{
+    sessionStorage.setItem('editedUser', JSON.stringify(user));
+    router.push(`editUser/${user.id}/${empresa}`)
+  }
+
 
   const deleteUser = async (id: number) => {
     try {
@@ -255,7 +260,7 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
                 />
                 </TableCell>
                 <TableCell>
-                <button className={styles.button} onClick={() => { router.push(`editUser/${row.id}/${empresa}`)}}>Editar</button>
+                <button className={styles.button} onClick={() => { handleEdit(row);}}>Editar</button>
                 </TableCell>
                 <TableCell>
                 <IconButton aria-label="delete" onClick={()=>{setShowAlert(true)}}>

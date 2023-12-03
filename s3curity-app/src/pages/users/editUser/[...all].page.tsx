@@ -68,15 +68,7 @@ export default function editUsers(){
 
                     {/* Renderize o UpdateForm somente se userData estiver definido */}
                     {userData && (
-                        <UpdateForm
-                            acesso_admin={userData.acesso_admin}
-                            ativo={userData.ativo}
-                            email={userData.email}
-                            id={userData.id}
-                            nome={userData.nome}
-                            funcionario={userData.funcionario}
-                            telefone={userData.telefone}
-                        />
+                        <UpdateForm />
                     )}
                 </div>
             ) : (
