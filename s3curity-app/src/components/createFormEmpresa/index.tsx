@@ -8,7 +8,7 @@ import Select from "react-select";
 import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
-import { useUserContext } from "@/context/UserContext";
+// import { useUserContext } from "@/context/UserContext";
 import {MenuData } from "@/types/types";
 
 // Validação do formulário
@@ -41,7 +41,7 @@ export default function CreateForm() {
   });
 
   // Pega informação do usuário logado
-  const { user } = useUserContext();
+  // const { user } = useUserContext();
   const [imagensCarrosel, setImagensCarrosel] = useState<string[]>([]);
 
   const { back } = useRouter();
@@ -54,6 +54,8 @@ export default function CreateForm() {
     setNumImageInputs(numImageInputs + 1);
   };
 
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  
   async function handleRegister(data: RegisterFormData) {
     console.log("entrou aq");
     try {

@@ -314,9 +314,26 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
   async function handleRegister(data: RegisterFormData) {
     console.log("entrou aq")
     try{
-      await api.put(`user/edit/${storedUser}`, {
+      data.senha !== "" ?
+      await api.put(`user/edit/${storedUser.id}`, {
         nome: data.nome,
         senha: data.senha,
+        email: data.email,
+        telefone: data.telefone,
+        usuario_criacao: user?.email || "Não identificado",
+        modulo_default: data.modulo,
+        acesso_admin: data.admin,
+        // acesso_admin: isAdmin,
+        cargo_id: data.modulo,
+        imagem_perfil_url: data.img_url,
+        menus_ids: menusSelected.map((item) => item.id),
+        itens_ids: itensSelected.map((item) => item.id),
+        relatorios_ids: relatoriosSelected.map((item) => item.id),
+        modulos_id: modulosSelected.map((item) => item.id),
+      })
+      :
+      await api.put(`user/edit/${storedUser.id}`, {
+        nome: data.nome,
         email: data.email,
         telefone: data.telefone,
         usuario_criacao: user?.email || "Não identificado",

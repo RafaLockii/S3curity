@@ -30,13 +30,19 @@ export default function SignIn() {
             try {
                 if (empresa) {
                     console.log("Empresa params: " + empresa);
-                    const response = await api.get(`empresa_name/${empresa}`);
+                    const response = await api.get(`empresa-carrossel-logo/${empresa}`);
                     console.log(response.data)
 
-                    response.data.formattedEmpresa.carrosseis.map((item: any) => {
+                    response.data.empresa.carrosseis.map((item: any) => {
                         setImages(prevImages => [...prevImages, item.nome]);
                     })
-                    setLogo(response.data.formattedEmpresa.logo);
+                    console.log(response.data.empresa.logo);
+                    console.log(response.data.empresa.logo);
+                    console.log(response.data.empresa.logo);
+                    console.log(response.data.empresa.logo);
+                    console.log(response.data.empresa.logo);
+                    setLogo(response.data.empresa.logo);
+                    window.localStorage.setItem('logo', JSON.stringify(response.data.empresa.logo));
                     window.localStorage.setItem('empresa', JSON.stringify({
                         empresa: empresa,
                     }));
@@ -50,10 +56,12 @@ export default function SignIn() {
         }
         fetchData();
     }, [empresa]);
+
+
     const isClientSide = typeof window !== 'undefined';
     if(isClientSide){
-    window.localStorage.setItem('images', JSON.stringify(images));
-    window.localStorage.setItem('logo', JSON.stringify(logo));
+    // window.localStorage.setItem('images', JSON.stringify(images));
+    // window.localStorage.setItem('logo', JSON.stringify(logo));
     const storedUserData = window.localStorage.getItem('user');
     const router = useRouter();
     if(storedUserData){

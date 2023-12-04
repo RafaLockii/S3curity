@@ -21,7 +21,6 @@ interface ModuloProps{
 
 export function Header() {
     const { image, setImage } = useImageContext();
-    const[logo, setLogo] = useState<string>("");
     // const[modulo, setModulo] = useState<string | number>();
     const[moduloDefault, setModuloDefault] = useState()
     const[modulos, setModulos] = useState<ModuloProps[]>([]);
@@ -29,21 +28,15 @@ export function Header() {
     const {modulo, setModulo} = useModuloContext();
     const[loading, setLoading] = useState(true);
 
-
-    // const handleSelectChange = (e: React.ChangeEvent<{ value: unknown }>) => {
-    //     const newValue = e.target.value as string | number;
-    //     setModuloSelected(newValue); // Update selected value in state
-    //     sessionStorage.setItem('selectedModulo', JSON.stringify(newValue)); // Save selected value to sessionStorage
-    // };
-    
-
-    // useEffect(() => {
-    //     const storedLogo= localStorage.getItem('logo'); // Fetch 'logo' from localStorage
-    //     if (storedLogo) {
-    //         setLogo(storedLogo);
-    //     }
-        
-    // }, []);
+    const logo = localStorage.getItem('logo') || '';
+    const trimmedLogo = logo.replace(/^"|"$/g, ''); 
+    console.log("Logo no header Component");
+    console.log("Logo no header Component");
+    console.log("Logo no header Component");
+    console.log("Logo no header Component");
+    console.log("Logo no header Component");
+    console.log("Logo no header Component");
+    console.log(trimmedLogo)
 
     useEffect(() => {
     const fetchData = async () => {
@@ -51,7 +44,6 @@ export function Header() {
             const response = await api.get(`user/${(JSON.parse(window.localStorage.getItem('user') || '') as userProps).id}`);
             const modulos = response.data.modulos;
             setModuloDefault(response.data.modulo_default ? response.data.modulo_default : 1);
-
             setModulos(modulos);
         } catch (e) {
         alert(`Erro inesperado: ${e}`);
@@ -69,7 +61,7 @@ export function Header() {
             <div className={styles.Content}>
                 <section className={styles.sectionContent}>
                     <img 
-                        src={logo}
+                        src={trimmedLogo}
                         alt='Logo'
                         // quality={100}
                         width={200}

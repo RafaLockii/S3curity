@@ -97,6 +97,7 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
  const [showPassword, setShowPassword] = useState(false);
  const[laodingRequest, setLoadingRequest] = useState(false);
  const[defaultValuesLoaded, setDefaultValuesLoaded] = useState(false);
+ const[empresaSelectedId, setEmpresaSelectedId] = useState();
   // Crie um estado para o carregamento da requisição [loadingRequest]
 
  const handleClickShowPassword = () => setShowPassword((show) => !show);   
@@ -135,67 +136,10 @@ function handleDrop(e: React.DragEvent) {
   }
 }
 
-// const updatedDraggableItems = draggableItens.filter(
-//   (item) => !modulosSelected.find((data) => data.id === item.id)
-// );
-// setDraggableItens(updatedDraggableItems);
 
 function handleDragOver(e: React.DragEvent) {
   e.preventDefault();
 }
-
-
-// Bloco de remoção
-// function handleRemoveItem(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
-  // const updatedDroppedItems = droppedItems.filter((i) => i !== item);
-  // setDroppedItems(updatedDroppedItems);
-  // const updatedDraggableItens = draggableItens.filter((i)=>i !== item);
-  // setDraggableItens(updatedDraggableItens);
-  // setDraggableItens((prev)=>[...prev, item])
-// }
-
-
-// function handleRemoveItem(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
-//   setDroppedItems(prev => prev.filter(i => i.id !== item.id));
-  
-//   setDraggableItens(prev => prev.some(i => i.id === item.id) ? prev : [...prev, item]);
-
-//   if(item.hasOwnProperty("modulo")){
-//     setModulosSelected(prev => prev.filter(i => i.id !== item.id));
-//     setItensSelected(prev => prev.filter(i => i.id !== item.id));
-//     setMenusSelected(prev => prev.filter(i => i.id !== item.id));
-//   }
-//   if(item.hasOwnProperty("menus_id")){
-//     setItensSelected(prev => prev.filter(i => i.id !== item.id));
-//     if ('menus_id' in item) {
-//       setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
-//     }
-//   }
-//   if(item.hasOwnProperty("itens_id")){
-//     setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
-//   }
-// }
-
-
-// function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
-//   if ('modulo' in item) {
-//     setDraggableModulos(prev => prev.some(i => i.id === item.id) ? prev : [...prev, item]);
-//     setModulosSelected(prev => prev.filter(i => i.id !== item.id));
-//   }
-//   if ('nome' in item && 'modulo' in item) {
-//     setDraggableMenus(prev => prev.some(i => i.id === item.id) ? prev : [...prev, item]);
-//     setMenusSelected(prev => prev.filter(i => i.id !== item.id));
-//   }
-//   if ('menus_id' in item) {
-//     setDraggableItens(prev => prev.some(i => i.id === item.id) ? prev : [...prev, item]);
-//     setItensSelected(prev => prev.filter(i => i.id !== item.id));
-//   }
-//   if ('itens_id' in item) {
-//     setDraggableRelatorios(prev => prev.some(i => i.id === item.id) ? prev : [...prev, item]);
-//     setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
-//   }
-// }
-
 
 function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
   
@@ -244,52 +188,6 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
   }
 }
 }
-// function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps | RelatorioProps) {
-  
-//   if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
-//     const updatedModulosSelected = modulosSelected.filter((selectedModulos)=> selectedModulos.id !== (item as ModuloProps).id);
-//     setModulosSelected(updatedModulosSelected);
-//     setDraggableModulos((prev) => [...prev, item as ModuloProps]);
-
-//     const updatedMenusSelected = menusSelected.filter(selectedMenus => selectedMenus.modulo !== (item as ModuloProps).nome);
-//     setMenusSelected(updatedMenusSelected);
-//     setDraggableMenus((prevMenus) => [...prevMenus, ...menusSelected.filter(selectedMenus => selectedMenus.modulo === (item as ModuloProps).nome)])
-
-//     const updatedItensSelected = itensSelected.filter(selectedItens => updatedMenusSelected.some(menu => menu.id !== selectedItens.menus_id));
-//     // const updatedItensSelected = itensSelected.filter(selectedItens => updatedMenusSelected.some(menu => menu.id !== selectedItens.menus_id));
-//     setItensSelected(updatedItensSelected);
-//     setDraggableItens((prevItens) => [...prevItens, ...itensSelected.filter(selectedItens => updatedMenusSelected.some(menu => menu.id === selectedItens.menus_id))]);
-    
-//     const updatedRelatoriosSelected = relatoriosSelected.filter(selectedRelatorios => updatedItensSelected.some(item => item.id !== selectedRelatorios.itens_id));
-//     setRelatoriosSelected(updatedRelatoriosSelected);
-//     setDraggableRelatorios((prevRelatorios) => [...prevRelatorios, ...relatoriosSelected.filter(selectedRelatorios => updatedItensSelected.some(item => item.id === selectedRelatorios.itens_id))])
-//   }
-//   if(item.hasOwnProperty("modulo")){
-//     const updateMenusSelected = menusSelected.filter((selectedMenus)=> selectedMenus.id !== (item as MenuProps).id);
-//     setMenusSelected(updateMenusSelected);
-//     setDraggableMenus((prev) => [...prev, item as MenuProps]);
-
-//     const updatedItensSelected = itensSelected.filter(selectedItens => updateMenusSelected.some(menu => menu.id === selectedItens.menus_id));
-//     setItensSelected(updatedItensSelected);
-
-//     const updatedRelatoriosSelected = relatoriosSelected.filter(selectedRelatorios => updatedItensSelected.some(item => item.id === selectedRelatorios.itens_id));
-//     setRelatoriosSelected(updatedRelatoriosSelected);
-//   }
-//   if(item.hasOwnProperty("menus_id")){
-//     const updateItensSelected = itensSelected.filter((selectedItens)=> selectedItens.id !== (item as ItemProps).id);
-//     setItensSelected(updateItensSelected);
-//     setDraggableItens((prev) => [...prev, item as ItemProps]);
-//     // setItensSelected(prev => prev.filter(i => i.id !== item.id));
-//     const updatedRelatoriosSelected = relatoriosSelected.filter(selectedRelatorios => updateItensSelected.some(item => item.id === selectedRelatorios.itens_id));
-//     setRelatoriosSelected(updatedRelatoriosSelected);
-//   }
-//   if(item.hasOwnProperty("itens_id")){
-//     const updateRelatoriosSelected = relatoriosSelected.filter((selectedRelatorios)=> selectedRelatorios.id !== (item as RelatorioProps).id);
-//     setRelatoriosSelected(updateRelatoriosSelected);
-//     setDraggableRelatorios((prev) => [...prev, item as RelatorioProps]);
-//     // setRelatoriosSelected(prev => prev.filter(i => i.id !== item.id));
-//   }
-// }
 //Fim do bloco ------------------------------------------------------>
 
 //Fim do bloco de itens arrastáveis ------------------------------------->
@@ -338,7 +236,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         setDraggableMenus(updatedDraggableMenus);
         setDraggableModulos(updatedDraggableModulos);
         setDraggableRelatorios(updatedDraggableRelatorios);
-        
+        setEmpresaSelectedId(storedUser.funcionario.empresa.id);
       } catch (e) {
         console.log(e);
       }
@@ -428,6 +326,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
   //Dentro do array do useeffect tinha sses itens : showEmpresaSelect, empresa.empresaid
   async function handleRegister(data: RegisterFormData) {
     console.log("entrou aq")
+    console.log(data.empresa_id)
     try{
       await api.post('user/create', {
         nome: data.nome,
@@ -436,10 +335,10 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         telefone: data.telefone,
         usuario_criacao: user?.email || "Não identificado",
         modulo_default: data.modulo,
-        acesso_admin: data.admin,
-        // acesso_admin: isAdmin,
+        // acesso_admin: data.admin,
+        acesso_admin: isAdmin,
         cargo_id: data.modulo,
-        empresa_id: data.empresa_id,
+        empresa_id: empresaSelectedId,
         imagem_perfil_url: data.img_url,
         menus_ids: menusSelected.map((item) => item.id),
         itens_ids: itensSelected.map((item) => item.id),
@@ -455,11 +354,13 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
   // Função de manipulação para o evento onChange do Select
   const handleSelectChange = (selectedOption: any) => {
     console.log(selectedOption.value);
-      setValue("modulo", selectedOption.value); // Atualiza o valor no registro
+      setValue("modulo", selectedOption.value);
+       // Atualiza o valor no registro
   };
   const handleSelectChangeEmpresa = (selectedOption: any) => {
     console.log(selectedOption.value);
-      setValue("empresa_id", selectedOption.value); // Atualiza o valor no registro
+      setValue("empresa_id", selectedOption.value);
+      setEmpresaSelectedId(selectedOption.value); // Atualiza o valor no registro
   };
 
 
@@ -557,7 +458,6 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         <FormControlLabel
           value={storedUser != null ?  (storedUser.funcionario.acesso_admin) : isAdmin}
           control={<Checkbox id="admin" checked={storedUser != null ?  (storedUser.funcionario.acesso_admin) : isAdmin} onChange={(e) =>{
-
             setIsAdmin(e.target.checked);
             setValue("admin", e.target.checked);
           }} />}
