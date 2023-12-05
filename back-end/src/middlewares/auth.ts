@@ -142,7 +142,7 @@ export const adminAuthMiddlewareS3curity = async (
 
     if (ExistingFuncionario.empresa_id){
       const BuscaEmpresa = await prisma.empresa.findUnique({
-        where: { id: ExistingFuncionario.empresa_id, nome: "sec3rity" }
+        where: { id: ExistingFuncionario.empresa_id, nome: "s3curity" }
       });
 
       if (!BuscaEmpresa) {
