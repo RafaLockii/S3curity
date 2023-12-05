@@ -23,29 +23,29 @@ export const createUser = async (req: Request, res: Response) => {
 
   try {
     const existingUser = await prisma.user.findUnique({
-        where: {
-            email: email,
-        }
+      where: {
+        email: email
+      }
     });
 
     if (existingUser) {
-        return res.status(400).json({ message: "O e-mail já está em uso." });
+      return res.status(400).json({ message: "O e-mail já está em uso." });
     }
 
     const existingEmpresa = await prisma.empresa.findUnique({
-        where: {
-            id: empresa_id
-        }
+      where: {
+        id: empresa_id
+      }
     });
 
     if (!existingEmpresa) {
-        return res
-            .status(400)
-            .json({ message: "A empresa especificada não foi encontrada." });
+      return res
+        .status(400)
+        .json({ message: "A empresa especificada não foi encontrada." });
     }
 
     const modulos = await prisma.modulos.findMany({
-        where: { id: { in: modulos_id } }
+      where: { id: { in: modulos_id } }
     });
 
     const menus = await prisma.menus.findMany({
@@ -68,7 +68,9 @@ export const createUser = async (req: Request, res: Response) => {
     ) {
       return res
         .status(404)
-        .json({ error: "One or more modulos, menus, items or reports not found" });
+        .json({
+          error: "One or more modulos, menus, items or reports not found"
+        });
     }
 
     const hashedPassword = await bcrypt.hash(senha, 10);
@@ -115,90 +117,98 @@ export const createUser = async (req: Request, res: Response) => {
       })
     ]);
 
-        if (user[0].funcionario) {
-            const createdImagem = await prisma.imagem.create({
-                data: {
-                    url: imagem_perfil_url,
-                    funcionario: {
-                        connect: { id: user[0].funcionario.id }
-                    }
-                }
-            });
-
-            if (createdImagem) {
-                const updatedFuncionario = await prisma.funcionario.update({
-                    where: { id: user[0].funcionario.id },
-                    data: { imagem_perfil_id: createdImagem.id }
-                });
-            }
+    if (user[0].funcionario) {
+      const createdImagem = await prisma.imagem.create({
+        data: {
+          url: imagem_perfil_url,
+          funcionario: {
+            connect: { id: user[0].funcionario.id }
+          }
         }
+      });
 
-        const funcionario = await prisma.funcionario.findUnique({
-            where: { id: user[0].funcionario?.id },
+      if (createdImagem) {
+        const updatedFuncionario = await prisma.funcionario.update({
+          where: { id: user[0].funcionario.id },
+          data: { imagem_perfil_id: createdImagem.id }
         });
-
-        if (!funcionario) {
-            return res.status(404).json({ error: "Funcionario not found" });
-        }
-
-        if (user[0].token) {
-        transporter.sendMail(
-            {
-            to: email,
-            subject: "Código de Ativação de Usuário",
-            text: `Seu Token de Ativação é: ${code}`
-            },
-            // (error: Error, info: any) => {
-            // if (error) {
-            //     console.error(error);
-            // } else {
-            //     console.log(
-            //     "Chave secreta 2FA enviada com sucesso: " + info.response
-            //     );
-            // }
-            // }
-        );
-        }
-
-        res.status(201).json(user);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: "Erro ao criar o usuário." });
+      }
     }
+
+    const funcionario = await prisma.funcionario.findUnique({
+      where: { id: user[0].funcionario?.id }
+    });
+
+    if (!funcionario) {
+      return res.status(404).json({ error: "Funcionario not found" });
+    }
+
+    if (user[0].token) {
+      transporter.sendMail(
+        {
+          to: email,
+          subject: "Código de Ativação de Usuário",
+          text: `Seu Token de Ativação é: ${code}`
+        },
+        (error: Error, info: any) => {
+          if (error) {
+            console.error(error);
+          } else {
+            console.log(
+              "Chave secreta 2FA enviada com sucesso: " + info.response
+            );
+          }
+        }
+      );
+    }
+
+    res.status(201).json(user);
+  } catch (error) {
+    // console.error(error);
+    res.status(500).json({ message: "Erro ao criar o usuário." });
+  }
 };
 
 export const editUser = async (req: Request, res: Response) => {
   const userId = parseInt(req.params.id);
 
-    try {
-      const {
-        nome,
-        senha,
-        email,
-        telefone,
-        modulo_default,
-        acesso_admin,
-        empresa_id,
-        imagem_perfil_url,
-        modulos_id,
-        menus_ids,
-        itens_ids,
-        relatorios_ids
-      } = req.body;
+  try {
+    const {
+      nome,
+      senha,
+      email,
+      telefone,
+      modulo_default,
+      acesso_admin,
+      empresa_id,
+      imagem_perfil_url,
+      modulos_id,
+      menus_ids,
+      itens_ids,
+      relatorios_ids
+    } = req.body;
 
-      const existingUser = await prisma.user.findUnique({
-        where: {
-          id: userId
-        },
-        include: {
-          funcionario: true
-        }
-      });
-
-      if (!existingUser) {
-        return res.status(404).json({ message: "Usuário não encontrado." });
+    const existingUser = await prisma.user.findUnique({
+      where: {
+        id: userId
+      },
+      include: {
+        funcionario: true
       }
+    });
 
+    if (!existingUser) {
+      return res.status(404).json({ message: "Usuário não encontrado." });
+    }
+
+    let updateData: any = {};
+
+    if (nome) updateData.nome = nome;
+    if (senha) {
+      const hashedPassword = await bcrypt.hash(senha, 10);
+      updateData.senha = hashedPassword;
+    }
+    if (email) {
       const existingUserWithEmail = await prisma.user.findUnique({
         where: {
           email: email
@@ -208,105 +218,98 @@ export const editUser = async (req: Request, res: Response) => {
       if (existingUserWithEmail && existingUserWithEmail.id !== userId) {
         return res.status(400).json({ message: "Email já está em uso." });
       }
+      updateData.email = email;
+    }
+    if (telefone) updateData.telefone = telefone;
 
-      let updateData: any = {};
+    const updatedUser = await prisma.user.update({
+      where: {
+        id: userId
+      },
+      data: updateData
+    });
 
-      if (nome) updateData.nome = nome;
-      if (senha) {
-        const hashedPassword = await bcrypt.hash(senha, 10);
-        updateData.senha = hashedPassword;
-      }
-      if (email) updateData.email = email;
-      if (telefone) updateData.telefone = telefone;
-
-      const updatedUser = await prisma.user.update({
+    if (empresa_id) {
+      const existingEmpresa = await prisma.empresa.findUnique({
         where: {
-          id: userId
-        },
-        data: updateData
+          id: empresa_id
+        }
       });
 
-      if (empresa_id) {
-        const existingEmpresa = await prisma.empresa.findUnique({
-          where: {
-            id: empresa_id
-          }
-        });
+      if (!existingEmpresa) {
+        return res.status(404).json({ message: "Empresa não encontrado." });
+      }
 
-        if (!existingEmpresa) {
-          return res.status(404).json({ message: "Empresa não encontrado." });
-        }
-
-        const updatedFuncionario = await prisma.user.update({
-          where: { id: Number(userId) },
-          data: {
-            nome,
-            email,
-            telefone,
-            funcionario: {
-              update: {
-                modulo_default,
-                acesso_admin,
-                empresa: { connect: { id: empresa_id } },
-                modulos: {
-                  set: modulos_id.map((id: any) => ({ id }))
-                },
-                menus: {
-                  set: menus_ids.map((id: any) => ({ id }))
-                },
-                itens: {
-                  set: itens_ids.map((id: any) => ({ id }))
-                },
-                relatorios: {
-                  set: relatorios_ids.map((id: any) => ({ id }))
-                }
+      const updatedFuncionario = await prisma.user.update({
+        where: { id: Number(userId) },
+        data: {
+          nome,
+          email,
+          telefone,
+          funcionario: {
+            update: {
+              modulo_default,
+              acesso_admin,
+              empresa: { connect: { id: empresa_id } },
+              modulos: {
+                set: modulos_id.map((id: any) => ({ id }))
+              },
+              menus: {
+                set: menus_ids.map((id: any) => ({ id }))
+              },
+              itens: {
+                set: itens_ids.map((id: any) => ({ id }))
+              },
+              relatorios: {
+                set: relatorios_ids.map((id: any) => ({ id }))
               }
             }
+          }
+        },
+        include: {
+          funcionario: true
+        }
+      });
+
+      const ImagemExist = await prisma.imagem.findUnique({
+        where: { funcionario_id: updatedFuncionario.id }
+      });
+
+      if (ImagemExist) {
+        const updatedImagem = await prisma.imagem.update({
+          where: {
+            funcionario_id: updatedFuncionario.id
           },
-          include: {
-            funcionario: true
+          data: {
+            url: imagem_perfil_url
+          }
+        });
+      } else if (existingUser.funcionario) {
+        const createdImagem = await prisma.imagem.create({
+          data: {
+            url: imagem_perfil_url,
+            funcionario_id: updatedFuncionario.id
           }
         });
 
-        const ImagemExist = await prisma.imagem.findUnique({
-          where: { funcionario_id: updatedFuncionario.id }
+        const updatedImagem = await prisma.funcionario.update({
+          where: {
+            id: updatedFuncionario.id
+          },
+          data: {
+            imagem_perfil_id: createdImagem.id
+          }
         });
-
-        if (ImagemExist) {
-          const updatedImagem = await prisma.imagem.update({
-            where: {
-              funcionario_id: updatedFuncionario.id
-            },
-            data: {
-              url: imagem_perfil_url
-            }
-          });
-        } else if (existingUser.funcionario) {
-          const createdImagem = await prisma.imagem.create({
-            data: {
-              url: imagem_perfil_url,
-              funcionario_id: updatedFuncionario.id
-            }
-          });
-
-          const updatedImagem = await prisma.funcionario.update({
-            where: {
-              id: updatedFuncionario.id
-            },
-            data: {
-              imagem_perfil_id: createdImagem.id
-            }
-          });
-        }
-      }
-      res.status(200).json(updatedUser);
-    } catch (error) {
-      if (error instanceof Error) {
-        return res.status(500).json({ error: error.message });
-      } else {
-        return res.status(500).json({ error: "An unknown error occurred" });
       }
     }
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    if (error instanceof Error) {
+      return res.status(500).json({ error: error.message });
+    } else {
+      return res.status(500).json({ error: "An unknown error occurred" });
+    }
+  }
 };
 
 export const getUser = async (req: Request, res: Response) => {
@@ -386,7 +389,7 @@ export const listUsers = async (req: Request, res: Response) => {
             include: {
               imagem: true,
               empresa: true,
-              modulos: true,
+              modulos: true
             }
           }
         }
@@ -480,7 +483,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     }
 
     const deletedUser = await prisma.user.delete({
-      where: { id: Number(id) },
+      where: { id: Number(id) }
     });
 
     return res.json(deletedUser);
@@ -735,17 +738,13 @@ export const deleteReportForItem = async (req: Request, res: Response) => {
       }
     });
 
-    return res
-      .status(200)
-      .json({
-        message: "Relatório removido com sucesso para o item especificado."
-      });
+    return res.status(200).json({
+      message: "Relatório removido com sucesso para o item especificado."
+    });
   } catch (error) {
     console.error(error);
-    return res
-      .status(500)
-      .json({
-        message: "Erro ao remover o relatório para o item especificado."
-      });
+    return res.status(500).json({
+      message: "Erro ao remover o relatório para o item especificado."
+    });
   }
 };
