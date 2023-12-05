@@ -288,6 +288,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         })
         if(storedUser){
             try{
+            setIsAdmin(storedUser.funcionario.acesso_admin);
             const response = await api.get(`data/user/${storedUser.id}`);
             response.data.modulos.map((data: ModuloProps)=>{
               setModulosSelected((prev)=>[...prev, data])
@@ -456,8 +457,8 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
           labelPlacement="start"
         /> */}
         <FormControlLabel
-          value={storedUser != null ?  (storedUser.funcionario.acesso_admin) : isAdmin}
-          control={<Checkbox id="admin" checked={storedUser != null ?  (storedUser.funcionario.acesso_admin) : isAdmin} onChange={(e) =>{
+          value={isAdmin}
+          control={<Checkbox id="admin" checked={isAdmin} onChange={(e) =>{
             setIsAdmin(e.target.checked);
             setValue("admin", e.target.checked);
           }} />}
