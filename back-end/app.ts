@@ -12,7 +12,8 @@ import dataRoutes from './src/routes/menuUser';
 const bodyParser = require('body-parser');
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = Number(process.env.PORT) || 3000;
+const host = process.env.HOST || "localhost";
 
 app.use(cors());
 app.use(express.json());
@@ -24,16 +25,15 @@ app.use(userRoutes);
 app.use(loginRoutes);
 app.use(tokenRoutes);
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
+app.listen(port, host, () => {
+  console.log(`Server is running at http://${host}:${port}`);
 });
 
-process.on('SIGINT', async () => {
+process.on("SIGINT", async () => {
   try {
     await prisma.$disconnect();
     process.exit(0);
   } catch (error) {
-    console.error('Error while disconnecting Prisma:', error);
-    process.exit(1);
+    console.error("Error while disconnecting Prisma:", error);
   }
 });
