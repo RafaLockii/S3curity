@@ -38,7 +38,6 @@ model Funcionario {
   id                Int      @id @default(autoincrement())
   modulo_default    Int
   acesso_admin      Boolean
-  ativo             Boolean  @default(false)
   cadastro_alterado DateTime @updatedAt
   usuario_cad_alt   String
   usuario_id        Int      @unique

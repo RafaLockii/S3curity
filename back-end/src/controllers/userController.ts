@@ -316,8 +316,17 @@ export const getUser = async (req: Request, res: Response) => {
   const { id } = req.params;
 
   try {
+
+    const usuario = await prisma.user.findUnique({
+      where: { id: Number(id) }
+    })
+
+    if (!usuario) {
+      return res.status(404).json({ error: "Usuario not found" });
+    }
+
     const user = await prisma.funcionario.findUnique({
-      where: { usuario_id: Number(id) },
+      where: { usuario_id: usuario.id },
       include: {
         menus: {
           include: {
@@ -340,7 +349,7 @@ export const getUser = async (req: Request, res: Response) => {
       id: user.id,
       modulo_default: user.modulo_default,
       acesso_admin: user.acesso_admin,
-      ativo: user.ativo,
+      ativo: usuario.verified,
       cadastro_alterado: user.cadastro_alterado,
       usuario_cad_alt: user.usuario_cad_alt,
       usuario_id: user.usuario_id,
