@@ -23,6 +23,7 @@ const registerFormShceme = z.object({
     return /^\d+$/.test(value) && value.length >= 8;
   }, { message: 'Telefone inválido' })),
   modulo: z.optional(z.number()),
+  empresa_id: z.optional(z.number()),
   img_url: z.optional(z.string().refine((value) => {
     // Verifica se a img_url é uma URL válida (formato básico)
     const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
@@ -58,6 +59,11 @@ interface RelatorioProps{
   itens_id: number;
 }
 
+interface empresaOptions{
+  value: number;
+  label: string;
+}
+
 export default function UpdateForm() {
 
     // Propriedades do zod
@@ -90,6 +96,9 @@ export default function UpdateForm() {
  const [showPassword, setShowPassword] = useState(false);
  const[laodingRequest, setLoadingRequest] = useState(false);
  const[defaultValuesLoaded, setDefaultValuesLoaded] = useState(false);
+
+ const [empresaOptions, setEmpresaOptions] = useState<empresaOptions[]>([]);
+
   // Crie um estado para o carregamento da requisição [loadingRequest]
 
  const handleClickShowPassword = () => setShowPassword((show) => !show);   
@@ -226,6 +235,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         setValue('email', storedUser.email);
         setValue('telefone', storedUser.telefone);
         setValue('img_url', storedUser.funcionario.imagem.url);
+        setValue('empresa_id', storedUser.funcionario.empresa_id);
         
       } catch (e) {
         console.log(e);
@@ -237,6 +247,16 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
   useEffect(() => {
     const fetchData = async () => {
       try{
+        const responselistaempresas = await api.get('empresas');
+        responselistaempresas.data.map((item: any) =>{
+          setEmpresaOptions((prev) => [...prev, {
+            value: item.id,
+            label: item.nome,
+          }])
+        })
+
+
+
         const response = await api.get(`menus_front`);
         console.log(response.data.menus)
         response.data.menus.map((item: any) => {
@@ -331,7 +351,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         itens_ids: itensSelected.map((item) => item.id),
         relatorios_ids: relatoriosSelected.map((item) => item.id),
         modulos_id: modulosSelected.map((item) => item.id),
-        empresa_id: 1
+        empresa_id: data.empresa_id
       })
       :
       await api.put(`user/edit/${storedUser.id}`, {
@@ -348,7 +368,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         itens_ids: itensSelected.map((item) => item.id),
         relatorios_ids: relatoriosSelected.map((item) => item.id),
         modulos_id: modulosSelected.map((item) => item.id),
-        empresa_id: 1
+        empresa_id: data.empresa_id
       });
       back();
     }catch(e){
@@ -357,9 +377,13 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
   }
 
   // Função de manipulação para o evento onChange do Select
-  const handleSelectChange = (selectedOption: any) => {
-    console.log(selectedOption.value);
-      setValue("modulo", selectedOption.value); // Atualiza o valor no registro
+  const handleSelectChange = (selectedOption: any, isEmpresa: boolean) => {
+    if(isEmpresa){
+      setValue("empresa_id", selectedOption.value);
+    } else {
+    setValue("modulo", selectedOption.value); // Atualiza o valor no registro
+
+    }
   };
 
   return (
@@ -433,8 +457,16 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
           options={options}
           className={styles.input}
           // Adicione o evento onChange
-          onChange={handleSelectChange}
+          onChange={(e) => {handleSelectChange(e?.value, false)}}
           placeholder="Modulo Default"
+
+        />
+        <Select
+          options={empresaOptions}
+          className={styles.input}
+          // Adicione o evento onChange
+          onChange={(e) => {handleSelectChange(e?.value, true)}}
+          placeholder="Empresa"
 
         />
         <FormControlLabel
@@ -600,6 +632,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         )}
         {/* Fim do Bloco 03 -------------------------------------> */}
       </div>
+      <div style={{display: "flex", flexDirection: "column"}}>
       {/* Bloco 04 --------------------------------------------> */}
       {itensSelected.length > 0 && (
           <div style={{display: "flex", flexDirection: "row"}}>
@@ -648,6 +681,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
           </div>
         </div>
         )}
+      </div>
         {/* Fim do Bloco 04 -------------------------------------> */}
     </div>
     )}

@@ -255,7 +255,7 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
                 </TableCell>
                 <TableCell>
                 <Checkbox
-                  checked={row.funcionario.ativo}
+                  checked={row.verified}
                   disabled
                 />
                 </TableCell>

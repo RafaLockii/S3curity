@@ -6,7 +6,6 @@ import { zodResolver } from "@hookform/resolvers/zod/dist/zod.js";
 import { useRouter } from "next/router";
 import  api  from "@/lib/axios";
 import { useEffect, useState } from "react";
-import { useUserContext } from "@/context/UserContext";
 import { EmpresaData } from "@/types/types";
 
 const registerFormShceme = z.object({
@@ -32,7 +31,6 @@ export default function UpdateForm(props: EmpresaData) {
   });
 
   const {back} = useRouter();
- const {user} = useUserContext();
 
  //Bloco de imagens do carrossel ----------------------------------------------->
  const [imagensCarrosel, setImagensCarrosel] = useState<string[]>([]);
@@ -43,8 +41,8 @@ export default function UpdateForm(props: EmpresaData) {
 };
 // Fim do bloco de imagens do carrossel ---------------------------------------->
 
-    
 
+  const user = JSON.parse(localStorage.getItem("user") || '{}')
   //Bloco que popula na api
   async function handleRegister(data: RegisterFormData) {
     await api.put(`empresa/edit/${props.id}`, {
@@ -52,7 +50,8 @@ export default function UpdateForm(props: EmpresaData) {
       "razao_s": data.razao_s,
       "logo": data.logo,
       "imagem_fundo": data.imagem_fundo,
-      "usuario_cad_alt": user?.email || "Não definido",
+      "usuario_criacao": user?.email || "Não definido",
+      "carrosselImagens": imagensCarrosel
       //"ativo": true,
     });
 

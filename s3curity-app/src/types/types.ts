@@ -34,6 +34,7 @@ export interface TableData {
     telefone: string;
     acesso_admin: boolean;
     ativo: boolean;
+    verified: boolean;
     funcionario: {
         acesso_admin: boolean;
         ativo: boolean;

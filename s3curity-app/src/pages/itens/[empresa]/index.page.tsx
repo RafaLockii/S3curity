@@ -55,7 +55,7 @@ export default function Enterprise(){
                 {!showCreateForm && !showUpdateForm && (
                     <>
                     <div className={styles.formHeader}>
-                        Empresas
+                        Itens
                         <div className={styles.headerButtonContainer}>
                             <button className={styles.headerButton} onClick={ () => handleShowCreateForm(true)}>
                             Criar

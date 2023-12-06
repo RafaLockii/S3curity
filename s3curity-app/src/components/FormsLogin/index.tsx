@@ -15,6 +15,7 @@ import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import EmailIcon from '@mui/icons-material/Email';
 import LoadingButton from '@mui/lab/LoadingButton';
+import Link from "next/link";
 
 const registerFormScheme = z.object({
     email: z.string().email({ message: 'E-mail inválido' }),
@@ -76,6 +77,7 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
                     email: response.data.email,
                     nome: response.data.nome,
                     acesso_admin: response.data.isAdmin,
+                    verified: response.data.ativo,
                 }));
                 await router.push(`/home/${empresa}`);
                 setLoadingRequest(false); // Quando a requisição terminar, sete o estado para false
@@ -92,6 +94,10 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
 
     async function handleForgotpasswordClick() {
         await router.push('/forgotPassword');
+    }
+
+    async function handleActivateuser(){
+        await router.push('/activate')
     }
 
     return (
@@ -139,8 +145,9 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
                     {...register('senha')}
                 />
                 </FormControl>
-
-                <div className={styles.forgotPassword} onClick={handleForgotpasswordClick}> Esqueceu a senha?</div>
+                <Link href={`/forgotPassword`}>
+                <div className={styles.forgotPassword}> Esqueceu a senha?</div>
+                </Link>
                 <LoadingButton
                     className={styles.button}
                     type="submit"
@@ -148,6 +155,9 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
                     >
                     Entrar
                 </LoadingButton>
+                <Link href={`/activate`}>
+                <div className={styles.activate}> Ativar Conta</div>
+                </Link>
                 
                 {errors.email && <div className={styles.formAnnotation}>{errors.email.message}</div>}
                 {errors.senha && <div className={styles.formAnnotation}>{errors.senha.message}</div>}
