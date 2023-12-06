@@ -10,6 +10,7 @@ import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
 // import { useUserContext } from "@/context/UserContext";
 import {MenuData } from "@/types/types";
+import { TextField } from "@mui/material";
 
 // Validação do formulário
 const registerFormShceme = z.object({
@@ -78,69 +79,50 @@ export default function CreateForm() {
   return (
     <div className={styles.formContainer}>
       <form className={styles.form} onSubmit={handleSubmit(handleRegister)}>
-        <div>
-        <div className={styles.inputWithContents}>
-          <input
-            className={styles.input}
-            placeholder="Nome"
-            {...register("nome")}
-          ></input>
-          {errors.nome && (
-            <div className={styles.formAnnotation}>
-              {errors.nome ? errors.nome.message : ""}
-            </div>
-          )}
-        </div>
-
-        <div className={styles.inputWithContents}>
-          <input
-            className={styles.input}
-            placeholder="Razão Social formato: 00.000.000/0000-00"
-            {...register("razao_s")}
-          ></input>
-          {errors.razao_s && (
-            <div className={styles.formAnnotation}>
-              {errors.razao_s ? errors.razao_s.message : ""}
-            </div>
-          )}
-        </div>
-        <div className={styles.inputWithContents}>
-          <input
-            className={styles.input}
-            placeholder="URL da Logo"
-            {...register("logo")}
-          ></input>
-          {errors.logo && (
-            <div className={styles.formAnnotation}>
-              {errors.logo ? errors.logo.message : ""}
-            </div>
-          )}
-        </div>
-        <div className={styles.inputWithContents}>
-          <input
-            className={styles.input}
-            placeholder="URL da Imagem de Fundo"
-            {...register("imagem_fundo")}
-          ></input>
-          {errors.imagem_fundo && (
-            <div className={styles.formAnnotation}>
-              {errors.imagem_fundo ? errors.imagem_fundo.message : ""}
-            </div>
-          )}
-        </div>
+        <TextField
+          id="nome"
+          label='Nome'
+          {...register('nome')}
+          sx={{ m: 1, width: '27ch',  }}
+          error={errors.nome ? true : false}
+          helperText={errors.nome ? errors.nome.message : ''}
+        />
+        <TextField
+          id="razao_s"
+          label='Razão Social'
+          {...register('razao_s')}
+          sx={{ m: 1, width: '27ch',  }}
+          error={errors.razao_s ? true : false}
+          helperText={errors.razao_s ? errors.razao_s.message : ''}
+        />
+        <TextField
+          id="logo"
+          label='Link da Logo'
+          {...register('logo')}
+          sx={{ m: 1, width: '27ch',  }}
+          error={errors.logo ? true : false}
+          helperText={errors.logo ? errors.logo.message : ''}
+        />
+        <TextField
+          id="imagem_fundo"
+          label='Link da Imagem de fundo'
+          {...register('imagem_fundo')}
+          sx={{ m: 1, width: '27ch',  }}
+          error={errors.imagem_fundo ? true : false}
+          helperText={errors.imagem_fundo ? errors.imagem_fundo.message : ''}
+        />
         {/* Render image inputs dynamically */}
-        {Array.from({ length: numImageInputs }).map((_, index) => (
-          <div key={index} className={styles.inputWithContents}>
-            <input
-              className={styles.input}
-              placeholder={`Imagem do carrossel ${index + 1}`}
-              onChange={(e) => {
-                const newImages = [...imagensCarrosel];
-                newImages[index] = e.target.value;
-                setImagensCarrosel(newImages);
-              }}
-            ></input>
-          </div>
+          {Array.from({ length: numImageInputs }).map((_, index) => (
+          <TextField
+          id="imagem_carrossel"
+          label={`${index + 1}º Imagem do carrossel`}
+          sx={{ m: 1, width: '27ch',  }}
+          onChange={(e) => {
+            const newImages = [...imagensCarrosel];
+            newImages[index] = e.target.value;
+            setImagensCarrosel(newImages);
+          }}
+        />
         ))}
 
         {/* Button to add more image inputs */}
@@ -151,7 +133,6 @@ export default function CreateForm() {
         >
           Imagem +
         </button>
-        </div>
 
         <button className={styles.createUserButton} type="submit">
           Salvar

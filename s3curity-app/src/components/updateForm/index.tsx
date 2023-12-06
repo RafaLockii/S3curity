@@ -455,7 +455,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         
         <Select
           options={options}
-          className={styles.input}
+          className={styles.select}
           // Adicione o evento onChange
           onChange={(e) => {handleSelectChange(e?.value, false)}}
           placeholder="Modulo Default"
@@ -463,7 +463,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         />
         <Select
           options={empresaOptions}
-          className={styles.input}
+          className={styles.select}
           // Adicione o evento onChange
           onChange={(e) => {handleSelectChange(e?.value, true)}}
           placeholder="Empresa"
@@ -477,7 +477,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
             setValue("admin", e.target.checked);
           }} />}
           label="Administrador"
-          sx={{ m: 1, width: '27ch', justifyContent: "space-between" }}
+          sx={{ m: 1.25, width: '27ch', justifyContent: "space-between" }}
           labelPlacement="start"
         />
         <button className={styles.createUserButton} type="submit">
@@ -582,6 +582,9 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         )}
         {/* Fim do Bloco 02 -------------------------------------> */}
         {/* menusSelected.length > 0 */}
+        
+      </div>
+      <div style={{display: "flex", flexDirection: "column"}}>
         {/* Bloco 03 --------------------------------------------> */}
         {menusSelected.length > 0 && (
           <div style={{display: "flex", flexDirection: "row"}}>
@@ -631,8 +634,6 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         </div>
         )}
         {/* Fim do Bloco 03 -------------------------------------> */}
-      </div>
-      <div style={{display: "flex", flexDirection: "column"}}>
       {/* Bloco 04 --------------------------------------------> */}
       {itensSelected.length > 0 && (
           <div style={{display: "flex", flexDirection: "row"}}>

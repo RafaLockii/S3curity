@@ -6,17 +6,17 @@
 }
 
 .createUserButton{
-    position: absolute;
-    bottom: 5rem;
-    right: 6rem;
-    padding: 0.5rem;
-    color: #1BC5BD;
-    background-color: #C9F7F5;
-    border: none;
-    cursor: pointer;
-    width: 5rem;
-    height: 3rem;
-    border-radius: 5px;
+  position: absolute;
+  bottom: 7rem;
+  right: 15rem;
+  padding: 0.5rem;
+  color: #1BC5BD;
+  background-color: #94f1ec;
+  border: none;
+  cursor: pointer;
+  width: 8rem;
+  height: 4rem;
+  border-radius: 5px;
 }
 
 .input {
@@ -40,7 +40,7 @@
 
   .form{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     margin-right: 2rem;
   }
   .formHeader{

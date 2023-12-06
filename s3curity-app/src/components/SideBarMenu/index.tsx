@@ -122,8 +122,9 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
               },
               }}>
                   <div className={styles.userContainer}>
-                        {/* <div className={styles.userImage}></div> */}
-                        <Avatar alt="U" src={user?.fotoPerfil}></Avatar>
+                    <SubMenu  label={
+                      <div style={{display: 'flex', flexDirection: 'row', gap: '0.25rem'}}>
+                      <Avatar alt="U" src={user?.fotoPerfil}></Avatar>
                         <div className={styles.userInfo}>
                             <div className={styles.userName}>
                                 {user?.nome}
@@ -132,7 +133,14 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                                 {user?.email}
                             </p>
                         </div>
-                        <ArrowDown className={styles.arrowDown}/>
+                        {/* <ArrowDown className={styles.arrowDown}/> */}
+                      </div>
+                    }>
+                        {/* <div className={styles.userImage}></div> */}
+                        <Link href={`/login/${props.empresa}`} style={{textDecoration: 'none'}} onClick={()=>{localStorage.removeItem('user')}}>
+                        <MenuItem icon={<LogoutIcon/>}style={{color: 'red'}}>Logout</MenuItem>
+                        </Link>
+                    </SubMenu>
                   </div>
                   <Link href={`/home/${props.empresa}`} style={{textDecoration: 'none', color: 'black'}}>
                   <MenuItem icon={<HouseSimple/>}>
@@ -175,9 +183,7 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                     })
                     
                   )}
-              <Link href={`/login/${props.empresa}`} style={{textDecoration: 'none'}} onClick={()=>{localStorage.removeItem('user')}}>
-              <MenuItem icon={<LogoutIcon/>}style={{color: 'red'}}>Logout</MenuItem>
-              </Link>
+              
               </Menu>
               </Sidebar>
       </div> 

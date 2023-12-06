@@ -434,7 +434,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         
         <Select
           options={options}
-          className={styles.input}
+          className={styles.select}
           // Adicione o evento onChange
           onChange={handleSelectChange}
           placeholder="Modulo Default"
@@ -443,7 +443,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         {showEmpresaSelect && (
           <Select
             options={empresaOptions}
-            className={styles.input}
+            className={styles.select}
             onChange={handleSelectChangeEmpresa}
             placeholder="Empresa do usuário"
             defaultValue={storedUser != null ? (empresaOptions.find(empresa => empresa.value === storedUser.funcionario.empresa_id)) : null}
@@ -463,7 +463,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
             setValue("admin", e.target.checked);
           }} />}
           label="Administrador"
-          sx={{ m: 1, width: '27ch', justifyContent: "space-between" }}
+          sx={{ m: 1.25, width: '27ch', justifyContent: "space-between" }}
           labelPlacement="start"
         />
         <button className={styles.createUserButton} type="submit">
@@ -568,56 +568,58 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         )}
         {/* Fim do Bloco 02 -------------------------------------> */}
         {/* menusSelected.length > 0 */}
-        {/* Bloco 03 --------------------------------------------> */}
-        {menusSelected.length > 0 && (
-          <div style={{display: "flex", flexDirection: "row"}}>
-          <div className={styles.draggableBoxOutput}>
-            <h4>Itens</h4>
-            {draggableItens.map((item) => {
-              // if(item.hasOwnProperty("menus_id")){
-                const found = menusSelected.find(menu => menu.id === item.menus_id);
-                if (found) {
-                  return(
-                    <div 
-                    key={item.id}
-                    className={styles.draggableItens}
-                    draggable
-                    onDragStart={(e) => handleDragStart(e, item)}
-                    // onDragEnd={() => handleRemoveItem(item)}
-                    >
-                      {item.nome}
-                    </div>
-                  )
-                }
-              // }
-            })}
-          </div>
-          
-          <div
-            className={styles.draggableBoxInput}
-            onDrop={handleDrop}
-            onDragOver={handleDragOver}
-          >
-            {itensSelected.length === 0 && <h4>Arraste os itens aqui</h4>}
-            {itensSelected.map((item, index) => {
-              // if(item.hasOwnProperty("menus_id")){
-                return (
+        
+      </div>
+      <div style={{display: "flex", flexDirection: "column"}}>
+      {/* Bloco 03 --------------------------------------------> */}
+      {menusSelected.length > 0 && (
+        <div style={{display: "flex", flexDirection: "row"}}>
+        <div className={styles.draggableBoxOutput}>
+          <h4>Itens</h4>
+          {draggableItens.map((item) => {
+            // if(item.hasOwnProperty("menus_id")){
+              const found = menusSelected.find(menu => menu.id === item.menus_id);
+              if (found) {
+                return(
                   <div 
                   key={item.id}
                   className={styles.draggableItens}
                   draggable
                   onDragStart={(e) => handleDragStart(e, item)}
-                  onDragEnd={() => handleRemoveItemFromOutputBox(item)}>
-                    <div>{item.nome}</div>
+                  // onDragEnd={() => handleRemoveItem(item)}
+                  >
+                    {item.nome}
                   </div>
                 )
-              // }
-            })}
-          </div>
+              }
+            // }
+          })}
         </div>
-        )}
-        {/* Fim do Bloco 03 -------------------------------------> */}
+        
+        <div
+          className={styles.draggableBoxInput}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+        >
+          {itensSelected.length === 0 && <h4>Arraste os itens aqui</h4>}
+          {itensSelected.map((item, index) => {
+            // if(item.hasOwnProperty("menus_id")){
+              return (
+                <div 
+                key={item.id}
+                className={styles.draggableItens}
+                draggable
+                onDragStart={(e) => handleDragStart(e, item)}
+                onDragEnd={() => handleRemoveItemFromOutputBox(item)}>
+                  <div>{item.nome}</div>
+                </div>
+              )
+            // }
+          })}
+        </div>
       </div>
+      )}
+      {/* Fim do Bloco 03 -------------------------------------> */}
       {/* Bloco 04 --------------------------------------------> */}
       {itensSelected.length > 0 && (
           <div style={{display: "flex", flexDirection: "row"}}>
@@ -667,6 +669,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         </div>
         )}
         {/* Fim do Bloco 04 -------------------------------------> */}
+      </div>
     </div>
     )}
     </>
