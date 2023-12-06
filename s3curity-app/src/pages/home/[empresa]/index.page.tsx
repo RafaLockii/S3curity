@@ -75,10 +75,10 @@ export default function Home() {
                                         image={image}
                                         key={index}
                                         sx={{
-                                        minWidth: 225,
-                                        maxWidth: 750,
+                                        minWidth: 750,
+                                        maxWidth: 1000,
                                         minHeight: 450,
-                                        maxHeight: 550,
+                                        maxHeight: 650,
                                         borderRadius: 2,
                                         transition: 'transform 0.3s',
                                         cursor: 'pointer',

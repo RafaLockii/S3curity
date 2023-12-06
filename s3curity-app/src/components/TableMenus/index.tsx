@@ -171,10 +171,10 @@ return (
     height: '10vh',
     }}>
         <TableRow>
-        <TableCell>Nome</TableCell>
-        <TableCell>Modulo</TableCell>
-        <TableCell>Quantidade itens</TableCell>
-        <TableCell>Quantidade relatórios</TableCell>
+        <TableCell sx={{fontSize: 32}}>Nome</TableCell>
+        <TableCell sx={{fontSize: 32}}>Modulo</TableCell>
+        <TableCell sx={{fontSize: 32}}>Quantidade itens</TableCell>
+        <TableCell sx={{fontSize: 32}}>Quantidade relatórios</TableCell>
         <TableCell></TableCell>
         <TableCell></TableCell>
         </TableRow>
@@ -186,10 +186,10 @@ return (
         ).map((row) => (
         <TableRow key={row.id}>
             
-            <TableCell>{row.nome}</TableCell>
-            <TableCell>{row.modulo}</TableCell>
-            <TableCell>{row.itens.length}</TableCell>
-            <TableCell>{row.itens.reduce((accumulator, currentItem) => accumulator + currentItem.relatorios.length, 0)}</TableCell>
+            <TableCell sx={{fontSize: 24, alignItems: 'center'}}>{row.nome}</TableCell>
+            <TableCell sx={{fontSize: 24}}>{row.modulo}</TableCell>
+            <TableCell sx={{fontSize: 24}}>{row.itens.length}</TableCell>
+            <TableCell sx={{fontSize: 24}}>{row.itens.reduce((accumulator, currentItem) => accumulator + currentItem.relatorios.length, 0)}</TableCell>
             <TableCell>
             <button className={styles.button} onClick={() => { router.push(`editMenu/${row.id}/${empresa}`)}}>Editar</button>
             </TableCell>
@@ -235,7 +235,7 @@ return (
                         </div>
                       }
                     >
-                      Tem certeza que deseja deletar este usuário?
+                      Tem certeza que deseja deletar este ITEM?
                     </Alert>
                   )}
                 </div>

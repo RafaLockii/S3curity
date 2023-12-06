@@ -207,12 +207,12 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
         }}>
           <TableRow>
             <TableCell></TableCell>
-            <TableCell>Nome</TableCell>
-            <TableCell>Empresa</TableCell>
-            <TableCell>Operacional</TableCell>
-            <TableCell>Estratégico</TableCell>
-            <TableCell>Gerencial</TableCell>
-            <TableCell>Ativo</TableCell>
+            <TableCell sx={{fontSize: 32}}>Nome</TableCell>
+            <TableCell sx={{fontSize: 32}}>Empresa</TableCell>
+            <TableCell sx={{fontSize: 32}}>Operacional</TableCell>
+            <TableCell sx={{fontSize: 32}}>Estratégico</TableCell>
+            <TableCell sx={{fontSize: 32}}>Gerencial</TableCell>
+            <TableCell sx={{fontSize: 32}}>Ativo</TableCell>
             <TableCell></TableCell>
             <TableCell></TableCell>
           </TableRow>
@@ -230,11 +230,11 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
                 onChange={(e) => handleCheckbox(row, e.target.checked)}
                 />
               </TableCell>
-              <TableCell >
+              <TableCell sx={{flexDirection: 'row', display: 'flex', marginTop: '0.50rem', alignItems: 'center', gap: '1rem', fontSize: 24}}>
                 <Avatar alt="U" src={row.funcionario.imagem.url}/>
                 {row.nome}
               </TableCell>
-              <TableCell>{row.funcionario.empresa.nome}</TableCell>
+              <TableCell sx={{fontSize: 24}}>{row.funcionario.empresa.nome}</TableCell>
               <TableCell>
                 <Checkbox
                   checked={row.funcionario.modulos.some(modulo => modulo.nome === "OPERACIONAL")}

@@ -82,8 +82,8 @@ export default function SignIn() {
                         image={image}
                         key={index}
                         sx={{
-                        minWidth: 225,
-                        maxWidth: 750,
+                        minWidth: 750,
+                        maxWidth: 1250,
                         minHeight: 450,
                         maxHeight: 550,
                         borderRadius: 2,
