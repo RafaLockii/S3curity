@@ -7,6 +7,7 @@ import { useRouter } from "next/router";
 import  api  from "@/lib/axios";
 import { useEffect, useState } from "react";
 import { EmpresaData } from "@/types/types";
+import { TextField } from "@mui/material";
 
 const registerFormShceme = z.object({
     nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s0-9]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
@@ -71,73 +72,61 @@ export default function UpdateForm(props: EmpresaData) {
     <div>
 
       <form onSubmit={handleSubmit(handleRegister)} className={styles.form}>
-        <div className={styles.inputWithContents}>
-            <input
-            className={styles.input}
-            placeholder={props.nome}
-            {...register("nome")}
-            ></input>
-            {errors.nome &&(
-                <div className={styles.formAnnotation}>
-                    {errors.nome.message}
-                </div>
-            )}
-        </div>
-        <div className={styles.inputWithContents}>
-            <input
-            type="number"
-            id="razao_s"
-            placeholder={props.cnpj}
-            {...register("razao_s")}
-            className={styles.input}
-            />
-            {errors.razao_s &&(
-                <div className={styles.formAnnotation}>
-                    {errors.razao_s.message}
-                </div>
-            )}
-        </div>
-        <div className={styles.inputWithContents}>
-            <input
-            id="logo"
-            placeholder={props.logo}
-            {...register("logo")}
-            className={styles.input}
-            />
-            {errors.logo &&(
-                <div className={styles.formAnnotation}>
-                    {errors.logo.message}
-                </div>
-                )}
-       </div>  
-        <div className={styles.inputWithContents}>
-          <input
-            type="text"
-            id="imagem_fundo"
-            placeholder={props.imagem_fundo}
-            {...register("imagem_fundo")}
-            className={styles.input}
-          />
-            <CloudArrowUp />
-            {errors.imagem_fundo &&(
-                <div className={styles.formAnnotation}>
-                    {errors.imagem_fundo.message}
-                </div>
-            )}
-        </div>
+      <TextField
+          id="nome"
+          label='Nome'
+          {...register('nome')}
+          sx={{ m: 1, width: '27ch',  }}
+          error={errors.nome ? true : false}
+          helperText={errors.nome ? errors.nome.message : ''}
+        />
+        <TextField
+          id="razao_s"
+          label='Razão Social'
+          {...register('razao_s')}
+          sx={{ m: 1, width: '27ch',  }}
+          error={errors.razao_s ? true : false}
+          helperText={errors.razao_s ? errors.razao_s.message : ''}
+        />
+        <TextField
+          id="logo"
+          label='Link da Logo'
+          {...register('logo')}
+          sx={{ m: 1, width: '27ch',  }}
+          error={errors.logo ? true : false}
+          helperText={errors.logo ? errors.logo.message : ''}
+        />
+        <TextField
+          id="imagem_fundo"
+          label='Link da Imagem de fundo'
+          {...register('imagem_fundo')}
+          sx={{ m: 1, width: '27ch',  }}
+          error={errors.imagem_fundo ? true : false}
+          helperText={errors.imagem_fundo ? errors.imagem_fundo.message : ''}
+        />
         {/* Render image inputs dynamically */}
         {Array.from({ length: numImageInputs }).map((_, index) => (
-          <div key={index} className={styles.inputWithContents}>
-            <input
-              className={styles.input}
-              placeholder={`Imagem do carrossel ${index + 1}`}
-              onChange={(e) => {
-                const newImages = [...imagensCarrosel];
-                newImages[index] = e.target.value;
-                setImagensCarrosel(newImages);
-              }}
-            ></input>
-          </div>
+          // <div key={index} className={styles.inputWithContents}>
+          //   <input
+          //     className={styles.input}
+          //     placeholder={`Imagem do carrossel ${index + 1}`}
+          //     onChange={(e) => {
+          //       const newImages = [...imagensCarrosel];
+          //       newImages[index] = e.target.value;
+          //       setImagensCarrosel(newImages);
+          //     }}
+          //   ></input>
+          // </div>
+          <TextField
+          id="imagem_carrossel"
+          label={`${index + 1}º Imagem do carrossel`}
+          sx={{ m: 1, width: '27ch',  }}
+          onChange={(e) => {
+            const newImages = [...imagensCarrosel];
+            newImages[index] = e.target.value;
+            setImagensCarrosel(newImages);
+          }}
+        />
         ))}
 
         {/* Button to add more image inputs */}
