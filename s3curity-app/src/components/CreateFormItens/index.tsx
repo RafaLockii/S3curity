@@ -5,7 +5,7 @@ import styles from "./styles.module.css";
 import { useRouter } from "next/router";
 import { api } from "@/lib/axios";
 import { useEffect, useState } from "react";
-import { useUserContext } from "@/context/UserContext";
+// import { useUserContext } from "@/context/UserContext";
 import {MenuData } from "@/types/types";
 import { Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, TextField } from "@mui/material";
 import AddBoxOutlinedIcon from '@mui/icons-material/AddBoxOutlined';
@@ -63,7 +63,7 @@ export default function CreateForm() {
   
     // Adicione um novo item ao array
     newMenus[menuIndex].itens.push({
-      nomeItem: "",
+      nome: "",
       relatorios: [],
     });
   
@@ -151,7 +151,7 @@ export default function CreateForm() {
                       const newMenus = [...menus];
                       newMenus[menuIndex].itens[itemIndex] = {
                         ...newMenus[menuIndex].itens[itemIndex],
-                        nomeItem: e.target.value,
+                        nome: e.target.value,
                       };
                       setMenus(newMenus);
                     }}

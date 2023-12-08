@@ -1,7 +1,7 @@
 
 .sideBar{
-    max-width: 15rem;
-    width: 10rem;
+    max-width: 20rem;
+    width: 15rem;
     background-color: #fff;
     border-radius: 10px;
     box-shadow: 0px 0px 10px 0px rgba(0,0,0,0.1);
@@ -71,7 +71,6 @@
 
 .arrowDown{
     margin-top: 1rem;
-    margin-left: 1rem;
     display: flex;
     flex-direction: column;
     justify-content: center;

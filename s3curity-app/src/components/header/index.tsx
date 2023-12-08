@@ -82,7 +82,7 @@ export function Header() {
                         >
                             {modulos && (
                                 modulos.map((moduloData) => {
-                                    return <MenuItem value={moduloData.id}>
+                                    return <MenuItem key={moduloData.id} value={moduloData.id}>
                                         <h1 className={styles.operacional}>{moduloData.nome}</h1>
                                     </MenuItem>
                                 })

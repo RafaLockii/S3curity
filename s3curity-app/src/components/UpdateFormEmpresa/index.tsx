@@ -63,7 +63,7 @@ export default function UpdateForm(props: EmpresaData) {
   //Função utilizada para já deixar os dados do usuário preenchidos no formulário
   useEffect(() => {
     setValue('nome', props.nome);
-    setValue('razao_s', props.cnpj);
+    setValue('razao_s', props.razao_s);
     setValue('logo', props.logo);
     setValue('imagem_fundo', props.imagem_fundo);
   }, [props]); 
@@ -118,6 +118,7 @@ export default function UpdateForm(props: EmpresaData) {
           //   ></input>
           // </div>
           <TextField
+          key={index}
           id="imagem_carrossel"
           label={`${index + 1}º Imagem do carrossel`}
           sx={{ m: 1, width: '27ch',  }}

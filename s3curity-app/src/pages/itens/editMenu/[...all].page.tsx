@@ -10,7 +10,7 @@ import { MenusData } from "@/types/types";
 
 
 
-export default function editUsers(){
+export default function EditUsers(){
 
 const [menuData, setmenuData] = useState<MenusData>();
 

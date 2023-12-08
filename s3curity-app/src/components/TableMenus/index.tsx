@@ -94,17 +94,20 @@ return (
 }
 
 export default function CustomPaginationActionsTable({ data, empresa }: MenuTableComponentProps) {
-// let dataArray: MenusData[];
-// console.log(data);
-// // Verifique se data é um objeto com uma propriedade "datas"
-// if ('datas' in data) {
-// dataArray = data.datas;
-// } else {
-// dataArray = data as MenusData[];
-// }
-
-const [dataArray, setDataArray] = useState<MenusData[]>([]);
-const [showAlert, setShowAlert] = useState(false);
+  // let dataArray: MenusData[];
+  // console.log(data);
+  // // Verifique se data é um objeto com uma propriedade "datas"
+  // if ('datas' in data) {
+    // dataArray = data.datas;
+    // } else {
+      // dataArray = data as MenusData[];
+      // }
+      
+      const [dataArray, setDataArray] = useState<MenusData[]>([]);
+      const [showAlert, setShowAlert] = useState(false);
+      
+      const [page, setPage] = React.useState(0);
+      const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
 useEffect(() => {
     let dataToSet: MenusData[] = [];
@@ -136,8 +139,6 @@ const router = useRouter;
 function handleEditUser() {
 router.push('/user/editUser');
 }
-const [page, setPage] = React.useState(0);
-const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
 // Avoid a layout jump when reaching the last page with empty rows.
 const emptyRows =
@@ -210,7 +211,7 @@ return (
                           <Button
                             color="inherit"
                             size="small"
-                            onClick={(e) => {
+                            onClick={(e: any) => {
                               e.preventDefault();
                               console.log("MENU SELECIONADO")
                               console.log("MENU SELECIONADO")

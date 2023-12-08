@@ -96,15 +96,13 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 export default function CustomPaginationActionsTable({ data, empresa }: EmpresaTableComponentProps) {
   const [dataArray, setDataArray] = useState<EmpresaTableData[]>([]);
   const [showAlert, setShowAlert] = useState(false);
-  //   let dataArray: EmpresaTableData[];
-  // console.log(data);
-  // // Verifique se data é um objeto com uma propriedade "datas"
-  // if ('datas' in data) {
-  //   dataArray = data.datas;
-  // } else {
-  //   dataArray = data as EmpresaTableData[];
-  // }
-
+  const router = useRouter();
+  function handleEditUser() {
+    router.push('/user/editUser');
+  }
+  const [page, setPage] = React.useState(0);
+  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+ 
   useEffect(() => {
     let dataToSet: EmpresaTableData[] = [];
     // Assuming data is updated externally (props) and used to update dataArray state
@@ -133,12 +131,6 @@ export default function CustomPaginationActionsTable({ data, empresa }: EmpresaT
   };
 
 
-  const router = useRouter();
-  function handleEditUser() {
-    router.push('/user/editUser');
-  }
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -206,7 +198,7 @@ export default function CustomPaginationActionsTable({ data, empresa }: EmpresaT
                           <Button
                             color="inherit"
                             size="small"
-                            onClick={(e) => {
+                            onClick={(e: any) => {
                               e.preventDefault();
                               deleteUser(row.id); // Call deleteUser function passing the ID
                               setShowAlert(false);

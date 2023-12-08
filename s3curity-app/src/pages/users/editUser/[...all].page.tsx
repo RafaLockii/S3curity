@@ -1,3 +1,4 @@
+'use-client'
 import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
 import styles from './styles.module.css';
@@ -10,12 +11,12 @@ import { UserData } from "@/types/types";
 
 
 
-export default function editUsers(){
+export default function EditUsers(){
     
     const [userData, setUserData] = useState<UserData>();
 
 
-        //Resgatando data da URL
+       
     const {query, back} = useRouter;
 
     let data: string[] = [];

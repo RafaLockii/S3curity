@@ -1,7 +1,7 @@
 export interface EmpresaData {
     id: number;
     nome: string;
-    cnpj: string;
+    razao_s: string;
     logo: string;
     data_alt: any;
     data_criacao: string;

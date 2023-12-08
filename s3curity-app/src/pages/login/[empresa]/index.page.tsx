@@ -19,10 +19,10 @@ export default function SignIn() {
         slidesPerView: 2.5,
         spaceBetween: 1,
         loop: true,
-        loopAddBlankSlides: true,
         
         
     };
+    const router = useRouter();
 
     useEffect(() => {
         
@@ -36,11 +36,6 @@ export default function SignIn() {
                     response.data.empresa.carrosseis.map((item: any) => {
                         setImages(prevImages => [...prevImages, item.nome]);
                     })
-                    console.log(response.data.empresa.logo);
-                    console.log(response.data.empresa.logo);
-                    console.log(response.data.empresa.logo);
-                    console.log(response.data.empresa.logo);
-                    console.log(response.data.empresa.logo);
                     setLogo(response.data.empresa.logo);
                     window.localStorage.setItem('logo', JSON.stringify(response.data.empresa.logo));
                     window.localStorage.setItem('empresa', JSON.stringify({
@@ -63,7 +58,7 @@ export default function SignIn() {
     // window.localStorage.setItem('images', JSON.stringify(images));
     // window.localStorage.setItem('logo', JSON.stringify(logo));
     const storedUserData = window.localStorage.getItem('user');
-    const router = useRouter();
+    
     if(storedUserData){
         router.push(`/home/${empresa}`)
     }

@@ -1,3 +1,4 @@
+'use-client'
 import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
 import CreateUserForm from "../../../components/createUserForm";
@@ -19,6 +20,7 @@ export default function Users(){
     const [userData, setUserData] = useState([]);
     const [empresas, setEmpresas] = useState<EmpresaData[]>([]);
     const [empresaid, setEmpresaId] = useState<number>();
+    const [storedUser, setStoredUser] = useState<any>();
 
     const handleShowCreateUserForm = (show: boolean) => {
         setShowCreateUserForm(show);}
@@ -28,12 +30,18 @@ export default function Users(){
     // const empresaParams = typeof query.empresa == 'string' ? query.empresa : "";
 
     const[empresaParams, setEmpresaParams] = useState<string>();
-    const storedUser = sessionStorage.getItem('selectedUser');
+    if (typeof window !== 'undefined') {
+        setStoredUser(sessionStorage.getItem('selectedUser'));
+    }
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                setEmpresaParams(JSON.parse(window.localStorage.getItem('empresa') || '{}').empresa || '');
+
+                if (typeof window !== 'undefined') {
+                    setEmpresaParams(JSON.parse(window.localStorage.getItem('empresa') || '{}').empresa || '');
+
+                }
                 const response2 = await api.get('empresas');
                 setEmpresas(response2.data);
                 // Encontrar a empresa correspondente e definir o ID

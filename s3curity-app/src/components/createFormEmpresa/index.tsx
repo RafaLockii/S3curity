@@ -114,6 +114,7 @@ export default function CreateForm() {
         {/* Render image inputs dynamically */}
           {Array.from({ length: numImageInputs }).map((_, index) => (
           <TextField
+          key={index}
           id="imagem_carrossel"
           label={`${index + 1}º Imagem do carrossel`}
           sx={{ m: 1, width: '27ch',  }}

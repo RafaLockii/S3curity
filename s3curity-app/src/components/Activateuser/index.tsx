@@ -42,8 +42,9 @@ export default function ActivateUser(){
         try{
             setLoadingRequest(true);
             console.log('Entrou no handleEmailRegister')
-            const response = await api.post('activate-2fa', {
+            const response = await api.post('user/ativar', {
                 email: data.email,
+                token: data.token
             });
             if(response.status === 200){
                 setMessage('Conta validada com sucesso');

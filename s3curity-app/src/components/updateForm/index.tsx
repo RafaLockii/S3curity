@@ -402,7 +402,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
           helperText={errors.nome ? errors.nome.message : ''}
         />
         
-        <FormControl sx={{ m: 1, width: '27ch' }} variant="outlined">
+        <FormControl sx={{ m: 1, width: '27ch' }} variant="outlined" disabled={true}>
           <InputLabel htmlFor="senha">Senha</InputLabel>
           <OutlinedInput
               id="senha"

@@ -1,3 +1,6 @@
+'use client'
+// this useclient forcers this page to be rendered in the client side of the app
+
 import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
 import styles from './styles.module.css';
@@ -8,10 +11,24 @@ import  useRouter from "next/router";
 import  api  from "@/lib/axios";
 import { EmpresaData } from "@/types/types";
 
-export default function editUsers(){
+
+export default function EditUsers(){
     
     const [empresaData, setempresaData] = useState<EmpresaData>();
-
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const response = await api.get(`empresa/${data[0]}`);
+                setempresaData(response.data);
+                console.log(response.data);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    
+        fetchData();
+    }, []);
 
         //Resgatando data da URL
     const {query, back} = useRouter;
@@ -37,22 +54,9 @@ export default function editUsers(){
         console.log('Nenhum parâmetro encontrado na URL');
       }
 
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await api.get(`empresa/${data[0]}`);
-                setempresaData(response.data);
-                console.log(response.data);
-            } catch (error) {
-                console.error(error);
-            }
-        }
-    
-        fetchData();
-    }, []);
 
     console.log(empresaData);  
-    console.log("razao_s DA EMPRESA: "+empresaData?.cnpj)
+    console.log("razao_s DA EMPRESA: "+empresaData?.razao_s)
 
 
     return(
@@ -70,7 +74,7 @@ export default function editUsers(){
                         <UpdateForm
                             id={empresaData.id}
                             nome={empresaData.nome}
-                            cnpj={empresaData.cnpj}
+                            razao_s={empresaData.razao_s}
                             logo={empresaData.logo}
                             data_alt={empresaData.data_alt}
                             data_criacao={empresaData.data_criacao}

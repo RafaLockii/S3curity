@@ -96,21 +96,15 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
   const [dataArray, setDataArray] = useState<TableData[]>([]);
   const[requestApi, setRequestApi] = useState(false);
   const [showAlert, setShowAlert] = useState(false);
-
-  //   let dataArray: TableData[];
-  // console.log(data);
-  // // Verifique se data é um objeto com uma propriedade "datas"
-  // if ('datas' in data) {
-  //   dataArray = data.datas;
-  // } else {
-  //   dataArray = data as TableData[];
-  // }
-
-  if (!Array.isArray(dataArray)) {
-    // Verifique se data não é uma matriz e, se não for, retorne uma mensagem de erro ou um componente alternativo.
-    return <div>Os dados não são uma matriz válida.</div>;
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const[newRender, setNewRender] = useState(false);
+  const[boxChecked, setBoxChecked] = useState<number | null>();
+  
+  const router = useRouter;
+  function handleEditUser() {
+    router.push('/user/editUser');
   }
-
   useEffect(() => {
     let dataToSet: TableData[] = [];
     // Assuming data is updated externally (props) and used to update dataArray state
@@ -122,16 +116,10 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
     setDataArray(dataToSet);
   }, [data]);
 
-
-
-  const router = useRouter;
-  function handleEditUser() {
-    router.push('/user/editUser');
+  if (!Array.isArray(dataArray)) {
+    // Verifique se data não é uma matriz e, se não for, retorne uma mensagem de erro ou um componente alternativo.
+    return <div>Os dados não são uma matriz válida.</div>;
   }
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
-  const[newRender, setNewRender] = useState(false);
-  const[boxChecked, setBoxChecked] = useState<number | null>();
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
@@ -279,7 +267,7 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
                           <Button
                             color="inherit"
                             size="small"
-                            onClick={(e) => {
+                            onClick={(e: any) => {
                               e.preventDefault();
                               deleteUser(row.id); // Call deleteUser function passing the ID
                               setShowAlert(false);

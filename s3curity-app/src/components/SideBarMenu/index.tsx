@@ -122,7 +122,7 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
               },
               }}>
                   <div className={styles.userContainer}>
-                    <SubMenu  label={
+                    <SubMenu style={{width: "15rem"}} label={
                       <div style={{display: 'flex', flexDirection: 'row', gap: '0.25rem'}}>
                       <Avatar alt="U" src={user?.fotoPerfil}></Avatar>
                         <div className={styles.userInfo}>
@@ -133,7 +133,7 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                                 {user?.email}
                             </p>
                         </div>
-                        {/* <ArrowDown className={styles.arrowDown}/> */}
+                        <ArrowDown className={styles.arrowDown}/>
                       </div>
                     }>
                         {/* <div className={styles.userImage}></div> */}
@@ -164,15 +164,15 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                   </Link>
                   )}
                   {filteredMenus && (
-                    filteredMenus?.map((menu: MenuItemProps) => {
+                    filteredMenus?.map((menu: MenuItemProps, index) => {
                       return (
-                        <SubMenu label={menu.nome} icon={<ListDashes/>}>
-                          {menu.itens.map((item: itemProps) => {
+                        <SubMenu key={index} label={menu.nome} icon={<ListDashes/>}>
+                          {menu.itens.map((item: itemProps, index) => {
                             return (
-                              <SubMenu label={item.nome} icon={<ListDashes/>}>
-                                {item.relatorios.map((relatorio: relatorios) => {
+                              <SubMenu key={index} label={item.nome} icon={<ListDashes/>}>
+                                {item.relatorios.map((relatorio: relatorios, index) => {
                                   return (
-                                    <MenuItem onClick={() => handleMenuClick(relatorio.relatorio)}>{relatorio.nome}</MenuItem>
+                                    <MenuItem key={index} onClick={() => handleMenuClick(relatorio.relatorio)}>{relatorio.nome}</MenuItem>
                                   )
                                 })}
                               </SubMenu>
