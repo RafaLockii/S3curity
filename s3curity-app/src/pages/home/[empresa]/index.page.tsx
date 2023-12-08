@@ -1,3 +1,4 @@
+'use client'
 import SidebarMenu from "@/components/SideBarMenu";
 import styles from './styles.module.css';
 import { Header } from "@/components/header";
@@ -61,7 +62,7 @@ export default function Home() {
                 
                 <div className={styles.container}>
                 <div className={styles.containerHeader}>
-                        <p>Home</p>
+                        <p style={{marginLeft: '1.5rem'}}>Home</p>
                     </div>
                         {images && (
                             // <CarouselComponent empresa={empresa as string} images={images}/>
@@ -75,7 +76,7 @@ export default function Home() {
                                         image={image}
                                         key={index}
                                         sx={{
-                                        minWidth: 750,
+                                        minWidth: 950,
                                         maxWidth: 1000,
                                         minHeight: 450,
                                         maxHeight: 650,

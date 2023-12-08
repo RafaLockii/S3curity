@@ -3,6 +3,7 @@ const nextConfig = {
   reactStrictMode: false,
   distDir: 'build',
   pageExtensions: ['page.tsx', 'page.ts, api.tsx', 'api.ts'],
+  
   //APENAS PARA DESENVOLVIMENTO
   images: {
     remotePatterns: [

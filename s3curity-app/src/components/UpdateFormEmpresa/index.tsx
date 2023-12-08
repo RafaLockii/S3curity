@@ -43,7 +43,7 @@ export default function UpdateForm(props: EmpresaData) {
 // Fim do bloco de imagens do carrossel ---------------------------------------->
 
 
-  const user = JSON.parse(localStorage.getItem("user") || '{}')
+  const user = JSON.parse(window.localStorage.getItem("user") || '{}')
   //Bloco que popula na api
   async function handleRegister(data: RegisterFormData) {
     await api.put(`empresa/edit/${props.id}`, {

@@ -1,4 +1,5 @@
-'use-client'
+'use client'
+
 import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
 import CreateUserForm from "../../../components/createUserForm";
@@ -30,15 +31,14 @@ export default function Users(){
     // const empresaParams = typeof query.empresa == 'string' ? query.empresa : "";
 
     const[empresaParams, setEmpresaParams] = useState<string>();
-    if (typeof window !== 'undefined') {
-        setStoredUser(sessionStorage.getItem('selectedUser'));
-    }
+   
 
     useEffect(() => {
         const fetchData = async () => {
             try {
 
                 if (typeof window !== 'undefined') {
+                    setStoredUser(sessionStorage.getItem('selectedUser'));
                     setEmpresaParams(JSON.parse(window.localStorage.getItem('empresa') || '{}').empresa || '');
 
                 }
@@ -73,7 +73,7 @@ export default function Users(){
                 {!showCreateUserForm && !showUpdateForm && (
                 <>
                 <div className={styles.formHeader}>
-                    Usuários
+                    <p style={{marginLeft: '5rem'}}>Usuários</p>
                     <div className={styles.headerButtonContainer}>
                         <button className={styles.headerButton} onClick={ () => handleShowCreateUserForm(true)}>
                         Copiar
@@ -91,8 +91,8 @@ export default function Users(){
                 {showCreateUserForm && (
                 <>
                     <div className={styles.formHeader}>
-                        <p>Cadastro</p>
-                        <ArrowLeft className={styles.arrowLeft} onClick={ () => {sessionStorage.removeItem('selectedUser');handleShowCreateUserForm(false)}} />
+                        <p style={{marginLeft: '1.5rem'}}>Cadastro</p>
+                        <ArrowLeft className={styles.arrowLeft} onClick={ () => {window.sessionStorage.removeItem('selectedUser');handleShowCreateUserForm(false)}} />
                     </div>
 
                     {/* Aqui eu estou passando a epresa da url para o forms */}

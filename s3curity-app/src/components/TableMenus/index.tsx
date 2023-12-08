@@ -159,7 +159,7 @@ setPage(0);
 };
 
 const handleCheckbox = (user: MenusData) => {
-sessionStorage.setItem('selectedUser', JSON.stringify(user));
+window.sessionStorage.setItem('selectedUser', JSON.stringify(user));
 };
 
 return (

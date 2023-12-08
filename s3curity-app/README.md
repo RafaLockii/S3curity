@@ -10,15 +10,13 @@ No arquivo .env insira o valor da variavel BASE_URL com base na url da api
 
 Exemplo:
 
-BASE_URL = http://localhost:3000
+NEXT_PUBLIC_BASE_URL = http://localhost:3000
 
 # Inicialização
 
 Executes os seguintes comandos em ordem:
 
-npm run build
-
-npm run start
+npm run dev
 
 # Aplicação
 

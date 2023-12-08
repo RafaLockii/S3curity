@@ -1,4 +1,5 @@
-'use-client'
+'use client'
+
 import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
 import styles from './styles.module.css';
@@ -63,7 +64,7 @@ export default function EditUsers(){
             {userData ? ( // Verifique se userData está definido
                 <div className={styles.createUserFormContainer}>
                     <div className={styles.formHeader}>
-                        <p>Edição</p>
+                        <p style={{marginLeft: '1.5rem'}}>Edição</p>
                         <ArrowLeft className={styles.arrowLeft} onClick={() => back()} />
                     </div>
 

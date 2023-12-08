@@ -137,7 +137,7 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
                       </div>
                     }>
                         {/* <div className={styles.userImage}></div> */}
-                        <Link href={`/login/${props.empresa}`} style={{textDecoration: 'none'}} onClick={()=>{localStorage.removeItem('user')}}>
+                        <Link href={`/login/${props.empresa}`} style={{textDecoration: 'none'}} onClick={()=>{window.localStorage.removeItem('user')}}>
                         <MenuItem icon={<LogoutIcon/>}style={{color: 'red'}}>Logout</MenuItem>
                         </Link>
                     </SubMenu>

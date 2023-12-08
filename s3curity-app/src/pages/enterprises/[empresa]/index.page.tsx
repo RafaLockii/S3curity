@@ -1,3 +1,4 @@
+'use client'
 import SidebarMenu from "@/components/SideBarMenu";
 import { Header } from "@/components/header";
 import styles from './styles.module.css';
@@ -51,7 +52,7 @@ export default function Enterprise(){
                 {!showCreateForm && !showUpdateForm && (
                     <>
                     <div className={styles.formHeader}>
-                        Empresas
+                        <p style={{marginLeft: '5rem'}}>Empresas</p>
                         <div className={styles.headerButtonContainer}>
                             <button className={styles.headerButton} onClick={ () => handleShowCreateForm(true)}>
                             Criar
@@ -64,7 +65,7 @@ export default function Enterprise(){
                 {showCreateForm && (
                     <>
                         <div className={styles.formHeader}>
-                            <p>Cadastro</p>
+                            <p style={{marginLeft: '1.5rem'}}>Cadastro</p>
                             <ArrowLeft className={styles.arrowLeft} onClick={()  => handleShowCreateForm(false)}/>
                         </div>
                         <CreateForm/>

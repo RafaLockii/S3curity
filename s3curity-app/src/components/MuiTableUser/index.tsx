@@ -149,16 +149,16 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
   const handleCheckbox = (user: TableData, checked: boolean) => {
     if(checked){
       setBoxChecked(user.id);
-      sessionStorage.setItem('selectedUser', JSON.stringify(user));
+      window.sessionStorage.setItem('selectedUser', JSON.stringify(user));
     } else if(!checked){
       setBoxChecked(null);
-      sessionStorage.removeItem('selectedUser');
+      window.sessionStorage.removeItem('selectedUser');
     }
     
   };
 
   const handleEdit = (user: TableData) =>{
-    sessionStorage.setItem('editedUser', JSON.stringify(user));
+    window.sessionStorage.setItem('editedUser', JSON.stringify(user));
     router.push(`editUser/${user.id}/${empresa}`)
   }
 

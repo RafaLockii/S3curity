@@ -28,7 +28,7 @@ export function Header() {
     const {modulo, setModulo} = useModuloContext();
     const[loading, setLoading] = useState(true);
 
-    const logo = localStorage.getItem('logo') || '';
+    const logo = window.localStorage.getItem('logo') || '';
     const trimmedLogo = logo.replace(/^"|"$/g, ''); 
     console.log("Logo no header Component");
     console.log("Logo no header Component");

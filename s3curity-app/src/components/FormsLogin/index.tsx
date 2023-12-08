@@ -71,7 +71,7 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
                 //     acesso_admin: response.data.isAdmin,
                 // });
 
-                localStorage.setItem('user', JSON.stringify({
+                window.localStorage.setItem('user', JSON.stringify({
                     id: response.data.id,
                     token: response.data.token,
                     email: response.data.email,

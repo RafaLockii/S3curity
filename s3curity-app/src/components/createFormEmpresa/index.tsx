@@ -55,7 +55,7 @@ export default function CreateForm() {
     setNumImageInputs(numImageInputs + 1);
   };
 
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const user = JSON.parse(window.localStorage.getItem('user') || '{}');
   
   async function handleRegister(data: RegisterFormData) {
     console.log("entrou aq");

@@ -321,7 +321,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
   }, [laodingRequest])
 
 
-    const user = JSON.parse(localStorage.getItem('user') || '{}');
+    const user = JSON.parse(window.localStorage.getItem('user') || '{}');
   
 
   //Dentro do array do useeffect tinha sses itens : showEmpresaSelect, empresa.empresaid

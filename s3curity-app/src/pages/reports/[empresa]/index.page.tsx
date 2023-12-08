@@ -1,3 +1,4 @@
+'use client'
 import SidebarMenu from "@/components/SideBarMenu"
 import styles from './styles.module.css';
 import { Header } from "@/components/header";
