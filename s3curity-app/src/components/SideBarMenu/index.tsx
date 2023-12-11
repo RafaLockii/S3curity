@@ -43,7 +43,7 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
 
     const router = useRouter();
     async function handleMenuClick (route: String) {
-        router.push('/'+route + '/' + props.empresa);
+        router.push('/reports' + '/' + route + '/' + props.empresa);
     }
 
     const[user,setUser] = useState<userProps>();
@@ -62,8 +62,7 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
           // if(user){
             const response = await api.get(`user/${(JSON.parse(window.localStorage.getItem('user') || '') as userProps).id}`);
             const menusFromApi = response.data.menus;
-            console.log("MOdulo default From Api")
-            console.log(response.data.modulo_default);
+           
             setModuloDefault(response.data.modulo_default);
             setMenus(menusFromApi.map((menu: any) =>{
               return {

@@ -58,7 +58,6 @@ export default function CreateForm() {
   const user = JSON.parse(window.localStorage.getItem('user') || '{}');
   
   async function handleRegister(data: RegisterFormData) {
-    console.log("entrou aq");
     try {
       const response =  await api.post("empresa/create", {
           nome: data.nome,
@@ -69,10 +68,8 @@ export default function CreateForm() {
           carrosselImagens: imagensCarrosel,
         });
        // Assigning empresa_id to each menu in menuData
-       console.log(response.data.empresa.id)
       back();
     } catch (e) {
-      console.log(e);
     }
   }
 

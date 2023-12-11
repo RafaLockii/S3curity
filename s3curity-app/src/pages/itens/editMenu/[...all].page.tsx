@@ -33,11 +33,9 @@ if (typeof query.all === 'string') {
     // A variável data contém pelo menos um valor
     const id = data[0];
     const empresa = data[1] || '';
-    console.log("id recebido: " + id);
-    console.log("empresa recebida: " + empresa);
+   
     } else {
     // A variável data está vazia
-    console.log('Nenhum parâmetro encontrado na URL');
     }
 
 useEffect(() => {
@@ -45,7 +43,6 @@ useEffect(() => {
         try {
             const response = await api.get(`menu/${data[0]}`);
             setmenuData(response.data);
-            console.log(response.data);
         } catch (error) {
             console.error(error);
         }
@@ -54,10 +51,7 @@ useEffect(() => {
     fetchData();
 }, []);
 
-console.log("Menu na editMenu: ")
-console.log(menuData); 
 if(menuData){
-    console.log(menuData.itens)
 }
 
 

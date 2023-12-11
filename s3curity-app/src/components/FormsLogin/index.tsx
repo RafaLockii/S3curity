@@ -62,7 +62,6 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
             });
 
             if (response.status === 200) {
-                console.log(response.data);
                 // setUser({
                 //     id: response.data.id,
                 //     token: response.data.token,

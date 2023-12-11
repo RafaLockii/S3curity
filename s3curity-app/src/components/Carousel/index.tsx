@@ -29,7 +29,6 @@ const responsive = {
 };
 
 export default function CarouselComponent({ empresa, images }: CarouselProps) {
-   console.log("Imagens: "+images)
 
     return (
         <div className={styles.carouselStyle}>

@@ -79,9 +79,6 @@ const showEmpresaSelect = empresa.empresa === 's3curity';
 
 const storedUser = JSON.parse(window.sessionStorage.getItem('selectedUser') || 'null');
 
-console.log("USUÁRIO ARMAZENADO")
-console.log(storedUser);
-
 //Bloco de itens arrastáveis ------------------------------------->
 // const [draggableItens, setDraggableItens] = useState<MenuProps[] | ModuloProps[] | ItemProps[] | RelatorioProps[]>([]);
 // const [droppedItems, setDroppedItems] = useState<MenuProps[] | ModuloProps[] | ItemProps[] | RelatorioProps[]>([]);
@@ -215,7 +212,6 @@ if (storedUser) {
 try {
 const updatedDraggableItems = draggableItens.filter((draggableItem) => {
 const newValue = !itensSelected.some((droppedItem) => droppedItem.id === draggableItem.id);
-console.log("Valor Item: ");
 return newValue;
 });
 
@@ -238,7 +234,6 @@ return newValue;
         setDraggableRelatorios(updatedDraggableRelatorios);
         setEmpresaSelectedId(storedUser.funcionario.empresa.id);
       } catch (e) {
-        console.log(e);
       }
     }
     setDefaultValuesLoaded(true);
@@ -252,7 +247,6 @@ setValue('empresa_id', empresa.empresaid);
 const fetchData = async () => {
 try{
 const response = await api.get(`menus_front`);
-console.log(response.data.menus)
 response.data.menus.map((item: any) => {
 setDraggableMenus((prev) => [...prev, {
 id: item.id,
@@ -304,13 +298,11 @@ modulo: item.modulo,
               setRelatoriosSelected((prev)=>[...prev, data])
             });
           }catch(e){
-            console.log(e)
           }
           }
 
 
       } catch(e){
-        console.log(`Erro ao chamar a api: ${e}`);
       }
       setLoadingRequest(true);
     }
@@ -326,8 +318,6 @@ fetchDefaultValues();
 
 //Dentro do array do useeffect tinha sses itens : showEmpresaSelect, empresa.empresaid
 async function handleRegister(data: RegisterFormData) {
-console.log("entrou aq")
-console.log(data.empresa_id)
 try{
 await api.post('user/create', {
 nome: data.nome,
@@ -348,18 +338,15 @@ modulos_id: modulosSelected.map((item) => item.id),
 });
 back();
 }catch(e){
-console.log(e)
 }
 }
 
 // Função de manipulação para o evento onChange do Select
 const handleSelectChange = (selectedOption: any) => {
-console.log(selectedOption.value);
 setValue("modulo", selectedOption.value);
 // Atualiza o valor no registro
 };
 const handleSelectChangeEmpresa = (selectedOption: any) => {
-console.log(selectedOption.value);
 setValue("empresa_id", selectedOption.value);
 setEmpresaSelectedId(selectedOption.value); // Atualiza o valor no registro
 };
@@ -367,6 +354,7 @@ setEmpresaSelectedId(selectedOption.value); // Atualiza o valor no registro
 return (
 <>
 {defaultValuesLoaded && (
+
 <div className={styles.formContainer}>
 <form  className={styles.form} onSubmit={handleSubmit(handleRegister)}>
 

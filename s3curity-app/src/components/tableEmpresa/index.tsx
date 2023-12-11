@@ -126,7 +126,6 @@ export default function CustomPaginationActionsTable({ data, empresa }: EmpresaT
       const updatedDataArray = dataArray.filter((user) => user.id !== id);
       setDataArray(updatedDataArray); // Update dataArray state to reflect the deletion immediately
     } catch (e) {
-      console.log(e);
     }
   };
 

@@ -4,7 +4,6 @@ import { TableComponentProps, TableData } from '@/types/types';
 
 export default function TableComponent({ data, empresa }: TableComponentProps) {
   let dataArray: TableData[];
-  console.log(data);
   // Verifique se data é um objeto com uma propriedade "datas"
   if ('datas' in data) {
     dataArray = data.datas;

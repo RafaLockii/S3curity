@@ -77,9 +77,7 @@ export default function UpdateForm() {
 
  const storedUser = JSON.parse(window.sessionStorage.getItem('editedUser') || 'null');
 
- console.log("USUÁRIO ARMAZENADO")
- console.log(storedUser);
-
+ 
 
 //Bloco de itens arrastáveis ------------------------------------->
 //  const [draggableItens, setDraggableItens] = useState<MenuProps[] | ModuloProps[] | ItemProps[] | RelatorioProps[]>([]);
@@ -210,7 +208,6 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
       try {
         const updatedDraggableItems = draggableItens.filter((draggableItem) => {
           const newValue = !itensSelected.some((droppedItem) => droppedItem.id === draggableItem.id);
-          console.log("Valor Item: ");
           return newValue;
         });
 
@@ -238,7 +235,6 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         setValue('empresa_id', storedUser.funcionario.empresa_id);
         
       } catch (e) {
-        console.log(e);
       }
     }
     setDefaultValuesLoaded(true);
@@ -258,7 +254,6 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
 
 
         const response = await api.get(`menus_front`);
-        console.log(response.data.menus)
         response.data.menus.map((item: any) => {
           setDraggableMenus((prev) => [...prev, {
             id: item.id,
@@ -310,13 +305,11 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
               setRelatoriosSelected((prev)=>[...prev, data])
             });
           }catch(e){
-            console.log(e)
           }
           }
         
   
       } catch(e){
-        console.log(`Erro ao chamar a api: ${e}`);
       }
       setLoadingRequest(true);
     }
@@ -333,7 +326,6 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
 
   //Dentro do array do useeffect tinha sses itens : showEmpresaSelect, empresa.empresaid
   async function handleRegister(data: RegisterFormData) {
-    console.log("entrou aq")
     try{
       data.senha !== "" ?
       await api.put(`user/edit/${storedUser.id}`, {
@@ -372,7 +364,6 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
       });
       back();
     }catch(e){
-      console.log(e)
     }
   }
 

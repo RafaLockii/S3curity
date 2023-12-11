@@ -35,15 +35,12 @@ resolver: zodResolver(registerFormShceme),
 const { back } = useRouter();
 
 const[modulo, setModulo] = useState([]);
-console.log("Menu no UPDATEFORM")
-console.log(props.menu)
+
 
 //Bloco de código refrente a criação de menus --------------------------------------->
 
 const transformMenu = (menuData: { menu: MenusData }): MenuData => {
-    console.log("Menu dentro do transform:");
     let menu = menuData.menu;
-    console.log(menu.menu)
     return {
         nomeMenu: menu.menu.nome,
         empresa_id: 0, // Set your default value for empresa_id
@@ -64,8 +61,7 @@ const transformMenu = (menuData: { menu: MenusData }): MenuData => {
 const [numMenuInputs, setNumMenuInputs] = useState(1);
 const [menus, setMenus] = useState<MenuData[]>([transformMenu(props)]);
 
-console.log("Menu transformado: ")
-console.log(menus[0].itens[0].relatorios)
+
 
 const addMenuInput = () => {
 setNumMenuInputs(numMenuInputs + 1);
@@ -109,14 +105,9 @@ setMenus(newMenus);
 
 //FIm do bloco ------------------------------------------------------------------------>
 async function handleRegister(data: RegisterFormData) {
-console.log("entrou aq");
-console.log("entrou aq");
-console.log("entrou aq");
-console.log("entrou aq");
 
 try {
     const updatedMenu = menus[0];
-    console.log(updatedMenu.itens)
 
     const requestBody = {
         nomeMenu: updatedMenu.nomeMenu,
@@ -129,7 +120,6 @@ try {
     const response = await api.put(`menu/edit/${props.menu.menu.id}`, requestBody)
     back();
 } catch (e) {
-    console.log(e);
 }
 }
 
@@ -166,7 +156,6 @@ return (
             value={menus[menuIndex]?.modulo_id ? menus[menuIndex]?.modulo_id : 0} 
             label="Modulo"
             onChange={(e) => {
-                console.log(e.target.value);
                 const newMenus = [...menus];
                 newMenus[menuIndex] = {
                 ...newMenus[menuIndex],

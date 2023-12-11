@@ -30,13 +30,7 @@ export function Header() {
 
     const logo = window.localStorage.getItem('logo') || '';
     const trimmedLogo = logo.replace(/^"|"$/g, ''); 
-    console.log("Logo no header Component");
-    console.log("Logo no header Component");
-    console.log("Logo no header Component");
-    console.log("Logo no header Component");
-    console.log("Logo no header Component");
-    console.log("Logo no header Component");
-    console.log(trimmedLogo)
+   
 
     useEffect(() => {
     const fetchData = async () => {

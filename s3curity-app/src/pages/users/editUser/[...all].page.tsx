@@ -34,11 +34,8 @@ export default function EditUsers(){
         // A variável data contém pelo menos um valor
         const id = data[0];
         const empresa = data[1] || '';
-        console.log("id recebido: " + id);
-        console.log("empresa recebida: " + empresa);
       } else {
         // A variável data está vazia
-        console.log('Nenhum parâmetro encontrado na URL');
       }
 
     useEffect(() => {
@@ -46,7 +43,6 @@ export default function EditUsers(){
             try {
                 const response = await api.get(`user/${data[0]}`);
                 setUserData(response.data);
-                console.log(response.data);
             } catch (error) {
                 console.error(error);
             }
@@ -54,9 +50,6 @@ export default function EditUsers(){
     
         fetchData();
     }, []);
-
-    console.log(userData);  
-
 
     return(
         <div className={styles.pageContainer}>

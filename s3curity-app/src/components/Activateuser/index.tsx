@@ -41,7 +41,6 @@ export default function ActivateUser(){
     async function handleEmailRegister(data: RegisterFormData){
         try{
             setLoadingRequest(true);
-            console.log('Entrou no handleEmailRegister')
             const response = await api.post('user/ativar', {
                 email: data.email,
                 token: data.token
@@ -53,7 +52,6 @@ export default function ActivateUser(){
         }catch(e){
             setLoadingRequest(false)
 
-            console.log('Erro ao enviar email: '+ e);
             setErrorMessage('Credênciais Inválidas');
         }
         setLoadingRequest(false)

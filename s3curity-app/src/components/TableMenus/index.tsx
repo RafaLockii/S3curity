@@ -95,7 +95,6 @@ return (
 
 export default function CustomPaginationActionsTable({ data, empresa }: MenuTableComponentProps) {
   // let dataArray: MenusData[];
-  // console.log(data);
   // // Verifique se data é um objeto com uma propriedade "datas"
   // if ('datas' in data) {
     // dataArray = data.datas;
@@ -126,7 +125,6 @@ const deleteMenu = async (id: number) => {
     const updatedDataArray = dataArray.filter((menu) => menu.id !== id);
       setDataArray(updatedDataArray); // Update dataArray state to reflect the deletion immediately
     } catch (e) {
-    console.log(e);
     }
 };
 
@@ -213,11 +211,6 @@ return (
                             size="small"
                             onClick={(e: any) => {
                               e.preventDefault();
-                              console.log("MENU SELECIONADO")
-                              console.log("MENU SELECIONADO")
-                              console.log("MENU SELECIONADO")
-                              console.log("MENU SELECIONADO")
-                              console.log(row.id)
                               deleteMenu(row.id); // Call deleteMenu function passing the ID
                               setShowAlert(false);
                             }}

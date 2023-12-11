@@ -33,7 +33,6 @@ export default function Home() {
                 setEmpresa(JSON.parse(window.localStorage.getItem('empresa') || '{}').empresa || '');
                 if (empresa) {
                     const response = await api.get(`empresa_name/${empresa}`);
-                    console.log("Imagens da api: " + response.data.formattedEmpresa.carrosseis);
 
                     const imageNames = response.data.formattedEmpresa.carrosseis.map((item: any) => item.nome);
                     setImages(imageNames);

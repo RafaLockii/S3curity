@@ -40,18 +40,15 @@ export default function FormForgotPassWord(){
     // }
     async function handleEmailRegister(data: RegisterFormData){
         try{
-            console.log('Entrou no handleEmailRegister')
             const response = await api.post('activate-2fa', {
                 email: data.email,
             });
             if(response.status === 200){
-                console.log('Enviado com sucesso')
                 setShowEmailButton(false);
                 setMessage('Email enviado com sucesso');
                 setErrorMessage('');
             }
         }catch(e){
-            console.log('Erro ao enviar email: '+ e);
             setErrorMessage('Erro ao enviar email');
         }
        
@@ -59,7 +56,6 @@ export default function FormForgotPassWord(){
     async function handleResetPassword(data: RegisterFormData){
 
         try{
-            console.log('Entrou np handleResetpasswprd');
             const response = await api.post('verify-2fa', {
                 email: data.email,
                 code: data.token,
@@ -72,7 +68,6 @@ export default function FormForgotPassWord(){
                 }, 2500);
             }
         }catch(e){
-            console.log('Erro ao enviar email: '+ e);
             setErrorMessage('Erro ao resetar a senha');
         }
     }

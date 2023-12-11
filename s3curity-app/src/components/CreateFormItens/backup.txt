@@ -76,7 +76,6 @@ export default function CreateForm() {
 
    //FIm do bloco ------------------------------------------------------------------------>
   async function handleRegister(data: RegisterFormData) {
-    console.log("entrou aq");
     try {
     const menuData: MenuData[] = menus.map((menu) => ({
       ...menu,
@@ -88,7 +87,6 @@ export default function CreateForm() {
     );
       back();
     } catch (e) {
-      console.log(e);
     }
   }
 

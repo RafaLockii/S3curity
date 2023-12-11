@@ -97,7 +97,6 @@ export default function CustomPaginationActionsTable({ data, empresa }: EmpresaT
   const [dataArray, setDataArray] = useState<EmpresaTableData[]>([]);
   const [showAlert, setShowAlert] = useState(false);
   //   let dataArray: EmpresaTableData[];
-  // console.log(data);
   // // Verifique se data é um objeto com uma propriedade "datas"
   // if ('datas' in data) {
   //   dataArray = data.datas;
@@ -128,7 +127,6 @@ export default function CustomPaginationActionsTable({ data, empresa }: EmpresaT
       const updatedDataArray = dataArray.filter((user) => user.id !== id);
       setDataArray(updatedDataArray); // Update dataArray state to reflect the deletion immediately
     } catch (e) {
-      console.log(e);
     }
   };
 

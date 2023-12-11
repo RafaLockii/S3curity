@@ -64,8 +64,6 @@ export default function Users(){
     }, [empresaParams]);
     
 
-    console.log("Id da empresa: "+empresaid)
-    console.log(storedUser)
     return(
         <div className={styles.pageContainer}>
             <SidebarMenu empresa={empresaParams as string}/>

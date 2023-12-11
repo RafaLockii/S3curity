@@ -78,8 +78,6 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
 
  const storedUser = JSON.parse(window.sessionStorage.getItem('selectedUser') || 'null');
 
- console.log("USUÁRIO ARMAZENADO")
- console.log(storedUser);
 
 
 //Bloco de itens arrastáveis ------------------------------------->
@@ -215,7 +213,6 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
       try {
         const updatedDraggableItems = draggableItens.filter((draggableItem) => {
           const newValue = !itensSelected.some((droppedItem) => droppedItem.id === draggableItem.id);
-          console.log("Valor Item: ");
           return newValue;
         });
 
@@ -238,7 +235,6 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         setDraggableRelatorios(updatedDraggableRelatorios);
         setEmpresaSelectedId(storedUser.funcionario.empresa.id);
       } catch (e) {
-        console.log(e);
       }
     }
     setDefaultValuesLoaded(true);
@@ -251,7 +247,6 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
     const fetchData = async () => {
       try{
         const response = await api.get(`menus_front`);
-        console.log(response.data.menus)
         response.data.menus.map((item: any) => {
           setDraggableMenus((prev) => [...prev, {
             id: item.id,
@@ -303,13 +298,11 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
               setRelatoriosSelected((prev)=>[...prev, data])
             });
           }catch(e){
-            console.log(e)
           }
           }
         
   
       } catch(e){
-        console.log(`Erro ao chamar a api: ${e}`);
       }
       setLoadingRequest(true);
     }
@@ -326,8 +319,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
 
   //Dentro do array do useeffect tinha sses itens : showEmpresaSelect, empresa.empresaid
   async function handleRegister(data: RegisterFormData) {
-    console.log("entrou aq")
-    console.log(data.empresa_id)
+    
     try{
       await api.post('user/create', {
         nome: data.nome,
@@ -348,18 +340,15 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
       });
       back();
     }catch(e){
-      console.log(e)
     }
   }
 
   // Função de manipulação para o evento onChange do Select
   const handleSelectChange = (selectedOption: any) => {
-    console.log(selectedOption.value);
       setValue("modulo", selectedOption.value);
        // Atualiza o valor no registro
   };
   const handleSelectChangeEmpresa = (selectedOption: any) => {
-    console.log(selectedOption.value);
       setValue("empresa_id", selectedOption.value);
       setEmpresaSelectedId(selectedOption.value); // Atualiza o valor no registro
   };

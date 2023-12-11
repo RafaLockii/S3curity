@@ -57,7 +57,6 @@ setNumImageInputs(numImageInputs + 1);
 const user = JSON.parse(localStorage.getItem('user') || '{}');
 
 async function handleRegister(data: RegisterFormData) {
-console.log("entrou aq");
 try {
 const response = await api.post("empresa/create", {
 nome: data.nome,
@@ -68,10 +67,8 @@ usuario_criacao: user?.nome || "Usuário Não definido",
 carrosselImagens: imagensCarrosel,
 });
 // Assigning empresa_id to each menu in menuData
-console.log(response.data.empresa.id)
 back();
 } catch (e) {
-console.log(e);
 }
 }
 

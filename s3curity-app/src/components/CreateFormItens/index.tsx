@@ -81,14 +81,12 @@ export default function CreateForm() {
 
    //FIm do bloco ------------------------------------------------------------------------>
   async function handleRegister(data: RegisterFormData) {
-    console.log("entrou aq");
     try {
     const menuResponses = await Promise.all(
       menus.map((menu) => api.post("menu/create", menu))
     );
       back();
     } catch (e) {
-      console.log(e);
     }
   }
 
@@ -124,7 +122,6 @@ export default function CreateForm() {
                 value={menus[menuIndex]?.modulo_id ? menus[menuIndex]?.modulo_id : 0} 
                 label="Modulo"
                 onChange={(e) => {
-                  console.log(e.target.value);
                   const newMenus = [...menus];
                   newMenus[menuIndex] = {
                     ...newMenus[menuIndex],

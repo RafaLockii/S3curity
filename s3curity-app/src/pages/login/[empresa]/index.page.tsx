@@ -29,9 +29,7 @@ export default function SignIn() {
         async function fetchData() {
             try {
                 if (empresa) {
-                    console.log("Empresa params: " + empresa);
                     const response = await api.get(`empresa-carrossel-logo/${empresa}`);
-                    console.log(response.data)
 
                     response.data.empresa.carrosseis.map((item: any) => {
                         setImages(prevImages => [...prevImages, item.nome]);
@@ -45,7 +43,6 @@ export default function SignIn() {
                     
                 }
             } catch (e) {
-                console.log("CATCH Empresa: " + empresa);
                 console.error("Erro: " + e);
             }
         }

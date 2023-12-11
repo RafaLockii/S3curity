@@ -1,0 +1,25 @@
+.pageContainer{
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+    width: 100vw;
+}
+.header{
+    position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.createUserFormContainer{
+  display: flex;
+  flex-direction: column;
+  align-items: space-between;
+  margin-left: 2rem;
+  margin-top: 5rem;
+  margin-right: 2rem;
+  background-color: #fff;
+  width: 85vw;
+  height: 90vh;
+  border-radius: 5px;
+  box-shadow: 5px 5px 5px 5px rgba(0,0,0,0.1);
+}

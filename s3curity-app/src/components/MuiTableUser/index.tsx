@@ -170,7 +170,6 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
       const updatedDataArray = dataArray.filter((user) => user.id !== id);
       setDataArray(updatedDataArray); // Update dataArray state to reflect the deletion immediately
     } catch (e) {
-      console.log(e);
     }
   };
   // const deleteUser = async (id: number)=>{
@@ -179,7 +178,6 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
   //     const updatedDataArray = dataArray.filter((user) => user.id !== id);
   //     dataArray = updatedDataArray;
   //   }catch(e){
-  //     console.log(e)
   //   }
   // }
 
