@@ -68,9 +68,9 @@ export default function Users(){
 
     return(
         <div className={styles.pageContainer}>
+            <SidebarMenu empresa={empresaParams as string}/>
             {!loading && (
             <>
-            <SidebarMenu empresa={empresaParams as string}/>
             <div className={styles.createUserFormContainer}>
                 {!showCreateUserForm && !showUpdateForm && (
                 <>

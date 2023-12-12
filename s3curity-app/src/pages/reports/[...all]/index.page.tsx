@@ -37,9 +37,9 @@ export default function Reports(){
 
     return(
         <div className={styles.pageContainer}>
+            <SidebarMenu empresa={queryData.empresa}/>
             {!loading ? (
                 <>
-                <SidebarMenu empresa={queryData.empresa}/>
                 <div className={styles.header}>
                     <Header/>
                 </div>

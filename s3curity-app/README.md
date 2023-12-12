@@ -16,6 +16,12 @@ NEXT_PUBLIC_BASE_URL = http://localhost:3000
 
 Executes os seguintes comandos em ordem:
 
+npm run build
+
+npm run start
+
+## Caso ocorra algum erro na inicialização normal, use o seguinte comando:
+
 npm run dev
 
 # Aplicação

@@ -49,9 +49,9 @@ export default function Enterprise(){
 
     return(
         <div className={styles.pageContainer}>
-            {!loading && ( 
-            <>
             <SidebarMenu empresa={empresa as string}/>
+            {!loading && ( 
+                <>
             <div className={styles.createFormContainer}>
                 {!showCreateForm && !showUpdateForm && (
                     <>

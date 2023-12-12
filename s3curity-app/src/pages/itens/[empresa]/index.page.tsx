@@ -50,9 +50,10 @@ export default function Enterprise(){
 
     return(
         <div className={styles.pageContainer}>
+            <SidebarMenu empresa={empresa as string}/>
             {!loading && ( 
             <>
-            <SidebarMenu empresa={empresa as string}/>
+            
             <div className={styles.createFormContainer}>
                 {/* <div className={styles.formHeader}>
                     <p>Cadastro de itens</p>
