@@ -22,6 +22,7 @@ export default function Users(){
     const [empresas, setEmpresas] = useState<EmpresaData[]>([]);
     const [empresaid, setEmpresaId] = useState<number>();
     const [storedUser, setStoredUser] = useState<any>();
+    const [loading, setLoading] = useState(true);
 
     const handleShowCreateUserForm = (show: boolean) => {
         setShowCreateUserForm(show);}
@@ -58,6 +59,7 @@ export default function Users(){
             } catch (error) {
                 console.error(error);
             }
+            setLoading(false)
         };
     
         fetchData();
@@ -66,6 +68,8 @@ export default function Users(){
 
     return(
         <div className={styles.pageContainer}>
+            {!loading && (
+            <>
             <SidebarMenu empresa={empresaParams as string}/>
             <div className={styles.createUserFormContainer}>
                 {!showCreateUserForm && !showUpdateForm && (
@@ -104,7 +108,9 @@ export default function Users(){
             </div>
             <div className={styles.header}>
                 <Header/>
-            </div>            
+            </div> 
+            </>
+            )}           
         </div>
     )
 }

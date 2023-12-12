@@ -11,10 +11,7 @@ import { TextField } from "@mui/material";
 
 const registerFormShceme = z.object({
     nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s0-9]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
-    razao_s: z.string().refine((value) => {
-      const numericValue = value.replace(/\D/g, '');
-      return numericValue.length === 14;
-    }, { message: 'CNPJ inválido' }),
+    razao_s: z.string().min(5,{message: 'A Razão social precisa ter ao menos 5 letras'}),
     logo: z.string().min(1, {message: 'Preencha o campo'}),
     imagem_fundo: z.string().min(1, {message: 'Preencha o campo'}),
 });
@@ -66,6 +63,11 @@ export default function UpdateForm(props: EmpresaData) {
     setValue('razao_s', props.razao_s);
     setValue('logo', props.logo);
     setValue('imagem_fundo', props.imagem_fundo);
+    const carrosselNames: string[] = props.carrosseis.map((carrossel) => carrossel.nome);
+  // Updating the state with the extracted names
+  setImagensCarrosel((prev: string[]) => [...prev, ...carrosselNames]);
+    setNumImageInputs(props.carrosseis.length)
+    console.log(imagensCarrosel)
   }, [props]); 
 
   return (
@@ -106,29 +108,20 @@ export default function UpdateForm(props: EmpresaData) {
         />
         {/* Render image inputs dynamically */}
         {Array.from({ length: numImageInputs }).map((_, index) => (
-          // <div key={index} className={styles.inputWithContents}>
-          //   <input
-          //     className={styles.input}
-          //     placeholder={`Imagem do carrossel ${index + 1}`}
-          //     onChange={(e) => {
-          //       const newImages = [...imagensCarrosel];
-          //       newImages[index] = e.target.value;
-          //       setImagensCarrosel(newImages);
-          //     }}
-          //   ></input>
-          // </div>
-          <TextField
-          key={index}
-          id="imagem_carrossel"
-          label={`${index + 1}º Imagem do carrossel`}
-          sx={{ m: 1, width: '27ch',  }}
-          onChange={(e) => {
-            const newImages = [...imagensCarrosel];
-            newImages[index] = e.target.value;
-            setImagensCarrosel(newImages);
-          }}
-        />
-        ))}
+  <TextField
+    key={index}
+    id="imagem_carrossel"
+    label={`${index + 1}º Imagem do carrossel`}
+    sx={{ m: 1, width: '27ch',}}
+    value={imagensCarrosel[index] || ''} // Populate with imagensCarrosel values
+    defaultValue={imagensCarrosel[index] || ''} // Populate with imagensCarrosel values
+    onChange={(e) => {
+      const newImages = [...imagensCarrosel];
+      newImages[index] = e.target.value;
+      setImagensCarrosel(newImages);
+    }}
+  />
+))}
 
         {/* Button to add more image inputs */}
         <button

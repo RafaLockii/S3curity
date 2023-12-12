@@ -131,6 +131,30 @@ return (
     <div style={{flexDirection: 'row', display: 'flex'}}>
         {Array.from({ length: numMenuInputs }).map((_, menuIndex) => (
         <div key={menuIndex} className={styles.menu}>
+
+            <FormControl sx={{minWidth: 210 }}>
+                <InputLabel id="demo-simple-select-helper-label">Módulo</InputLabel>
+                <Select
+                labelId="demo-simple-select-helper-label"
+                id="demo-simple-select-helper"
+                value={menus[menuIndex]?.modulo_id ? menus[menuIndex]?.modulo_id : 0} 
+                label="Modulo"
+                onChange={(e) => {
+                    const newMenus = [...menus];
+                    newMenus[menuIndex] = {
+                    ...newMenus[menuIndex],
+                    modulo_id: e.target.value,
+                    };
+                    setMenus(newMenus);
+                }}
+                >
+                <MenuItem value={1}>Operacional</MenuItem>
+                <MenuItem value={2}>Estratégico</MenuItem>
+                <MenuItem value={3}>Gerencial</MenuItem>
+                </Select>
+                <FormHelperText sx={{margin: '0.5rem 0 0.35rem 0.25rem'}}>Digite o nome do Menu</FormHelperText>
+                
+            </FormControl>
             <div className={styles.inputWithContents}>
         
             <TextField
@@ -148,28 +172,7 @@ return (
             />
             </div>
 
-            <FormControl sx={{ m: 1, minWidth: 120 }}>
-            <InputLabel id="demo-simple-select-helper-label">Módulo</InputLabel>
-            <Select
-            labelId="demo-simple-select-helper-label"
-            id="demo-simple-select-helper"
-            value={menus[menuIndex]?.modulo_id ? menus[menuIndex]?.modulo_id : 0} 
-            label="Modulo"
-            onChange={(e) => {
-                const newMenus = [...menus];
-                newMenus[menuIndex] = {
-                ...newMenus[menuIndex],
-                modulo_id: e.target.value,
-                };
-                setMenus(newMenus);
-            }}
-            >
-            <MenuItem value={1}>Operacional</MenuItem>
-            <MenuItem value={2}>Estratégico</MenuItem>
-            <MenuItem value={3}>Gerencial</MenuItem>
-            </Select>
-            <FormHelperText>Selecione o módulo</FormHelperText>
-        </FormControl>
+            
 
 
             {menus[menuIndex] && menus[menuIndex]?.itens && menus[menuIndex]?.itens.map((item, itemIndex) => (

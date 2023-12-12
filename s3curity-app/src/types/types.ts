@@ -8,6 +8,14 @@ export interface EmpresaData {
     imagem_fundo: string;
     usuario_criacao: string;
     usuario_cad_alt: any;
+    carrosseis: Carrosseis[];
+}
+
+interface Carrosseis{
+    id: number;
+    nome: string;
+    empresa_id: number;
+    data_criacao: string;
 }
   
   //Propriedades recebidas da rota

@@ -17,6 +17,8 @@ export default function Enterprise(){
     // const {query} = useRouter;
     // const empresa = typeof query.empresa == 'string' ? query.empresa : "";
     const[empresa, setEmpresa] = useState<string>();
+    const[loading, setLoading] = useState(true)
+
 
     const handleShowCreateForm = (show: boolean) => {
         setShowCreateForm(show);}
@@ -40,6 +42,7 @@ export default function Enterprise(){
         } catch(e){
             console.error(e)
         }
+        setLoading(false)
     }
 
     fetchData();
@@ -47,6 +50,8 @@ export default function Enterprise(){
 
     return(
         <div className={styles.pageContainer}>
+            {!loading && ( 
+            <>
             <SidebarMenu empresa={empresa as string}/>
             <div className={styles.createFormContainer}>
                 {/* <div className={styles.formHeader}>
@@ -79,6 +84,8 @@ export default function Enterprise(){
             <div className={styles.header}>
                 <Header/>
             </div>
+            </>
+            )}
         </div>
     )
 }

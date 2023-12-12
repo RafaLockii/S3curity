@@ -15,6 +15,7 @@ export default function EditUsers(){
     
     const [empresaData, setempresaData] = useState<EmpresaData>();
     const [empresaName, setEmpresaName] = useState('');
+    const[loading, setLoagin] = useState(true);
     const {back} = useRouter;
 
     
@@ -43,6 +44,7 @@ export default function EditUsers(){
             } catch (error) {
                 console.error(error);
             }
+            setLoagin(false)
         }
     
         fetchData();
@@ -54,6 +56,8 @@ export default function EditUsers(){
 
     return(
         <div className={styles.pageContainer}>
+            {!loading && (
+            <>
             <SidebarMenu empresa={empresaName}/>
             {empresaData ? ( // Verifique se empresaData está definido
                 <div className={styles.createUserFormContainer}>
@@ -74,6 +78,7 @@ export default function EditUsers(){
                             imagem_fundo={empresaData.imagem_fundo}
                             usuario_criacao={empresaData.usuario_criacao}
                             usuario_cad_alt={empresaData.usuario_cad_alt}
+                            carrosseis={empresaData.carrosseis}
                         />
                     )}
                 </div>
@@ -82,7 +87,9 @@ export default function EditUsers(){
             )}
             <div className={styles.header}>
                 <Header/>
-            </div>            
+            </div>  
+            </>   
+            )}
         </div>
     )
 }

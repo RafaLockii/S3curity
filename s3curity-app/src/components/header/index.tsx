@@ -6,6 +6,7 @@ import { useState, useEffect } from 'react';
 import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import api from '@/lib/axios';
 import { useModuloContext } from '@/context/moduloContext';
+import dynamic from 'next/dynamic';
 
 interface userProps{
     id: number;
@@ -27,10 +28,8 @@ export function Header() {
     const[moduloSelected, setModuloSelected] = useState<string | number>();
     const {modulo, setModulo} = useModuloContext();
     const[loading, setLoading] = useState(true);
-
-    const logo = window.localStorage.getItem('logo') || '';
-    const trimmedLogo = logo.replace(/^"|"$/g, ''); 
-   
+    const[logo, setLogo] = useState('')
+    
 
     useEffect(() => {
     const fetchData = async () => {
@@ -39,8 +38,14 @@ export function Header() {
             const modulos = response.data.modulos;
             setModuloDefault(response.data.modulo_default ? response.data.modulo_default : 1);
             setModulos(modulos);
+            const logo =  window.localStorage.getItem('logo') || '';
+            const trimmedLogo = logo.replace(/^"|"$/g, '');
+            setLogo(trimmedLogo)
         } catch (e) {
-        alert(`Erro inesperado: ${e}`);
+            const logo = window.localStorage.getItem('logo') || '';
+            const trimmedLogo = logo.replace(/^"|"$/g, '');
+            setLogo(trimmedLogo)
+            alert(`Erro inesperado: ${e}`);
         }
         setLoading(false);
     }
@@ -49,14 +54,13 @@ export function Header() {
 
 
     return(
-        <>
+        <div>
         {!loading && (
         <header>
             <div className={styles.Content}>
                 <section className={styles.sectionContent}>
-                   
                     <img 
-                        src={trimmedLogo}
+                        src={logo}
                         alt='Logo'
                         // quality={100}
                         width={200}
@@ -93,6 +97,6 @@ export function Header() {
             </div>
         </header>
         )}
-        </>
+        </div>
         )
 }

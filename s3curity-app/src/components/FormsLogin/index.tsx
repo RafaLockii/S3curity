@@ -62,24 +62,24 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
             });
 
             if (response.status === 200) {
-                // setUser({
-                //     id: response.data.id,
-                //     token: response.data.token,
-                //     email: response.data.email,
-                //     nome: response.data.nome,
-                //     acesso_admin: response.data.isAdmin,
-                // });
-
-                window.localStorage.setItem('user', JSON.stringify({
-                    id: response.data.id,
-                    token: response.data.token,
-                    email: response.data.email,
-                    nome: response.data.nome,
-                    acesso_admin: response.data.isAdmin,
-                    verified: response.data.ativo,
-                }));
-                await router.push(`/home/${empresa}`);
-                setLoadingRequest(false); // Quando a requisição terminar, sete o estado para false
+                if(response.data.ativo == false){
+                    setErrorMessage("Conta desativada, ative sua conta para prosseguir");
+                    setLoadingRequest(false);
+                } else if(response.data.ativo == true){
+                    window.localStorage.setItem('user', JSON.stringify({
+                        id: response.data.id,
+                        token: response.data.token,
+                        email: response.data.email,
+                        nome: response.data.nome,
+                        acesso_admin: response.data.isAdmin,
+                        verified: response.data.ativo,
+                    }));
+                    await router.push(`/home/${empresa}`);
+                    setLoadingRequest(false); // Quando a requisição terminar, sete o estado para false
+                } else{
+                    alert("Erro desconhecido, entre em contato com o suporte");
+                    setLoadingRequest(false);
+                }
 
             } else if (response.status === 404) {
                 setErrorMessage("Credenciais inválidas");
