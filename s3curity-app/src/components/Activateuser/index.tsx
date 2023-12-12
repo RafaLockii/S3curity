@@ -94,7 +94,16 @@ export default function ActivateUser(){
                     helperText={errors.token ? errors.token.message : ''}
                     />
                     <LoadingButton
-                    className={styles.button}
+                     sx={{
+                        width: '100%',
+                        padding: '10px',
+                        backgroundColor: '#000000',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                        marginBotton: '1rem',
+                    }}
                     type="submit"
                     loading={loadingRequest}
                     >

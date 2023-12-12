@@ -159,10 +159,10 @@ export default function CustomPaginationActionsTable({ data, empresa }: EmpresaT
         height: '10vh',
         }}>
           <TableRow>
-            <TableCell sx={{fontSize: 32}}>Nome</TableCell>
-            <TableCell sx={{fontSize: 32}}>Razão social</TableCell>
-            <TableCell sx={{fontSize: 32}}>Usuário criação</TableCell>
-            <TableCell sx={{fontSize: 32}}>Data de Criação</TableCell>
+            <TableCell sx={{fontSize: 29}}>Nome</TableCell>
+            <TableCell sx={{fontSize: 29}}>Razão social</TableCell>
+            <TableCell sx={{fontSize: 29}}>Usuário criação</TableCell>
+            <TableCell sx={{fontSize: 29}}>Data de Criação</TableCell>
             <TableCell></TableCell>
             <TableCell></TableCell>
           </TableRow>
@@ -173,10 +173,10 @@ export default function CustomPaginationActionsTable({ data, empresa }: EmpresaT
             : dataArray
           ).map((row) => (
             <TableRow key={row.id}>
-              <TableCell sx={{fontSize: 24}}>{row.nome}</TableCell>
-              <TableCell sx={{fontSize: 24}}>{row.razao_s}</TableCell>
-              <TableCell sx={{fontSize: 24}}>{row.usuario_criacao}</TableCell>
-              <TableCell sx={{fontSize: 24}}>{row.data_criacao}</TableCell>
+              <TableCell sx={{fontSize: 21}}>{row.nome}</TableCell>
+              <TableCell sx={{fontSize: 21}}>{row.razao_s}</TableCell>
+              <TableCell sx={{fontSize: 21}}>{row.usuario_criacao}</TableCell>
+              <TableCell sx={{fontSize: 21}}>{row.data_criacao}</TableCell>
                 <TableCell>
                 <button className={styles.button} onClick={() => { router.push(`editEmpresa/${row.id}/${empresa}`)}}>Editar</button>
                 </TableCell>

@@ -14,32 +14,34 @@ import { MenusData } from "@/types/types";
 export default function EditUsers(){
 
 const [menuData, setmenuData] = useState<MenusData>();
+const [empresaParams, setEmpresaParams] = useState('');
 
 
     //Resgatando data da URL
-const {query, back} = useRouter;
-
-let data: string[] = [];
-
-if (typeof query.all === 'string') {
-    // Se query.all for uma string, converta-a em um array
-    data.push(query.all);
-    } else if (Array.isArray(query.all)) {
-    // Se query.all for um array, use-o diretamente
-    data = query.all;
-    }
-    
-    if (data.length > 0) {
-    // A variável data contém pelo menos um valor
-    const id = data[0];
-    const empresa = data[1] || '';
-   
-    } else {
-    // A variável data está vazia
-    }
+const {back} = useRouter;
 
 useEffect(() => {
     const fetchData = async () => {
+      const {query, back} = useRouter;
+
+      let data: string[] = [];
+
+      if (typeof query.all === 'string') {
+          // Se query.all for uma string, converta-a em um array
+          data.push(query.all);
+          } else if (Array.isArray(query.all)) {
+          // Se query.all for um array, use-o diretamente
+          data = query.all;
+          }
+          
+          if (data.length > 0) {
+          // A variável data contém pelo menos um valor
+          const id = data[0];
+          const empresa = data[1] || '';
+          setEmpresaParams(empresa)
+          } else {
+          // A variável data está vazia
+          }
         try {
             const response = await api.get(`menu/${data[0]}`);
             setmenuData(response.data);
@@ -57,7 +59,9 @@ if(menuData){
 
 return (
     <div className={styles.pageContainer}>
-      <SidebarMenu empresa={data[1]} />
+      {empresaParams && (
+      <SidebarMenu empresa={empresaParams} />
+      )}
       {menuData !== undefined ? (
         <div className={styles.createUserFormContainer}>
           <div className={styles.formHeader}>

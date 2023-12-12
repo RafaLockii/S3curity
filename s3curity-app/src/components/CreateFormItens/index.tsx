@@ -98,23 +98,8 @@ export default function CreateForm() {
         <div style={{flexDirection: 'row', display: 'flex'}}>
           {Array.from({ length: numMenuInputs }).map((_, menuIndex) => (
             <div key={menuIndex} className={styles.menu}>
-              <div className={styles.inputWithContents}>
-            
-                <TextField
-                  id="outlined-error"
-                  label="Menu"
-                  onChange={(e) => {
-                    const newMenus = [...menus];
-                    newMenus[menuIndex] = {
-                      ...newMenus[menuIndex],
-                      nomeMenu: e.target.value,
-                    };
-                    setMenus(newMenus);
-                  }}
-                />
-              </div>
 
-              <FormControl sx={{ m: 1, minWidth: 120 }}>
+            <FormControl sx={{minWidth: 210 }}>
               <InputLabel id="demo-simple-select-helper-label">Módulo</InputLabel>
               <Select
                 labelId="demo-simple-select-helper-label"
@@ -129,15 +114,27 @@ export default function CreateForm() {
                   };
                   setMenus(newMenus);
                 }}
-              >
+                >
                 <MenuItem value={1}>Operacional</MenuItem>
                 <MenuItem value={2}>Estratégico</MenuItem>
                 <MenuItem value={3}>Gerencial</MenuItem>
               </Select>
-              <FormHelperText>Selecione o módulo</FormHelperText>
             </FormControl>
-
-
+                <FormHelperText sx={{margin: '0.5rem 0 0.35rem 0.25rem'}}>Digite o nome do Menu</FormHelperText>
+              <div className={styles.inputWithContents}>
+                <TextField
+                  id="outlined-error"
+                  label="Menu"
+                  onChange={(e) => {
+                    const newMenus = [...menus];
+                    newMenus[menuIndex] = {
+                      ...newMenus[menuIndex],
+                      nomeMenu: e.target.value,
+                    };
+                    setMenus(newMenus);
+                  }}
+                />
+              </div>
               {menus[menuIndex] && menus[menuIndex]?.itens && menus[menuIndex]?.itens.map((item, itemIndex) => (
                 <div key={itemIndex} className={styles.item}>
                   <div className={styles.inputWithContents}>

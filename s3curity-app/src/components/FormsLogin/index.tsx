@@ -91,19 +91,19 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
         }
     }
 
-    async function handleForgotpasswordClick() {
-        await router.push('/forgotPassword');
-    }
+    // async function handleForgotpasswordClick() {
+    //     await router.push('/forgotPassword');
+    // }
 
-    async function handleActivateuser(){
-        await router.push('/activate')
-    }
+    // async function handleActivateuser(){
+    //     await router.push('/activate')
+    // }
 
     return (
         <div className={styles.formContainer}>
             <img src={logoUrl} alt='' className={styles.logo} />
             <form onSubmit={handleSubmit(handleRegister)} autoComplete="off">
-                <FormControl sx={{ m: 1, width: '27ch',  }} variant="outlined">
+                <FormControl sx={{margin: '0.5rem 0 0.25rem 0', width: '100%' }} variant="outlined">
                 <InputLabel htmlFor="outlined-adornment-password">Email</InputLabel>
                 <OutlinedInput
                     id="outlined-adornment-password"
@@ -123,7 +123,7 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
                 />
                 </FormControl>
 
-                <FormControl sx={{ m: 1, width: '27ch' }} variant="outlined">
+                <FormControl sx={{margin: '0.5rem 0 0.25rem 0', width: '100%' }} variant="outlined">
                 <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
                 <OutlinedInput
                     id="outlined-adornment-password"
@@ -148,7 +148,16 @@ export default function FormLogin({ empresa, logoUrl }: FormLoginProps) {
                 <div className={styles.forgotPassword}> Esqueceu a senha?</div>
                 </Link>
                 <LoadingButton
-                    className={styles.button}
+                    sx={{
+                        width: '100%',
+                        padding: '10px',
+                        backgroundColor: '#000000',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '5px',
+                        cursor: 'pointer',
+                        marginBotton: '1rem',
+                    }}
                     type="submit"
                     loading={laodingRequest}
                     >

@@ -310,11 +310,16 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
   }, []);
 
   useEffect(()=>{
+    setUser(JSON.parse(window.localStorage.getItem('user') || '{}'));
     fetchDefaultValues();
   }, [laodingRequest])
 
 
-    const user = JSON.parse(window.localStorage.getItem('user') || '{}');
+  const [user, setUser] = useState({
+    nome: '',
+    email: ''
+  });
+
   
 
   //Dentro do array do useeffect tinha sses itens : showEmpresaSelect, empresa.empresaid

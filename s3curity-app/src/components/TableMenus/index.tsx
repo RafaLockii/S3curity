@@ -170,10 +170,10 @@ return (
     height: '10vh',
     }}>
         <TableRow>
-        <TableCell sx={{fontSize: 32}}>Nome</TableCell>
-        <TableCell sx={{fontSize: 32}}>Modulo</TableCell>
-        <TableCell sx={{fontSize: 32}}>Quantidade itens</TableCell>
-        <TableCell sx={{fontSize: 32}}>Quantidade relatórios</TableCell>
+        <TableCell sx={{fontSize: 29}}>Nome</TableCell>
+        <TableCell sx={{fontSize: 29}}>Modulo</TableCell>
+        <TableCell sx={{fontSize: 29}}>Quantidade itens</TableCell>
+        <TableCell sx={{fontSize: 29}}>Quantidade relatórios</TableCell>
         <TableCell></TableCell>
         <TableCell></TableCell>
         </TableRow>
@@ -185,10 +185,10 @@ return (
         ).map((row) => (
         <TableRow key={row.id}>
             
-            <TableCell sx={{fontSize: 24, alignItems: 'center'}}>{row.nome}</TableCell>
-            <TableCell sx={{fontSize: 24}}>{row.modulo}</TableCell>
-            <TableCell sx={{fontSize: 24}}>{row.itens.length}</TableCell>
-            <TableCell sx={{fontSize: 24}}>{row.itens.reduce((accumulator, currentItem) => accumulator + currentItem.relatorios.length, 0)}</TableCell>
+            <TableCell sx={{fontSize: 21, alignItems: 'center'}}>{row.nome}</TableCell>
+            <TableCell sx={{fontSize: 21}}>{row.modulo}</TableCell>
+            <TableCell sx={{fontSize: 21}}>{row.itens.length}</TableCell>
+            <TableCell sx={{fontSize: 21}}>{row.itens.reduce((accumulator, currentItem) => accumulator + currentItem.relatorios.length, 0)}</TableCell>
             <TableCell>
             <button className={styles.button} onClick={() => { router.push(`editMenu/${row.id}/${empresa}`)}}>Editar</button>
             </TableCell>

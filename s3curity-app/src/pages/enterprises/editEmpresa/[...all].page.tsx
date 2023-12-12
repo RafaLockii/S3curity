@@ -14,9 +14,29 @@ import { EmpresaData } from "@/types/types";
 export default function EditUsers(){
     
     const [empresaData, setempresaData] = useState<EmpresaData>();
+    const [empresaName, setEmpresaName] = useState('');
+    const {back} = useRouter;
+
     
     useEffect(() => {
         const fetchData = async () => {
+            const {query} = useRouter;
+            let data: string[] = [];
+            if (typeof query.all === 'string') {
+                // Se query.all for uma string, converta-a em um array
+                data.push(query.all);
+            } else if (Array.isArray(query.all)) {
+                // Se query.all for um array, use-o diretamente
+                data = query.all;
+            }
+            if (data.length > 0) {
+                // A variável data contém pelo menos um valor
+                const id = data[0];
+                const empresa = data[1] || '';
+            } else {
+                // A variável data está vazia
+            }
+            setEmpresaName(data[1]);
             try {
                 const response = await api.get(`empresa/${data[0]}`);
                 setempresaData(response.data);
@@ -29,34 +49,12 @@ export default function EditUsers(){
     }, []);
 
         //Resgatando data da URL
-    const {query, back} = useRouter;
-
-    let data: string[] = [];
-
-    if (typeof query.all === 'string') {
-        // Se query.all for uma string, converta-a em um array
-        data.push(query.all);
-      } else if (Array.isArray(query.all)) {
-        // Se query.all for um array, use-o diretamente
-        data = query.all;
-      }
-      
-      if (data.length > 0) {
-        // A variável data contém pelo menos um valor
-        const id = data[0];
-        const empresa = data[1] || '';
-       
-      } else {
-        // A variável data está vazia
-      }
-
-
-   
+    
 
 
     return(
         <div className={styles.pageContainer}>
-            <SidebarMenu empresa={data[1]}/>
+            <SidebarMenu empresa={empresaName}/>
             {empresaData ? ( // Verifique se empresaData está definido
                 <div className={styles.createUserFormContainer}>
                     <div className={styles.formHeader}>

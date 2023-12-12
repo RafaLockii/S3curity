@@ -43,6 +43,7 @@ export default function SignIn() {
                     
                 }
             } catch (e) {
+                console.log("CATCH Empresa: " + empresa);
                 console.error("Erro: " + e);
             }
         }

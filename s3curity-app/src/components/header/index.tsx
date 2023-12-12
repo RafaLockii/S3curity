@@ -54,12 +54,13 @@ export function Header() {
         <header>
             <div className={styles.Content}>
                 <section className={styles.sectionContent}>
+                   
                     <img 
                         src={trimmedLogo}
                         alt='Logo'
                         // quality={100}
                         width={200}
-                        height={50}
+                        height={58}
                     />
                     <hr className={styles.divisor}/>
                         <Select
