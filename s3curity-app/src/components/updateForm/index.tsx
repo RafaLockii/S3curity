@@ -16,9 +16,9 @@ import { TableData } from "@/types/types";
 
 //Validação do formulário
 const registerFormShceme = z.object({
-  nome: z.optional(z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase())),
+  nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
   senha: z.optional(z.string().min(8, {message: 'A senha precisa ter ao menos 8 caracteres'})),
-  email: z.optional(z.string().email( {message: 'E-mail inválido'})),
+  email: z.string().email( {message: 'E-mail inválido'}),
   telefone: z.optional(z.string().refine((value) => {
     return /^\d+$/.test(value) && value.length >= 8;
   }, { message: 'Telefone inválido' })),
@@ -72,7 +72,9 @@ export default function UpdateForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
-  } = useForm<RegisterFormData>()
+  } = useForm<RegisterFormData>({
+    resolver: zodResolver(registerFormShceme)
+  })
 
 
  const storedUser = JSON.parse(window.sessionStorage.getItem('editedUser') || 'null');

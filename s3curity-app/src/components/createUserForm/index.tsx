@@ -10,26 +10,26 @@ import  api  from "@/lib/axios";
 import { useEffect, useState } from "react";
 // import { useUserContext } from "@/context/UserContext";
 import { CreateUserformProps} from "@/types/types";
-import { Checkbox, FormControl, FormControlLabel, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField } from "@mui/material";
+import { Checkbox, FormControl, FormControlLabel, FormHelperText, IconButton, InputAdornment, InputLabel, OutlinedInput, TextField } from "@mui/material";
 import { ContactlessOutlined, Visibility, VisibilityOff } from "@mui/icons-material";
 import { TableData } from "@/types/types";
 
 //Validação do formulário
 const registerFormShceme = z.object({
-  nome: z.optional(z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase())),
-  senha: z.optional(z.string().min(8, {message: 'A senha precisa ter ao menos 8 caracteres'})),
-  email: z.optional(z.string().email( {message: 'E-mail inválido'})),
-  telefone: z.optional(z.string().refine((value) => {
+  nome: z.string().min(5,{message: 'O nome precisa ter ao menos 5 letras'}).regex(/^([a-záàâãéèêíïóôõöúçñ\s]+)$/i, {message:"Nome inválido"}).transform((value) => value.trim().toLowerCase()),
+  senha: z.string().min(8, {message: 'A senha precisa ter ao menos 8 caracteres'}),
+  email: z.string().email( {message: 'E-mail inválido'}),
+  telefone: z.string().refine((value) => {
     return /^\d+$/.test(value) && value.length >= 8;
-  }, { message: 'Telefone inválido' })),
+  }, { message: 'Telefone inválido' }),
   modulo: z.optional(z.number()),
   empresa_id: z.optional(z.number()),
-  img_url: z.optional(z.string().refine((value) => {
+  img_url: z.string().refine((value) => {
     // Verifica se a img_url é uma URL válida (formato básico)
     const urlPattern = /^(https?|ftp):\/\/[^\s/$.?#].[^\s]*$/i;
     return urlPattern.test(value);
-  }, { message: 'URL da imagem inválida' })),
-  // ativo: z.optional(z.boolean()),
+  }, { message: 'URL da imagem inválida' }),
+  // ativo: z.boolean()),
   admin: z.optional(z.boolean()),
 });
 
@@ -67,10 +67,11 @@ export default function CreateUserForm(empresa: CreateUserformProps) {
     handleSubmit,
     formState: { errors, isSubmitting },
     setValue,
-  } = useForm<RegisterFormData>()
-  // {
-  //   resolver: zodResolver(registerFormShceme),
-  // }
+  } = useForm<RegisterFormData>(
+    {
+      resolver: zodResolver(registerFormShceme),
+    }
+  )
 
  const showEmpresaSelect = empresa.empresa === 's3curity';
  //pega informação do usuário logado
@@ -364,7 +365,6 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
     {defaultValuesLoaded && (
     <div className={styles.formContainer}>
       <form  className={styles.form} onSubmit={handleSubmit(handleRegister)}>
-       
         <TextField
           id="nome"
           label="Nome"
@@ -396,6 +396,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
               label="Senha"
               {...register('senha')}
           />
+        <FormHelperText sx={{color: 'red'}}>{errors.senha ? errors.senha.message : ''}</FormHelperText>
         </FormControl>
         <TextField
           id="email"

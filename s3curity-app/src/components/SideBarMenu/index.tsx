@@ -42,8 +42,9 @@ interface userProps{
 export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
 
     const router = useRouter();
-    async function handleMenuClick (route: String) {
-        router.push('/reports' + '/' + route + '/' + props.empresa);
+    async function handleMenuClick (route: string) {
+      const encodedRoute = encodeURIComponent(route);
+      router.push(`/reports/${encodedRoute}/${props.empresa}`);
     }
 
     const[user,setUser] = useState<userProps>();

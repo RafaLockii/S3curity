@@ -43,7 +43,6 @@ const transformMenu = (menuData: { menu: MenusData }): MenuData => {
     let menu = menuData.menu;
     return {
         nomeMenu: menu.menu.nome,
-        empresa_id: 0, // Set your default value for empresa_id
         modulo_id: menu.menu.modulo,
         itens: menu.menu.itens
         // items: menuData.menu.itens.map(item => ({
@@ -74,7 +73,6 @@ const newMenus = [...menus];
 if (!newMenus[menuIndex]) {
     newMenus[menuIndex] = {
     nomeMenu: '', 
-    empresa_id: 0, 
     modulo_id: 0, 
     itens: [], // Inicialize como um array vazio
     };

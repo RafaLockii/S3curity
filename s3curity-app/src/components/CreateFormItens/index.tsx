@@ -37,7 +37,7 @@ export default function CreateForm() {
 
   //Bloco de código refrente a criação de menus --------------------------------------->
   const [numMenuInputs, setNumMenuInputs] = useState(1);
-  const [menus, setMenus] = useState<MenuData[]>([{ nomeMenu: '', empresa_id: 0, modulo_id: 0, itens: [] }]);
+  const [menus, setMenus] = useState<MenuData[]>([{ nomeMenu: '', modulo_id: 0, itens: [] }]);
 
   const addMenuInput = () => {
     setNumMenuInputs(numMenuInputs + 1);
@@ -49,8 +49,7 @@ export default function CreateForm() {
     // Certifique-se de que newMenus[menuIndex] está definido
     if (!newMenus[menuIndex]) {
       newMenus[menuIndex] = {
-        nomeMenu: '', 
-        empresa_id: 0, 
+        nomeMenu: '',  
         modulo_id: 0, 
         itens: [], // Inicialize como um array vazio
       };
