@@ -7,6 +7,7 @@ import { FormControl, InputLabel, MenuItem, Select } from '@mui/material';
 import api from '@/lib/axios';
 import { useModuloContext } from '@/context/moduloContext';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 
 interface userProps{
     id: number;
@@ -28,7 +29,9 @@ export function Header() {
     const[moduloSelected, setModuloSelected] = useState<string | number>();
     const {modulo, setModulo} = useModuloContext();
     const[loading, setLoading] = useState(true);
-    const[logo, setLogo] = useState('')
+    const[logo, setLogo] = useState('');
+    const[empresaParams, setEmpresaParams] = useState('');
+    const router = useRouter();
     
 
     useEffect(() => {
@@ -40,7 +43,10 @@ export function Header() {
             setModulos(modulos);
             const logo =  window.localStorage.getItem('logo') || '';
             const trimmedLogo = logo.replace(/^"|"$/g, '');
-            setLogo(trimmedLogo)
+            setLogo(trimmedLogo);
+            const empresaQuery = JSON.parse(sessionStorage.getItem('empresa') || '{}');
+            const empresaName = empresaQuery.empresa;
+            setEmpresaParams(empresaName);
         } catch (e) {
             const logo = window.localStorage.getItem('logo') || '';
             const trimmedLogo = logo.replace(/^"|"$/g, '');
@@ -76,21 +82,24 @@ export function Header() {
                                 setModulo({
                                     id: Number(newValue),
                                     nome: "",
-                                })
+                                });
+                                router.push(`/home/${empresaParams}`);
                             }}
                         >
                             {modulos && (
+                                modulos.map((moduloData) => (
+                                    <MenuItem key={moduloData.id} value={moduloData.id}>
+                                        <h1 className={styles.operacional}>{moduloData.nome}</h1>
+                                    </MenuItem>
+                                    ))
+                            )}
+                            {/* {modulos && (
                                 modulos.map((moduloData) => {
                                     return <MenuItem key={moduloData.id} value={moduloData.id}>
                                         <h1 className={styles.operacional}>{moduloData.nome}</h1>
                                     </MenuItem>
                                 })
-                            )}
-                            {/* <MenuItem value={1}>
-                                <h1 className={styles.operacional}>OPERACIONAL</h1>
-                            </MenuItem>
-                            <MenuItem value={2}><h1 className={styles.operacional}>ESTRATÉGICO</h1></MenuItem>
-                            <MenuItem value={3}><h1 className={styles.operacional}>GERENCIAL</h1></MenuItem> */}
+                            )} */}
                         </Select>
                     {/* <h1 className={styles.operacional}>OPERACIONAL</h1> */}
                 </section>

@@ -46,6 +46,7 @@ export default function SidebarMenu(props: SidebarProps & SidebarInfoProps) {
       const encodedRoute = encodeURIComponent(route);
       sessionStorage.setItem('reportUrl', route); // Adicionei no sessionStorage para poder obter dele ao invés da rota
       router.push(`/reports/${encodedRoute}/${props.empresa}`);
+      // router.push(`/reports/teste/${props.empresa}`);
     }
 
     const[user,setUser] = useState<userProps>();

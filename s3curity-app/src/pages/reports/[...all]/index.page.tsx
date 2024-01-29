@@ -46,7 +46,7 @@ export default function Reports(){
                     <Header/>
                 </div>
                 <div className={styles.createUserFormContainer}>
-                <iframe title="Report Section" width="100%" height="90%" src={url} frameBorder={0} allowFullScreen={true}></iframe>
+                <iframe title="Report Section" width="100%" height="90%" src={queryData.link} frameBorder={0} allowFullScreen={true}></iframe>
                 </div>
                 </>
             ) : (
