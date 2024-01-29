@@ -114,6 +114,9 @@ function handleDragStart(e: React.DragEvent, itemType: MenuProps | ModuloProps |
 function handleDrop(e: React.DragEvent) {
   e.preventDefault();
   const item = JSON.parse(e.dataTransfer.getData("itemType")) as MenuProps | ModuloProps | ItemProps | RelatorioProps;
+  console.log(item);
+  console.log(draggableItens);
+  console.log(draggableRelatorios);
 
   if(!item.hasOwnProperty("modulo") && !item.hasOwnProperty("menus_id") && !item.hasOwnProperty("itens_id")){
     const updatedDraggableModulo = draggableModulos.filter((modulos) => modulos.id !== item.id);
@@ -126,7 +129,7 @@ function handleDrop(e: React.DragEvent) {
     setMenusSelected(prev => [...prev, item as MenuProps]);
   }
   if(item.hasOwnProperty("menus_id")){
-    const updatedDraggableItens = draggableItens.filter((itens)=> itens.id != (item as ItemProps).id);
+    const updatedDraggableItens = draggableItens.filter((itens)=> itens.id !== (item as ItemProps).id);
     setDraggableItens(updatedDraggableItens);
     setItensSelected(prev => [...prev, item as ItemProps]);
   }
@@ -225,6 +228,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
 
         const updatedDraggableRelatorios = draggableRelatorios.filter((draggableRelatorios) => {
           const newValue = !relatoriosSelected.some((selectedRelatorio) => selectedRelatorio.id === draggableRelatorios.id);
+          return newValue;
         })
         setDraggableItens(updatedDraggableItems);
         setDraggableMenus(updatedDraggableMenus);
@@ -364,7 +368,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         modulos_id: modulosSelected.map((item) => item.id),
         empresa_id: data.empresa_id
       });
-      back();
+      // back();
     }catch(e){
     }
   }
