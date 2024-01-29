@@ -222,6 +222,30 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
               </TableCell>
               <TableCell sx={{fontSize: 21}}>{row.funcionario.empresa.nome}</TableCell>
               <TableCell>
+                  <Checkbox
+                    checked={row.funcionario.modulos.some(modulo => 
+                      modulo.nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase() === "OPERACIONAL".normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase())
+                    }
+                    disabled
+                  />
+              </TableCell>
+              <TableCell>
+                  <Checkbox
+                    checked={row.funcionario.modulos.some(modulo => 
+                      modulo.nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase() === "ESTRATEGICO".normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase())
+                    }
+                    disabled
+                  />
+              </TableCell>
+              <TableCell>
+                  <Checkbox
+                    checked={row.funcionario.modulos.some(modulo => 
+                      modulo.nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase() === "GERENCIAL".normalize("NFD").replace(/[\u0300-\u036f]/g, "").toUpperCase())
+                    }
+                    disabled
+                  />
+              </TableCell>
+              {/* <TableCell>
                 <Checkbox
                   checked={row.funcionario.modulos.some(modulo => modulo.nome === "OPERACIONAL")}
                   disabled
@@ -238,7 +262,7 @@ export default function CustomPaginationActionsTable({ data, empresa }: TableCom
                   checked={row.funcionario.modulos.some(modulo => modulo.nome === "GERENCIAL")}
                   disabled
                 />
-                </TableCell>
+                </TableCell> */}
                 <TableCell>
                 <Checkbox
                   checked={row.verified}

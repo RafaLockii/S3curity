@@ -368,7 +368,7 @@ function handleRemoveItemFromOutputBox(item: MenuProps | ModuloProps | ItemProps
         modulos_id: modulosSelected.map((item) => item.id),
         empresa_id: data.empresa_id
       });
-      // back();
+      back();
     }catch(e){
     }
   }
