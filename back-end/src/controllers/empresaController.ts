@@ -113,27 +113,31 @@ export const deleteEmpresa = async (req: Request, res: Response) => {
     const empresaId = parseInt(req.params.id);
 
     try {
-        const existingEmpresa = await prisma.empresa.findUnique({
-            where: { id: empresaId },
-        });
+      const existingEmpresa = await prisma.empresa.findUnique({
+        where: { id: empresaId }
+      });
 
-        if (!existingEmpresa) {
-            return res.status(404).json({ message: 'Empresa não encontrada.' });
-        }
+      if (!existingEmpresa) {
+        return res.status(404).json({ message: "Empresa não encontrada." });
+      }
 
-        await prisma.carrossel.deleteMany({
-            where: { empresa_id: empresaId },
-        });
+      await prisma.carrossel.deleteMany({
+        where: { empresa_id: empresaId }
+      });
 
-        await prisma.funcionario.deleteMany({
-            where: { empresa_id: empresaId },
-        });
+      await prisma.imagem.deleteMany({
+        where: { funcionario_id: empresaId }
+      });
 
-        await prisma.empresa.delete({
-            where: { id: empresaId },
-        });
+      await prisma.funcionario.deleteMany({
+        where: { empresa_id: empresaId }
+      });
 
-        res.status(204).send();
+      await prisma.empresa.delete({
+        where: { id: empresaId }
+      });
+
+      res.status(204).send();
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Erro ao excluir a empresa.' });
